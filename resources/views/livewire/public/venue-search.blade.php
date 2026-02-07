@@ -1,147 +1,342 @@
-<div class="space-y-0">
-    <!-- Hero Section -->
-    <div class="relative bg-gray-900 pt-32 pb-48 overflow-hidden">
-        <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1541534741688-6078c64b52d3?auto=format&fit=crop&q=80')] bg-cover bg-center opacity-30"></div>
-        <div class="absolute inset-0 bg-gradient-to-b from-gray-900/50 via-gray-900 to-[#F8FAFC]"></div>
-        
-        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h1 class="text-5xl md:text-7xl font-black text-white tracking-tight leading-tight mb-6">
-                MAINKAN SLOT <br> <span class="bg-gradient-to-r from-indigo-400 to-emerald-400 bg-clip-text text-transparent italic uppercase">JUARA ANDA</span>
-            </h1>
-            <p class="text-xl text-gray-300 font-medium max-w-2xl mx-auto mb-10">
-                Temukan dan sewa lapangan olahraga terbaik di sekitar Anda dengan sistem booking instan tanpa ribet.
-            </p>
+@php
+    $sportCategories = [
+        ['key' => '', 'name' => 'Semua', 'icon' => 'sports', 'color' => 'gray'],
+        ['key' => 'futsal', 'name' => 'Futsal', 'icon' => 'sports_soccer', 'color' => 'red'],
+        ['key' => 'badminton', 'name' => 'Badminton', 'icon' => 'sports_tennis', 'color' => 'blue'],
+        ['key' => 'basket', 'name' => 'Basket', 'icon' => 'sports_basketball', 'color' => 'orange'],
+        ['key' => 'minisoccer', 'name' => 'Mini Soccer', 'icon' => 'sports_soccer', 'color' => 'green'],
+        ['key' => 'tenis', 'name' => 'Tenis', 'icon' => 'sports_tennis', 'color' => 'lime'],
+        ['key' => 'voli', 'name' => 'Voli', 'icon' => 'sports_volleyball', 'color' => 'yellow'],
+        ['key' => 'golf', 'name' => 'Golf', 'icon' => 'golf_course', 'color' => 'emerald'],
+        ['key' => 'billiard', 'name' => 'Billiard', 'icon' => 'sports_bar', 'color' => 'purple'],
+        ['key' => 'bowling', 'name' => 'Bowling', 'icon' => 'sports', 'color' => 'pink'],
+    ];
+@endphp
+
+<div class="min-h-screen">
+    <!-- Hero Section with Background Image -->
+    <div class="relative min-h-[85vh] flex flex-col">
+        <!-- Background Image -->
+        <div class="absolute inset-0 z-0">
+            <img src="https://images.unsplash.com/photo-1554068865-24cecd4e34b8?w=1920&q=80" 
+                 alt="Sports Court" 
+                 class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-transparent"></div>
         </div>
-    </div>
 
-    <!-- Floating Search Container -->
-    <div class="max-w-6xl mx-auto px-4 -mt-24 relative z-20">
-        <div class="bg-white rounded-[2.5rem] shadow-2xl p-8 md:p-10 border border-white">
-            <div class="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-5 gap-8 items-end">
-                <div class="md:col-span-1">
-                    <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3">Cabang Olahraga</label>
-                    <select wire:model="sport_type" class="w-full bg-gray-50 border-none rounded-2xl py-4 px-6 text-sm font-black text-gray-900 focus:ring-2 focus:ring-indigo-600 appearance-none cursor-pointer">
-                        <option value="">SEMUA OLAHRAGA</option>
-                        <option value="futsal">FUTSAL</option>
-                        <option value="mini_soccer">MINI SOCCER</option>
-                        <option value="badminton">BADMINTON</option>
-                        <option value="basket">BASKET</option>
-                        <option value="tenis">TENIS</option>
-                        <option value="voli">VOLI</option>
-                    </select>
-                </div>
+        <!-- Hero Content -->
+        <div class="relative z-10 flex-1 flex items-center">
+            <div class="max-w-7xl mx-auto px-4 lg:px-8 w-full py-16">
+                <div class="max-w-2xl">
+                    <!-- Title -->
+                    <h1 class="text-5xl lg:text-7xl font-black text-white leading-tight mb-6" style="font-style: italic;">
+                        Super Sport<br>
+                        Community App
+                    </h1>
+                    
+                    <!-- Subtitle -->
+                    <p class="text-white/90 text-lg lg:text-xl font-medium leading-relaxed mb-10 max-w-lg">
+                        Platform all-in-one untuk sewa lapangan, cari lawan sparring, atau cari kawan main bareng. 
+                        Olahraga makin mudah dan menyenangkan!
+                    </p>
 
-                <div class="md:col-span-2">
-                    <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3">Lokasi / Nama Venue</label>
-                    <div class="relative group">
-                        <span class="absolute left-6 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-indigo-600 transition-colors">
-                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
-                        </span>
-                        <input wire:model="keyword" type="text" placeholder="Cari lokasi atau nama lapangan..." 
-                            class="w-full pl-16 pr-6 py-4 bg-gray-50 border-none rounded-2xl text-sm font-bold focus:ring-2 focus:ring-indigo-600">
+                    <!-- App Store Buttons -->
+                    <div class="flex flex-wrap gap-4">
+                        <a href="#" class="flex items-center gap-3 bg-black/80 backdrop-blur-sm text-white px-5 py-3 rounded-xl hover:bg-black transition-colors border border-white/20">
+                            <svg class="w-7 h-7" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M3,20.5V3.5C3,2.91 3.34,2.39 3.84,2.15L13.69,12L3.84,21.85C3.34,21.6 3,21.09 3,20.5M16.81,15.12L6.05,21.34L14.54,12.85L16.81,15.12M20.16,10.81C20.5,11.08 20.75,11.5 20.75,12C20.75,12.5 20.53,12.9 20.18,13.18L17.89,14.5L15.39,12L17.89,9.5L20.16,10.81M6.05,2.66L16.81,8.88L14.54,11.15L6.05,2.66Z"/>
+                            </svg>
+                            <div>
+                                <div class="text-[10px] uppercase tracking-wider opacity-80">Get it on</div>
+                                <div class="font-bold text-sm">Google Play</div>
+                            </div>
+                        </a>
+                        <a href="#" class="flex items-center gap-3 bg-black/80 backdrop-blur-sm text-white px-5 py-3 rounded-xl hover:bg-black transition-colors border border-white/20">
+                            <svg class="w-7 h-7" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M18.71,19.5C17.88,20.74 17,21.95 15.66,21.97C14.32,22 13.89,21.18 12.37,21.18C10.84,21.18 10.37,21.95 9.1,22C7.79,22.05 6.8,20.68 5.96,19.47C4.25,17 2.94,12.45 4.7,9.39C5.57,7.87 7.13,6.91 8.82,6.88C10.1,6.86 11.32,7.75 12.11,7.75C12.89,7.75 14.37,6.68 15.92,6.84C16.57,6.87 18.39,7.1 19.56,8.82C19.47,8.88 17.39,10.1 17.41,12.63C17.44,15.65 20.06,16.66 20.09,16.67C20.06,16.74 19.67,18.11 18.71,19.5M13,3.5C13.73,2.67 14.94,2.04 15.94,2C16.07,3.17 15.6,4.35 14.9,5.19C14.21,6.04 13.07,6.7 11.95,6.61C11.8,5.46 12.36,4.26 13,3.5Z"/>
+                            </svg>
+                            <div>
+                                <div class="text-[10px] uppercase tracking-wider opacity-80">Download on the</div>
+                                <div class="font-bold text-sm">App Store</div>
+                            </div>
+                        </a>
                     </div>
                 </div>
+            </div>
+        </div>
 
-                <div class="md:col-span-1 lg:col-span-1">
-                    <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3">Pilih Tanggal</label>
-                    <input wire:model="date" type="date" 
-                        class="w-full px-6 py-4 bg-gray-50 border-none rounded-2xl text-sm font-black text-gray-900 focus:ring-2 focus:ring-indigo-600 cursor-pointer">
-                </div>
+        <!-- Search Bar (Bottom) -->
+        <div class="relative z-20 -mb-10">
+            <div class="max-w-5xl mx-auto px-4">
+                <div class="bg-[#8B1538] rounded-2xl p-3 md:p-4 flex flex-col md:flex-row items-stretch gap-3 shadow-2xl">
+                    
+                    <!-- Aktivitas -->
+                    <div class="flex-1 bg-[#7A1230] rounded-xl px-4 py-3 flex items-center gap-3 border-r border-white/10">
+                        <div class="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <span class="material-symbols-outlined text-white">calendar_month</span>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="text-white/60 text-[10px] font-bold uppercase tracking-wider">Aktivitas</div>
+                            <div class="text-white font-bold text-sm truncate">Sewa Lapangan</div>
+                        </div>
+                    </div>
 
-                <div class="md:col-span-full lg:col-span-1">
-                    <button wire:click="search" class="w-full bg-indigo-600 text-white rounded-2xl py-4 font-black shadow-xl shadow-indigo-200 hover:bg-indigo-700 hover:scale-[1.02] active:scale-[0.98] transition-all uppercase tracking-widest text-xs">
-                        Cari Sekarang
+                    <!-- Lokasi -->
+                    <div class="flex-1 bg-[#7A1230] rounded-xl px-4 py-3 flex items-center gap-3 border-r border-white/10">
+                        <div class="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <span class="material-symbols-outlined text-white">location_on</span>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="text-white/60 text-[10px] font-bold uppercase tracking-wider">Lokasi</div>
+                            <input wire:model.live.debounce.300ms="keyword" 
+                                   type="text" 
+                                   placeholder="Pilih Kota" 
+                                   class="bg-transparent border-none text-white placeholder-white/80 focus:ring-0 w-full font-bold text-sm p-0">
+                        </div>
+                    </div>
+
+                    <!-- Cabang Olahraga -->
+                    <div class="flex-1 bg-[#7A1230] rounded-xl px-4 py-3 flex items-center gap-3">
+                        <div class="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <span class="material-symbols-outlined text-white">groups</span>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="text-white/60 text-[10px] font-bold uppercase tracking-wider">Cabang Olahraga</div>
+                            <select wire:model.live="sport_type" 
+                                    class="bg-transparent border-none text-white focus:ring-0 w-full font-bold text-sm p-0 cursor-pointer [&>option]:text-gray-900">
+                                <option value="">Pilih Cabang Olahraga</option>
+                                @foreach($sportCategories as $cat)
+                                    @if($cat['key'] !== '')
+                                        <option value="{{ $cat['key'] }}">{{ $cat['name'] }}</option>
+                                    @endif
+                                @endforeach
+                            </select>
+                        </div>
+                        <span class="material-symbols-outlined text-white/60 text-lg">expand_more</span>
+                    </div>
+
+                    <!-- Search Button -->
+                    <button wire:click="search" 
+                            class="bg-white text-[#8B1538] px-8 py-4 rounded-xl font-bold text-sm hover:bg-gray-100 transition-colors flex items-center justify-center gap-2 shadow-lg whitespace-nowrap">
+                        Temukan
+                        <span class="material-symbols-outlined text-lg">arrow_forward</span>
                     </button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Content Section -->
-    <div class="max-w-7xl mx-auto px-4 py-24 sm:px-6 lg:px-8 space-y-24">
-        
-        <!-- Sport Highlights (Quick Filters) -->
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            @foreach(['futsal' => 'https://images.unsplash.com/photo-1549646876-068a5c378e97?auto=format&fit=crop&q=80', 
-                      'badminton' => 'https://images.unsplash.com/photo-1626224583764-f87db24ac4ea?auto=format&fit=crop&q=80',
-                      'basket' => 'https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&q=80',
-                      'tenis' => 'https://images.unsplash.com/photo-1595435066311-665e796032d1?auto=format&fit=crop&q=80',
-                      'mini_soccer' => 'https://images.unsplash.com/photo-1529900748604-07564a03e7a6?auto=format&fit=crop&q=80',
-                      'voli' => 'https://images.unsplash.com/photo-1612872087720-bb876e2e67d1?auto=format&fit=crop&q=80'] as $sport => $img)
-                <button wire:click="$set('sport_type', '{{ $sport }}')" 
-                    class="relative group h-32 rounded-3xl overflow-hidden border-2 {{ $sport_type === $sport ? 'border-indigo-600 ring-4 ring-indigo-50' : 'border-white' }} shadow-xl">
-                    <img src="{{ $img }}" class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 opacity-80 group-hover:opacity-100">
-                    <div class="absolute inset-0 bg-gradient-to-t from-gray-900/80 via-transparent text-white p-4 flex flex-col justify-end">
-                        <span class="text-[10px] font-black uppercase tracking-widest">{{ str_replace('_', ' ', $sport) }}</span>
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 lg:px-6 pt-20 pb-16">
+        <div class="flex flex-col lg:flex-row gap-12">
+            
+            <!-- Sidebar: Categories -->
+            <aside class="lg:w-64 flex-shrink-0">
+                <div class="lg:sticky lg:top-24 space-y-4">
+                    <!-- Category Title -->
+                    <div class="mb-4">
+                        <h2 class="font-black text-sm text-gray-900 uppercase tracking-widest">Kategori Olahraga</h2>
                     </div>
-                </button>
-            @endforeach
-        </div>
 
-        <!-- Venue Results -->
-        <div>
-            <div class="flex items-end justify-between mb-10">
-                <div>
-                    <h2 class="text-3xl font-black text-gray-900 tracking-tight italic uppercase">Venue <span class="text-indigo-600">Terdekat</span></h2>
-                    <p class="text-gray-500 font-bold mt-1">Menampilkan lapangan terbaik yang tersedia untuk Anda.</p>
-                </div>
-                <div class="text-[10px] font-black text-gray-400 uppercase tracking-widest bg-white px-4 py-2 rounded-full border border-gray-100 shadow-sm">
-                    {{ $venues->total() }} Venue Ditemukan
-                </div>
-            </div>
+                    <!-- Category List -->
+                    <div class="space-y-1.5">
+                        @foreach($sportCategories as $cat)
+                            @php
+                                $isActive = $sport_type === $cat['key'];
+                                $colorClasses = match($cat['color']) {
+                                    'red' => 'bg-red-50 text-red-600',
+                                    'blue' => 'bg-blue-50 text-blue-600',
+                                    'orange' => 'bg-orange-50 text-orange-600',
+                                    'green' => 'bg-green-50 text-green-600',
+                                    'lime' => 'bg-lime-50 text-lime-600',
+                                    'yellow' => 'bg-yellow-50 text-yellow-600',
+                                    'emerald' => 'bg-emerald-50 text-emerald-600',
+                                    'purple' => 'bg-purple-50 text-purple-600',
+                                    'pink' => 'bg-pink-50 text-pink-600',
+                                    default => 'bg-gray-100 text-gray-600',
+                                };
+                                $activeColorClasses = match($cat['color']) {
+                                    'red' => 'bg-red-600 text-white',
+                                    'blue' => 'bg-blue-600 text-white',
+                                    'orange' => 'bg-orange-600 text-white',
+                                    'green' => 'bg-green-600 text-white',
+                                    'lime' => 'bg-lime-600 text-white',
+                                    'yellow' => 'bg-yellow-500 text-white',
+                                    'emerald' => 'bg-emerald-600 text-white',
+                                    'purple' => 'bg-purple-600 text-white',
+                                    'pink' => 'bg-pink-600 text-white',
+                                    default => 'bg-[#8B1538] text-white',
+                                };
+                            @endphp
+                            <button wire:click="$set('sport_type', '{{ $cat['key'] }}')"
+                                    class="flex items-center gap-4 w-full p-3 rounded-xl transition-all duration-200
+                                           {{ $isActive 
+                                               ? 'bg-[#8B1538] text-white shadow-lg shadow-[#8B1538]/20' 
+                                               : 'bg-white hover:bg-gray-50 text-gray-700 border border-gray-100 hover:border-[#8B1538]/30' 
+                                           }}">
+                                <div class="w-10 h-10 rounded-xl flex items-center justify-center transition-colors
+                                            {{ $isActive ? 'bg-white/20 text-white' : $colorClasses }}">
+                                    <span class="material-symbols-outlined">{{ $cat['icon'] }}</span>
+                                </div>
+                                <span class="font-bold text-sm">{{ $cat['name'] }}</span>
+                                @if($isActive)
+                                    <span class="material-symbols-outlined ml-auto text-lg">check_circle</span>
+                                @endif
+                            </button>
+                        @endforeach
+                    </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-                @forelse($venues as $venue)
-                    <a href="{{ route('public.venues.show', ['venue' => $venue->id]) }}" 
-                       class="group bg-white rounded-[2.5rem] shadow-xl overflow-hidden border border-gray-50 flex flex-col hover:scale-[1.02] transition-all duration-300">
-                        <div class="h-64 relative overflow-hidden bg-gray-100">
-                            @php $cov = $venue->media()->where('is_cover', true)->first(); @endphp
-                            <img src="{{ $cov ? Storage::url($cov->file_path) : 'https://images.unsplash.com/photo-1520333789090-1afc82db536a?auto=format&fit=crop&q=80' }}" 
-                                class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
-                            <div class="absolute top-6 right-6">
-                                <span class="bg-white/90 backdrop-blur-md px-4 py-2 rounded-xl text-[10px] font-black text-gray-900 uppercase tracking-widest shadow-lg">
+                    <!-- CTA Card -->
+                    <div class="bg-gradient-to-br from-[#8B1538] to-[#6B1028] rounded-2xl p-5 text-white mt-6">
+                        <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center mb-4">
+                            <span class="material-symbols-outlined text-2xl">stadium</span>
+                        </div>
+                        <h3 class="font-black text-lg mb-2">Punya Lapangan?</h3>
+                        <p class="text-white/80 text-sm mb-4 leading-relaxed">
+                            Daftarkan venue Anda dan jangkau ribuan atlet setiap harinya.
+                        </p>
+                        <button class="w-full bg-white text-[#8B1538] py-3 rounded-xl text-sm font-black hover:bg-gray-100 transition-colors">
+                            Daftar Sekarang
+                        </button>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Main Content: Venue Grid -->
+            <section class="flex-1">
+                <!-- Mobile Category Scroll -->
+                <div class="lg:hidden mb-8 -mx-4 px-4">
+                    <div class="flex gap-3 overflow-x-auto no-scrollbar pb-2">
+                        @foreach($sportCategories as $cat)
+                            @php $isActive = $sport_type === $cat['key']; @endphp
+                            <button wire:click="$set('sport_type', '{{ $cat['key'] }}')"
+                                    class="flex-shrink-0 px-4 py-2 rounded-full text-sm font-bold transition-all
+                                           {{ $isActive 
+                                               ? 'bg-[#8B1538] text-white' 
+                                               : 'bg-white text-gray-600 border border-gray-200' 
+                                           }}">
+                                {{ $cat['name'] }}
+                            </button>
+                        @endforeach
+                    </div>
+                </div>
+
+                <!-- Header -->
+                <div class="flex items-center justify-between mb-6">
+                    <div>
+                        <h2 class="font-black text-xl text-gray-900">
+                            @if($sport_type)
+                                Venue {{ ucfirst($sport_type) }}
+                            @else
+                                Semua Venue
+                            @endif
+                        </h2>
+                        <p class="text-sm text-gray-400 mt-0.5">{{ $venues->total() }} venue ditemukan</p>
+                    </div>
+                </div>
+
+                <!-- Venue Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+                    @forelse($venues as $venue)
+                        <a href="{{ route('public.venues.show', $venue->slug) }}" 
+                           class="group bg-white rounded-2xl shadow-sm overflow-hidden border border-gray-100 hover:shadow-xl hover:border-[#8B1538]/20 transition-all duration-300">
+                            <!-- Image -->
+                            <div class="relative h-48 bg-gray-100 overflow-hidden">
+                                @php $cov = $venue->media()->where('is_cover', true)->first(); @endphp
+                                <img alt="{{ $venue->name }}"
+                                     class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                     src="{{ $cov ? Storage::url($cov->file_path) : 'https://placehold.co/600x400?text=No+Image' }}" />
+                                
+                                <!-- Sport Badge -->
+                                <div class="absolute top-3 left-3 bg-[#8B1538] text-white px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider">
                                     {{ $venue->sport_type ?? 'Multi' }}
-                                </span>
-                            </div>
-                        </div>
-                        <div class="p-8 space-y-6 flex-1 flex flex-col justify-between">
-                            <div>
-                                <h3 class="text-xl font-black text-gray-900 group-hover:text-indigo-600 transition-colors uppercase leading-tight italic">{{ $venue->name }}</h3>
-                                <div class="flex items-center gap-2 text-gray-400 mt-2">
-                                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-                                    <p class="text-[10px] font-bold uppercase tracking-widest">{{ $venue->city }}</p>
                                 </div>
-                            </div>
-                            
-                            <div class="flex items-center justify-between pt-6 border-t border-gray-50">
-                                <div class="flex -space-x-2">
-                                    <div class="w-8 h-8 rounded-full bg-indigo-600 border-2 border-white flex items-center justify-center text-[8px] font-black text-white">
-                                        {{ $venue->active_courts_count }}
-                                    </div>
-                                    <div class="px-4 flex items-center">
-                                        <span class="text-[9px] font-black text-gray-400 uppercase tracking-widest ml-1">Lp. Aktif</span>
-                                    </div>
-                                </div>
-                                <span class="text-indigo-600 font-black text-xs uppercase tracking-widest group-hover:translate-x-1 transition-transform">Detail &rarr;</span>
-                            </div>
-                        </div>
-                    </a>
-                @empty
-                    <div class="col-span-full py-24 text-center bg-white rounded-[3rem] border-2 border-dashed border-gray-100">
-                        <div class="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-6 text-gray-300">
-                            <svg class="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
-                        </div>
-                        <h3 class="text-xl font-bold text-gray-400 italic">Data venue tidak ditemukan.</h3>
-                        <p class="text-gray-400 text-sm mt-1">Coba gunakan filter olahraga atau lokasi lain.</p>
-                    </div>
-                @endforelse
-            </div>
 
-            @if($venues->hasPages())
-                <div class="mt-16">
+                                <!-- Favorite -->
+                                <button class="absolute top-3 right-3 w-9 h-9 rounded-full bg-white/80 backdrop-blur-sm flex items-center justify-center text-gray-500 hover:text-red-500 hover:bg-white transition-all">
+                                    <span class="material-symbols-outlined text-xl">favorite</span>
+                                </button>
+                            </div>
+
+                            <!-- Content -->
+                            <div class="p-5">
+                                <h3 class="font-black text-lg text-gray-900 leading-tight group-hover:text-[#8B1538] transition-colors mb-2">
+                                    {{ $venue->name }}
+                                </h3>
+                                
+                                <div class="flex items-center gap-2 text-sm text-gray-500 mb-4">
+                                    <span class="material-symbols-outlined text-yellow-500 text-base">star</span>
+                                    <span class="font-bold text-gray-900">5.0</span>
+                                    <span class="text-gray-300">•</span>
+                                    <span class="material-symbols-outlined text-sm">location_on</span>
+                                    <span class="truncate">{{ $venue->city }}</span>
+                                </div>
+
+                                <div class="pt-4 border-t border-gray-100 flex justify-between items-center">
+                                    <div>
+                                        <span class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Mulai dari</span>
+                                        <div class="text-[#8B1538] text-xl font-black">
+                                            Rp {{ number_format($venue->courts->min('price_per_hour') ?? 50000, 0, ',', '.') }}
+                                            <span class="text-xs text-gray-400 font-medium">/jam</span>
+                                        </div>
+                                    </div>
+                                    <div class="bg-[#8B1538] text-white px-4 py-2 rounded-xl text-xs font-bold group-hover:bg-[#6B1028] transition-colors">
+                                        Lihat
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    @empty
+                        <div class="col-span-full text-center py-20 bg-gray-50 rounded-2xl">
+                            <div class="w-20 h-20 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                                <span class="material-symbols-outlined text-4xl text-gray-300">search_off</span>
+                            </div>
+                            <h3 class="font-bold text-gray-500 mb-2">Venue tidak ditemukan</h3>
+                            <p class="text-sm text-gray-400">Coba ubah kata kunci atau kategori pencarian Anda.</p>
+                        </div>
+                    @endforelse
+                </div>
+
+                <!-- Pagination -->
+                <div class="mt-12">
                     {{ $venues->links() }}
                 </div>
-            @endif
+
+                <!-- FAQ Section -->
+                <div class="mt-16 pt-10 border-t border-gray-100">
+                    <h2 class="text-xl font-black text-gray-900 mb-6 text-center">Tanya Jawab (FAQ)</h2>
+                    <div class="max-w-2xl mx-auto space-y-2">
+                        <details class="group bg-white rounded-xl border border-gray-100 overflow-hidden">
+                            <summary class="flex justify-between items-center p-5 cursor-pointer list-none hover:bg-gray-50 transition-colors">
+                                <h3 class="font-bold text-sm text-gray-900">Bagaimana cara memesan lapangan?</h3>
+                                <span class="material-symbols-outlined text-gray-400 transition-transform group-open:rotate-180">expand_more</span>
+                            </summary>
+                            <div class="px-5 pb-5 text-sm text-gray-600 leading-relaxed">
+                                Pilih venue favorit Anda, tentukan jadwal yang tersedia, dan selesaikan pembayaran melalui berbagai metode yang tersedia.
+                            </div>
+                        </details>
+                        <details class="group bg-white rounded-xl border border-gray-100 overflow-hidden">
+                            <summary class="flex justify-between items-center p-5 cursor-pointer list-none hover:bg-gray-50 transition-colors">
+                                <h3 class="font-bold text-sm text-gray-900">Apa saja metode pembayarannya?</h3>
+                                <span class="material-symbols-outlined text-gray-400 transition-transform group-open:rotate-180">expand_more</span>
+                            </summary>
+                            <div class="px-5 pb-5 text-sm text-gray-600 leading-relaxed">
+                                Kami mendukung transfer bank, e-wallet (Gopay, OVO, ShopeePay), dan kartu kredit untuk memudahkan transaksi Anda.
+                            </div>
+                        </details>
+                        <details class="group bg-white rounded-xl border border-gray-100 overflow-hidden">
+                            <summary class="flex justify-between items-center p-5 cursor-pointer list-none hover:bg-gray-50 transition-colors">
+                                <h3 class="font-bold text-sm text-gray-900">Apakah bisa membatalkan booking?</h3>
+                                <span class="material-symbols-outlined text-gray-400 transition-transform group-open:rotate-180">expand_more</span>
+                            </summary>
+                            <div class="px-5 pb-5 text-sm text-gray-600 leading-relaxed">
+                                Ya, Anda dapat membatalkan booking sesuai dengan kebijakan pembatalan masing-masing venue. Silakan cek detail kebijakan di halaman venue.
+                            </div>
+                        </details>
+                    </div>
+                </div>
+            </section>
+
         </div>
     </div>
 </div>

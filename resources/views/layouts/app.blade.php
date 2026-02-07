@@ -1,113 +1,194 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>{{ $title ?? 'Booking Lapangan' }}</title>
-    
-    <!-- Tailwind via CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
     
     <!-- Alpine.js -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#A90A2E",
+                        "primary-dark": "#8B001F",
+                        "background-light": "#F3F4F6",
+                        "background-dark": "#111827",
+                        "surface-light": "#FFFFFF",
+                        "surface-dark": "#1F2937",
+                        "text-light": "#1F2937",
+                        "text-dark": "#F3F4F6",
+                        "muted-light": "#6B7280",
+                        "muted-dark": "#9CA3AF",
+                    },
+                    fontFamily: {
+                        display: ["Inter", "sans-serif"],
+                        sans: ["Inter", "sans-serif"],
+                    },
+                    borderRadius: {
+                        DEFAULT: "0.5rem",
+                        xl: "1rem",
+                        "2xl": "1.5rem",
+                    },
+                    boxShadow: {
+                        'card': '0 2px 8px rgba(0, 0, 0, 0.05)',
+                    }
+                },
+            },
+        };
+    </script>
+    <style type="text/tailwindcss">
+        .custom-pattern {
+            background-color: #A90A2E;
+            background-image: url(https://lh3.googleusercontent.com/aida-public/AB6AXuDqmsPzRzmtF21fkQGx5MwimKSl-cUJ-lC8PTV4LLNz2C8Po99Avw_7uEAABwkQOscd0NxH5_yeSmRzP1bSAGz4S4YY-hdkbRfx_QXCpR7o9VCc-IMVdUMvKlLUsL9rPKdj5dz4koepgix7CrwHzBqsCARhs9YUqlehctQJyPUn62EjxUWfNTR01WJZiGE_tBvroACeSO68g57r3TisTaaABlutPZ03ZPQbq9BxqAiTGuJwg5LDzkrjYWb75-oNFK8TPCwuZ8Ltiq5z);
+            background-size: cover;
+            background-position: center;
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        body {
+            min-height: 100dvh;
+        }
+        #filter-drawer:checked ~ #filter-content {
+            display: block;
+        }
+        #filter-drawer:checked ~ #overlay {
+            display: block;
+        }
+    </style>
     
     @livewireStyles
-
 </head>
-<body class="bg-gray-100 min-h-screen">
+
+<body class="bg-background-light dark:bg-background-dark font-sans text-text-light dark:text-text-dark antialiased">
     <x-toast />
-
-    <nav class="bg-white/80 backdrop-blur-md sticky top-0 z-40 border-b border-gray-100">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16">
-                <div class="flex">
-                    <div class="shrink-0 flex items-center">
-                        <a href="/" wire:navigate class="font-bold text-xl text-indigo-600 tracking-tighter flex items-center gap-2">
-                             <div class="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center shadow-lg shadow-indigo-100">
-                                <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
-                             </div>
-                             <span class="hidden sm:block">BookingLapangan</span>
-                        </a>
+    
+    <header class="sticky top-0 z-40 bg-primary shadow-lg lg:py-2">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between h-16 lg:h-20">
+            <div class="flex items-center gap-8">
+                <a href="/" wire:navigate class="font-black italic text-2xl tracking-tighter text-white">AYO</a>
+                <form action="{{ route('home') }}" method="GET"
+                    class="hidden lg:flex items-center gap-2 bg-white/10 p-1.5 rounded-full backdrop-blur-md border border-white/20">
+                    <div class="relative">
+                        <span
+                            class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-white/70 text-lg">search</span>
+                        <input name="q"
+                            class="bg-transparent border-none focus:ring-0 text-white placeholder-white/60 text-sm w-56 py-2 pl-10 pr-3"
+                            placeholder="Cari venue..." type="text" value="{{ request('q') }}" />
                     </div>
-                </div>
+                    <div class="h-6 w-px bg-white/20"></div>
+                    <div class="relative">
+                        <span
+                            class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-white/70 text-lg">location_on</span>
+                        <select name="city"
+                            class="bg-transparent border-none focus:ring-0 text-white text-sm py-2 pl-10 pr-8 appearance-none cursor-pointer min-w-[120px]">
+                            <option value="" class="text-black">Semua Kota</option>
+                            <option value="Jakarta" class="text-black" {{ request('city') == 'Jakarta' ? 'selected' : '' }}>Jakarta</option>
+                            <option value="Surabaya" class="text-black" {{ request('city') == 'Surabaya' ? 'selected' : '' }}>Surabaya</option>
+                            <option value="Bandung" class="text-black" {{ request('city') == 'Bandung' ? 'selected' : '' }}>Bandung</option>
+                            <option value="Semarang" class="text-black" {{ request('city') == 'Semarang' ? 'selected' : '' }}>Semarang</option>
+                        </select>
+                        <span class="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-white/50 text-sm pointer-events-none">expand_more</span>
+                    </div>
+                    <button type="submit"
+                        class="bg-white text-primary px-5 py-2 rounded-full text-xs font-bold uppercase tracking-wider hover:bg-gray-100 transition">Cari</button>
+                </form>
+            </div>
+            <div class="flex items-center gap-2 sm:gap-4">
+                @auth
+                    <!-- Notification Bell -->
+                    <livewire:member.notification-bell />
 
-                <div class="flex items-center gap-4">
-                    @auth
-                        <!-- Notification Bell -->
-                        <livewire:member.notification-bell />
+                    <div class="relative" x-data="{ open: false }">
+                        <button @click="open = !open" 
+                            class="bg-white/10 p-2 rounded-full backdrop-blur-sm hover:bg-white/20 transition text-white">
+                            <span class="material-symbols-outlined text-2xl">person</span>
+                        </button>
+                        
+                        <!-- Dropdown Menu -->
+                        <div x-show="open" @click.outside="open = false" 
+                            x-transition:enter="transition ease-out duration-100" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100" 
+                            x-transition:leave="transition ease-in duration-75" x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95"
+                            class="absolute right-0 mt-2 w-56 bg-surface-light dark:bg-surface-dark rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700 py-2 z-50 text-text-light dark:text-text-dark">
+                            
+                            <div class="px-4 py-2 border-b border-gray-100 dark:border-gray-700 mb-2">
+                                <div class="text-sm font-bold">{{ Auth::user()->name }}</div>
+                                <div class="text-xs text-muted-light">Member</div>
+                            </div>
+                            
+                            <a href="{{ route('member.dashboard') }}" wire:navigate class="block px-4 py-2 text-sm hover:bg-gray-50 dark:hover:bg-gray-700">Dashboard</a>
+                            <a href="{{ route('member.bookings') }}" wire:navigate class="block px-4 py-2 text-sm hover:bg-gray-50 dark:hover:bg-gray-700">Booking Saya</a>
+                            
+                            @if(Auth::user()->is_admin)
+                                <a href="{{ route('admin.dashboard') }}" wire:navigate class="block px-4 py-2 text-sm text-primary font-bold hover:bg-gray-50 dark:hover:bg-gray-700">Admin Panel</a>
+                            @endif
 
-                        <!-- Member Dropdown -->
-                        <div class="relative" x-data="{ open: false }">
-                            <button @click="open = !open" class="flex items-center gap-3 group">
-                                <div class="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center text-white font-black shadow-lg shadow-indigo-200 group-hover:shadow-indigo-300 transition-shadow">
-                                    {{ substr(Auth::user()->name, 0, 1) }}
-                                </div>
-                                <div class="text-right hidden sm:block">
-                                    <div class="text-xs font-black text-gray-900 leading-none mb-0.5 uppercase tracking-wider">{{ Auth::user()->name }}</div>
-                                    <div class="text-[10px] text-gray-400 font-bold uppercase tracking-widest leading-none">Member</div>
-                                </div>
-                                <svg class="w-4 h-4 text-gray-400 transition-transform" :class="{ 'rotate-180': open }" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                                </svg>
-                            </button>
-
-                            <!-- Dropdown Menu -->
-                            <div x-show="open" @click.outside="open = false" x-transition:enter="transition ease-out duration-100" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100" x-transition:leave="transition ease-in duration-75" x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95"
-                                class="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-xl border border-gray-100 py-2 z-50">
-                                
-                                <a href="{{ route('member.dashboard') }}" wire:navigate class="flex items-center gap-3 px-4 py-3 text-sm font-bold text-gray-700 hover:bg-gray-50 transition-colors">
-                                    <svg class="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                                    </svg>
-                                    Dashboard
-                                </a>
-                                
-                                <a href="{{ route('member.bookings') }}" wire:navigate class="flex items-center gap-3 px-4 py-3 text-sm font-bold text-gray-700 hover:bg-gray-50 transition-colors">
-                                    <svg class="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                    </svg>
-                                    Booking Saya
-                                </a>
-                                
-                                <a href="{{ route('member.wallet') }}" wire:navigate class="flex items-center gap-3 px-4 py-3 text-sm font-bold text-gray-700 hover:bg-gray-50 transition-colors">
-                                    <svg class="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    </svg>
-                                    Wallet
-                                </a>
-                                
-                                <div class="border-t border-gray-100 my-2"></div>
-                                
-                                @if(Auth::user()->is_admin)
-                                <a href="{{ route('admin.dashboard') }}" wire:navigate class="flex items-center gap-3 px-4 py-3 text-sm font-bold text-indigo-600 hover:bg-indigo-50 transition-colors">
-                                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                    </svg>
-                                    Admin Panel
-                                </a>
-                                <div class="border-t border-gray-100 my-2"></div>
-                                @endif
-                                
-                                <div class="px-4 py-2">
-                                    <livewire:auth.logout />
-                                </div>
+                             <div class="border-t border-gray-100 dark:border-gray-700 my-2"></div>
+                            
+                            <div class="px-4 py-2">
+                                <livewire:auth.logout />
                             </div>
                         </div>
-                    @else
-                        <a href="{{ route('login') }}" wire:navigate class="text-sm font-bold text-gray-600 hover:text-indigo-600 transition-colors tracking-tight">Masuk</a>
-                        <a href="{{ route('register') }}" wire:navigate class="px-5 py-2.5 bg-gray-900 text-white rounded-xl text-sm font-black hover:bg-black transition-all transform active:scale-[0.98] shadow-lg shadow-gray-200">Daftar</a>
-                    @endauth
-                </div>
-
+                    </div>
+                @else
+                    <a href="{{ route('login') }}" wire:navigate
+                        class="bg-white/10 p-2 rounded-full backdrop-blur-sm hover:bg-white/20 transition text-white">
+                        <span class="material-symbols-outlined text-2xl">login</span>
+                    </a>
+                @endauth
             </div>
         </div>
-    </nav>
-
+    </header>
     <main>
         {{ $slot }}
     </main>
+    <nav
+        class="lg:hidden fixed bottom-0 left-0 right-0 bg-surface-light/80 dark:bg-surface-dark/80 backdrop-blur-xl border-t border-gray-200 dark:border-gray-800 pb-safe pt-2 px-6 z-50">
+        <div class="flex justify-between items-center pb-4 max-w-lg mx-auto">
+            <a class="flex flex-col items-center gap-1 text-primary" href="/" wire:navigate>
+                <span class="material-symbols-outlined fill-1">home</span>
+                <span class="text-[10px] font-bold uppercase tracking-widest">Home</span>
+            </a>
+            <a class="flex flex-col items-center gap-1 text-muted-light dark:text-muted-dark hover:text-primary transition"
+                href="{{ route('member.bookings') }}" wire:navigate>
+                <span class="material-symbols-outlined">calendar_today</span>
+                <span class="text-[10px] font-bold uppercase tracking-widest">Booking</span>
+            </a>
+            <a class="flex flex-col items-center gap-1" href="{{ route('home') }}" wire:navigate>
+                <div
+                    class="bg-primary text-white rounded-full p-3.5 -mt-8 shadow-xl border-4 border-white dark:border-surface-dark transform hover:scale-110 transition">
+                    <span class="material-symbols-outlined text-2xl">add</span>
+                </div>
+                <span class="text-[10px] font-bold uppercase tracking-widest mt-1">Main</span>
+            </a>
+            <a class="flex flex-col items-center gap-1 text-muted-light dark:text-muted-dark hover:text-primary transition"
+                href="#">
+                <span class="material-symbols-outlined">groups</span>
+                <span class="text-[10px] font-bold uppercase tracking-widest">Community</span>
+            </a>
+            <a class="flex flex-col items-center gap-1 text-muted-light dark:text-muted-dark hover:text-primary transition"
+                href="{{ route('member.dashboard') }}" wire:navigate>
+                <span class="material-symbols-outlined">person</span>
+                <span class="text-[10px] font-bold uppercase tracking-widest">Profile</span>
+            </a>
+        </div>
+    </nav>
     
     @livewireScripts
     <script>
@@ -130,5 +211,7 @@
             @endif
         });
     </script>
+
 </body>
+
 </html>

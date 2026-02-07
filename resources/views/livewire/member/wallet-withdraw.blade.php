@@ -1,56 +1,93 @@
 <div class="max-w-xl mx-auto py-12 px-4">
     <div class="mb-8 flex items-center gap-4">
-        <a href="{{ route('member.wallet') }}" class="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center text-gray-400 hover:text-gray-900 transition-colors">
-            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M15 19l-7-7 7-7" /></svg>
+        <a href="{{ route('member.wallet') }}" class="w-12 h-12 rounded-2xl bg-white dark:bg-gray-800 shadow-sm border border-gray-100 dark:border-gray-700 flex items-center justify-center text-muted-light hover:text-primary transition-colors group">
+            <span class="material-symbols-outlined group-hover:-translate-x-1 transition-transform">arrow_back</span>
         </a>
-        <h1 class="text-2xl font-black text-gray-900 uppercase tracking-tight italic">Tarik <span class="text-indigo-600">Saldo</span></h1>
+        <h1 class="text-3xl font-black text-text-light dark:text-text-dark uppercase tracking-tight italic">Tarik <span class="text-primary">Saldo</span></h1>
     </div>
 
-    <div class="bg-white rounded-[2.5rem] p-8 shadow-2xl border border-gray-50">
-        <div class="mb-8 p-6 bg-indigo-50 rounded-2xl border border-indigo-100 flex items-center justify-between">
-            <div>
-                <p class="text-[10px] font-black uppercase tracking-widest text-indigo-400 mb-1">Saldo Tersedia</p>
-                <p class="text-2xl font-black text-indigo-900">Rp {{ number_format($availableBalance, 0, ',', '.') }}</p>
+    <div class="bg-surface-light dark:bg-surface-dark rounded-[2.5rem] p-8 shadow-card border border-gray-100 dark:border-gray-700 relative overflow-hidden">
+        <div class="mb-8 p-6 bg-primary/10 rounded-2xl border border-primary/20 flex items-center justify-between relative overflow-hidden group">
+            <div class="relative z-10">
+                <p class="text-[10px] font-black uppercase tracking-widest text-primary mb-1 opacity-80">Saldo Tersedia</p>
+                <p class="text-3xl font-black text-primary font-display italic">Rp {{ number_format($availableBalance, 0, ',', '.') }}</p>
             </div>
-            <div class="w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center">
-                <svg class="w-6 h-6 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+            <div class="w-12 h-12 bg-white dark:bg-gray-800 rounded-xl shadow-sm flex items-center justify-center relative z-10">
+                <span class="material-symbols-outlined text-primary">account_balance_wallet</span>
+            </div>
+            
+            <div class="absolute -right-4 -bottom-4 opacity-10 group-hover:scale-110 transition-transform duration-700">
+                  <span class="material-symbols-outlined text-[6rem] text-primary">payments</span>
             </div>
         </div>
 
         <form wire:submit="submit" class="space-y-6">
             <div class="space-y-2">
-                <label class="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-2">Nominal Penarikan</label>
-                <div class="relative">
-                    <span class="absolute left-6 top-1/2 -translate-y-1/2 text-gray-400 font-bold">Rp</span>
-                    <input wire:model="amount" type="number" step="1000" class="w-full pl-14 pr-6 py-4 bg-gray-50 border-none rounded-2xl text-lg font-black focus:ring-2 focus:ring-indigo-600" placeholder="0">
+                <label class="text-[10px] font-black text-muted-light uppercase tracking-[0.2em] ml-2">Nominal Penarikan</label>
+                <div class="relative group">
+                    <span class="absolute left-6 top-1/2 -translate-y-1/2 text-muted-light font-black group-focus-within:text-primary transition-colors">Rp</span>
+                    <input wire:model="amount" type="number" step="1000" class="w-full pl-14 pr-6 py-4 bg-gray-50 dark:bg-gray-800 border-none rounded-2xl text-lg font-black text-text-light dark:text-text-dark focus:ring-2 focus:ring-primary transition-all placeholder-muted-light/30" placeholder="0">
                 </div>
-                @error('amount') <span class="text-xs text-rose-500 font-bold ml-2">{{ $message }}</span> @enderror
+                @error('amount') 
+                    <div class="flex items-center gap-1 ml-2 text-rose-500">
+                        <span class="material-symbols-outlined text-sm">error</span>
+                        <span class="text-xs font-bold">{{ $message }}</span> 
+                    </div>
+                @enderror
             </div>
 
             <div class="space-y-2">
-                <label class="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-2">Nama Bank</label>
-                <input wire:model="bankName" type="text" class="w-full px-6 py-4 bg-gray-50 border-none rounded-2xl text-sm font-bold focus:ring-2 focus:ring-indigo-600 placeholder:text-gray-300" placeholder="Contoh: BCA, Mandiri, BRI...">
-                @error('bankName') <span class="text-xs text-rose-500 font-bold ml-2">{{ $message }}</span> @enderror
+                <label class="text-[10px] font-black text-muted-light uppercase tracking-[0.2em] ml-2">Nama Bank</label>
+                <div class="relative group">
+                     <span class="absolute left-6 top-1/2 -translate-y-1/2 text-muted-light group-focus-within:text-primary transition-colors material-symbols-outlined">account_balance</span>
+                    <input wire:model="bankName" type="text" class="w-full pl-14 pr-6 py-4 bg-gray-50 dark:bg-gray-800 border-none rounded-2xl text-sm font-bold text-text-light dark:text-text-dark focus:ring-2 focus:ring-primary placeholder:text-muted-light/30 transition-all" placeholder="Contoh: BCA, Mandiri, BRI...">
+                </div>
+                @error('bankName') 
+                    <div class="flex items-center gap-1 ml-2 text-rose-500">
+                        <span class="material-symbols-outlined text-sm">error</span>
+                        <span class="text-xs font-bold">{{ $message }}</span> 
+                    </div>
+                @enderror
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div class="space-y-2">
-                    <label class="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-2">Nomor Rekening</label>
-                    <input wire:model="bankAccountNumber" type="text" class="w-full px-6 py-4 bg-gray-50 border-none rounded-2xl text-sm font-bold focus:ring-2 focus:ring-indigo-600 placeholder:text-gray-300" placeholder="XXXXXXX">
-                    @error('bankAccountNumber') <span class="text-xs text-rose-500 font-bold ml-2">{{ $message }}</span> @enderror
+                    <label class="text-[10px] font-black text-muted-light uppercase tracking-[0.2em] ml-2">Nomor Rekening</label>
+                    <div class="relative group">
+                        <span class="absolute left-6 top-1/2 -translate-y-1/2 text-muted-light group-focus-within:text-primary transition-colors material-symbols-outlined">numbers</span>
+                         <input wire:model="bankAccountNumber" type="text" class="w-full pl-14 pr-6 py-4 bg-gray-50 dark:bg-gray-800 border-none rounded-2xl text-sm font-bold text-text-light dark:text-text-dark focus:ring-2 focus:ring-primary placeholder:text-muted-light/30 transition-all" placeholder="XXXXXXX">
+                    </div>
+                    @error('bankAccountNumber') 
+                        <div class="flex items-center gap-1 ml-2 text-rose-500">
+                            <span class="material-symbols-outlined text-sm">error</span>
+                            <span class="text-xs font-bold">{{ $message }}</span> 
+                        </div>
+                    @enderror
                 </div>
                 <div class="space-y-2">
-                    <label class="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-2">Atas Nama</label>
-                    <input wire:model="bankAccountName" type="text" class="w-full px-6 py-4 bg-gray-50 border-none rounded-2xl text-sm font-bold focus:ring-2 focus:ring-indigo-600 placeholder:text-gray-300" placeholder="Nama sesuai rekening">
-                    @error('bankAccountName') <span class="text-xs text-rose-500 font-bold ml-2">{{ $message }}</span> @enderror
+                    <label class="text-[10px] font-black text-muted-light uppercase tracking-[0.2em] ml-2">Atas Nama</label>
+                    <div class="relative group">
+                         <span class="absolute left-6 top-1/2 -translate-y-1/2 text-muted-light group-focus-within:text-primary transition-colors material-symbols-outlined">badge</span>
+                        <input wire:model="bankAccountName" type="text" class="w-full pl-14 pr-6 py-4 bg-gray-50 dark:bg-gray-800 border-none rounded-2xl text-sm font-bold text-text-light dark:text-text-dark focus:ring-2 focus:ring-primary placeholder:text-muted-light/30 transition-all" placeholder="Nama sesuai rekening">
+                    </div>
+                    @error('bankAccountName') 
+                        <div class="flex items-center gap-1 ml-2 text-rose-500">
+                            <span class="material-symbols-outlined text-sm">error</span>
+                            <span class="text-xs font-bold">{{ $message }}</span> 
+                        </div>
+                    @enderror
                 </div>
             </div>
 
-            <div class="pt-4">
-                <button type="submit" class="w-full bg-indigo-600 text-white px-8 py-5 rounded-2xl font-black text-sm tracking-[0.2em] hover:bg-indigo-700 transition-all transform active:scale-95 shadow-xl shadow-indigo-200 uppercase">
+            <div class="pt-6">
+                <button type="submit" class="w-full bg-primary text-white px-8 py-5 rounded-2xl font-black text-sm tracking-[0.2em] hover:bg-primary-dark transition-all transform active:scale-[0.98] shadow-lg hover:shadow-primary/50 uppercase flex items-center justify-center gap-3">
+                     <span class="material-symbols-outlined text-lg">send</span>
                     Ajukan Penarikan
                 </button>
-                <p class="text-center text-[10px] text-gray-400 font-bold mt-4 uppercase tracking-widest">Dana akan diproses oleh admin dalam 1-2 hari kerja.</p>
+                <p class="text-center text-[10px] text-muted-light font-bold mt-4 uppercase tracking-widest flex items-center justify-center gap-1">
+                     <span class="material-symbols-outlined text-sm">info</span>
+                    Dana akan diproses oleh admin dalam 1-2 hari kerja.
+                </p>
             </div>
         </form>
     </div>

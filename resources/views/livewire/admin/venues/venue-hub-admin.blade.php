@@ -106,7 +106,7 @@
         <div class="lg:col-span-2">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <!-- Edit & Settings -->
-                <a href="{{ route('admin.venues.edit', $venue->id) }}" wire:navigate class="bg-white p-8 rounded-[2.5rem] shadow-xl border border-gray-50 flex items-start gap-6 group hover:shadow-2xl transition-all duration-500">
+                <a href="{{ route('admin.venues.edit', $venue->slug) }}" wire:navigate class="bg-white p-8 rounded-[2.5rem] shadow-xl border border-gray-50 flex items-start gap-6 group hover:shadow-2xl transition-all duration-500">
                     <div class="w-16 h-16 bg-blue-50 text-blue-600 rounded-[1.5rem] flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition-all duration-500 shadow-sm">
                         <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                     </div>
@@ -117,7 +117,7 @@
                 </a>
 
                 <!-- Courts -->
-                <a href="{{ route('admin.venues.courts', $venue->id) }}" wire:navigate class="bg-white p-8 rounded-[2.5rem] shadow-xl border border-gray-50 flex items-start gap-6 group hover:shadow-2xl transition-all duration-500">
+                <a href="{{ route('admin.venues.courts', $venue->slug) }}" wire:navigate class="bg-white p-8 rounded-[2.5rem] shadow-xl border border-gray-50 flex items-start gap-6 group hover:shadow-2xl transition-all duration-500">
                     <div class="w-16 h-16 bg-emerald-50 text-emerald-600 rounded-[1.5rem] flex items-center justify-center group-hover:bg-emerald-600 group-hover:text-white transition-all duration-500 shadow-sm">
                         <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" /></svg>
                     </div>
@@ -128,7 +128,7 @@
                 </a>
 
                 <!-- Media -->
-                <a href="{{ route('admin.venues.media', $venue->id) }}" wire:navigate class="bg-white p-8 rounded-[2.5rem] shadow-xl border border-gray-50 flex items-start gap-6 group hover:shadow-2xl transition-all duration-500">
+                <a href="{{ route('admin.venues.media', $venue->slug) }}" wire:navigate class="bg-white p-8 rounded-[2.5rem] shadow-xl border border-gray-50 flex items-start gap-6 group hover:shadow-2xl transition-all duration-500">
                     <div class="w-16 h-16 bg-amber-50 text-amber-600 rounded-[1.5rem] flex items-center justify-center group-hover:bg-amber-600 group-hover:text-white transition-all duration-500 shadow-sm">
                         <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
                     </div>
@@ -139,7 +139,7 @@
                 </a>
 
                 <!-- Operating Hours -->
-                <a href="{{ route('admin.venues.operating-hours', $venue->id) }}" wire:navigate class="bg-white p-8 rounded-[2.5rem] shadow-xl border border-gray-50 flex items-start gap-6 group hover:shadow-2xl transition-all duration-500">
+                <a href="{{ route('admin.venues.operating-hours', $venue->slug) }}" wire:navigate class="bg-white p-8 rounded-[2.5rem] shadow-xl border border-gray-50 flex items-start gap-6 group hover:shadow-2xl transition-all duration-500">
                     <div class="w-16 h-16 bg-indigo-50 text-indigo-600 rounded-[1.5rem] flex items-center justify-center group-hover:bg-indigo-600 group-hover:text-white transition-all duration-500 shadow-sm">
                         <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                     </div>
@@ -150,7 +150,7 @@
                 </a>
 
                 <!-- Blackouts -->
-                <a href="{{ route('admin.venues.blackouts', $venue->id) }}" wire:navigate class="bg-white p-8 rounded-[2.5rem] shadow-xl border border-gray-50 flex items-start gap-6 group hover:shadow-2xl transition-all duration-500">
+                <a href="{{ route('admin.venues.blackouts', $venue->slug) }}" wire:navigate class="bg-white p-8 rounded-[2.5rem] shadow-xl border border-gray-50 flex items-start gap-6 group hover:shadow-2xl transition-all duration-500">
                     <div class="w-16 h-16 bg-rose-50 text-rose-600 rounded-[1.5rem] flex items-center justify-center group-hover:bg-rose-600 group-hover:text-white transition-all duration-500 shadow-sm">
                         <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
                     </div>
@@ -161,7 +161,7 @@
                 </a>
 
                 <!-- Amenities/Facilities -->
-                <a href="{{ route('admin.venues.amenities', $venue->id) }}" wire:navigate class="bg-white p-8 rounded-[2.5rem] shadow-xl border border-gray-50 flex items-start gap-6 group hover:shadow-2xl transition-all duration-500">
+                <a href="{{ route('admin.venues.amenities', $venue->slug) }}" wire:navigate class="bg-white p-8 rounded-[2.5rem] shadow-xl border border-gray-50 flex items-start gap-6 group hover:shadow-2xl transition-all duration-500">
                     <div class="w-16 h-16 bg-purple-50 text-purple-600 rounded-[1.5rem] flex items-center justify-center group-hover:bg-purple-600 group-hover:text-white transition-all duration-500 shadow-sm">
                         <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" /></svg>
                     </div>

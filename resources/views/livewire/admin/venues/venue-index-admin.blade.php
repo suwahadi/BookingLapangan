@@ -53,7 +53,7 @@
                                     {{ substr($venue->name, 0, 1) }}
                                 </div>
                                 <div>
-                                    <a href="{{ route('admin.venues.hub', $venue->id) }}" wire:navigate>
+                                    <a href="{{ route('admin.venues.hub', $venue->slug) }}" wire:navigate>
                                         <h4 class="text-sm font-black text-gray-900 hover:text-indigo-600 transition-colors">{{ $venue->name }}</h4>
                                     </a>
                                     <p class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] mt-0.5">{{ $venue->sport_type }}</p>
@@ -65,7 +65,7 @@
                             <p class="text-[10px] text-gray-400 font-medium truncate max-w-[200px] mt-1">{{ $venue->address }}</p>
                         </td>
                         <td class="px-8 py-6 text-center">
-                            <a href="{{ route('admin.venues.courts', $venue->id) }}" wire:navigate class="inline-flex items-center justify-center px-3 py-1 bg-gray-100 rounded-lg text-xs font-black text-gray-600 hover:bg-indigo-600 hover:text-white transition-all">
+                            <a href="{{ route('admin.venues.courts', $venue->slug) }}" wire:navigate class="inline-flex items-center justify-center px-3 py-1 bg-gray-100 rounded-lg text-xs font-black text-gray-600 hover:bg-indigo-600 hover:text-white transition-all">
                                 {{ $venue->courts_count }} Lapangan
                             </a>
                         </td>
@@ -78,19 +78,19 @@
                         </td>
                         <td class="px-8 py-6 text-right">
                             <div class="flex items-center justify-end gap-2">
-                                <a href="{{ route('admin.venues.media', $venue->id) }}" wire:navigate title="Galeri Foto" class="p-2.5 bg-gray-50 text-gray-400 hover:text-amber-600 hover:bg-amber-50 rounded-xl transition-all shadow-sm">
+                                <a href="{{ route('admin.venues.media', $venue->slug) }}" wire:navigate title="Galeri Foto" class="p-2.5 bg-gray-50 text-gray-400 hover:text-amber-600 hover:bg-amber-50 rounded-xl transition-all shadow-sm">
                                     <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
                                 </a>
-                                <a href="{{ route('admin.venues.operating-hours', $venue->id) }}" wire:navigate title="Jam Operasional" class="p-2.5 bg-gray-50 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all shadow-sm">
+                                <a href="{{ route('admin.venues.operating-hours', $venue->slug) }}" wire:navigate title="Jam Operasional" class="p-2.5 bg-gray-50 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all shadow-sm">
                                     <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                                 </a>
-                                <a href="{{ route('admin.venues.courts', $venue->id) }}" wire:navigate title="Kelola Lapangan" class="p-2.5 bg-gray-50 text-gray-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-xl transition-all shadow-sm">
+                                <a href="{{ route('admin.venues.courts', $venue->slug) }}" wire:navigate title="Kelola Lapangan" class="p-2.5 bg-gray-50 text-gray-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-xl transition-all shadow-sm">
                                     <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" /></svg>
                                 </a>
-                                <a href="{{ route('admin.venues.blackouts', $venue->id) }}" wire:navigate title="Venue Blackout" class="p-2.5 bg-gray-50 text-gray-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-all shadow-sm">
+                                <a href="{{ route('admin.venues.blackouts', $venue->slug) }}" wire:navigate title="Venue Blackout" class="p-2.5 bg-gray-50 text-gray-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-all shadow-sm">
                                     <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
                                 </a>
-                                <a href="{{ route('admin.venues.edit', $venue->id) }}" wire:navigate title="Edit Venue" class="p-2.5 bg-gray-50 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all shadow-sm">
+                                <a href="{{ route('admin.venues.edit', $venue->slug) }}" wire:navigate title="Edit Venue" class="p-2.5 bg-gray-50 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all shadow-sm">
                                     <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
                                 </a>
                                 <a href="#" class="p-2.5 bg-gray-50 text-gray-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-all shadow-sm">

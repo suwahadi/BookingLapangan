@@ -43,7 +43,7 @@ class BookingCheckout extends Component
         $this->bank = 'bca';
     }
 
-    public function createPayment(): void
+    public function createPayment()
     {
         $this->errorMessage = null;
 
@@ -64,7 +64,9 @@ class BookingCheckout extends Component
 
             $payment = $paymentService->createCharge($this->booking, $type, $method);
 
-            $this->redirectRoute('payments.show', ['payment' => $payment->id], navigate: true);
+            session()->flash('success', 'Pembayaran berhasil dibuat! Silakan selesaikan pembayaran.');
+            
+            return redirect()->route('payments.show', ['payment' => $payment->id]);
         } catch (InvalidPaymentRequestException $e) {
             $this->errorMessage = $e->getMessage();
         } catch (\Throwable $e) {

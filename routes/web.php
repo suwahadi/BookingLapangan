@@ -10,7 +10,10 @@ Route::get('/', VenueSearch::class)->name('home');
 Route::get('/venues/{venue}', VenueDetail::class)->name('public.venues.show');
 
 // Court Schedule (Cinema Style)
-Route::get('/lapangan/{venueCourt}', CourtScheduleCinema::class)->name('courts.schedule');
+Route::get('/court/{venueCourt}', CourtScheduleCinema::class)->name('courts.schedule');
+
+// Checkout
+Route::get('/checkout/review-order', \App\Livewire\Checkout\ReviewOrder::class)->name('checkout.review');
 
 // Auth
 Route::middleware(['guest'])->group(function () {

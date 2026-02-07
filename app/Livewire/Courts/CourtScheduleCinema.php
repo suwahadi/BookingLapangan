@@ -139,12 +139,12 @@ class CourtScheduleCinema extends Component
         return $total;
     }
 
-    public function confirmSelection(): void
+    public function confirmSelection()
     {
         $this->errorMessage = null;
 
         if (!Auth::check()) {
-            $this->redirectRoute('login', navigate: true);
+            $this->redirect(route('login'));
             return;
         }
 
@@ -153,64 +153,33 @@ class CourtScheduleCinema extends Component
             return;
         }
 
-        // Group indexes into contiguous blocks
-        sort($this->selectedIndexes);
-        $blocks = [];
-        $currentBlock = [];
-        $prevIndex = null;
-
+        // Build slots array for cart
+        $slots = [];
         foreach ($this->selectedIndexes as $index) {
-            if ($prevIndex === null || $index === $prevIndex + 1) {
-                $currentBlock[] = $index;
-            } else {
-                $blocks[] = $currentBlock;
-                $currentBlock = [$index];
-            }
-            $prevIndex = $index;
+            if (!isset($this->timeSlots[$index])) continue;
+            
+            $slot = $this->timeSlots[$index];
+            $key = $slot['start'] . '|' . $slot['end'];
+            $amount = $this->slotAmounts[$key] ?? 0;
+            
+            $slots[] = [
+                'date' => $this->date,
+                'start' => $slot['start'],
+                'end' => $slot['end'],
+                'amount' => $amount,
+            ];
         }
-        if (!empty($currentBlock)) {
-            $blocks[] = $currentBlock;
-        }
 
-        $bookingService = app(BookingService::class);
-        $createdBookings = [];
+        // Store cart in session
+        session()->put('booking_cart', [
+            'venue_court_id' => $this->venueCourt->id,
+            'date' => $this->date,
+            'slots' => $slots,
+            'total_amount' => $this->selectedTotal,
+        ]);
 
-        try {
-            foreach ($blocks as $block) {
-                $minIndex = min($block);
-                $maxIndex = max($block);
-
-                $start = $this->timeSlots[$minIndex]['start'];
-                $end = $this->timeSlots[$maxIndex]['end'];
-
-                $booking = $bookingService->createHold(
-                    userId: (int) Auth::id(),
-                    venueCourtId: (int) $this->venueCourt->id,
-                    dateYmd: $this->date,
-                    startTimeHi: $start,
-                    endTimeHi: $end
-                );
-
-                $createdBookings[] = $booking;
-            }
-
-            if (count($createdBookings) === 1) {
-                $this->redirectRoute('bookings.show', ['booking' => $createdBookings[0]->id], navigate: true);
-            } else {
-                // If multiple bookings, redirect to history list
-                session()->flash('success', count($createdBookings) . ' Booking berhasil dibuat. Silakan lakukan pembayaran.');
-                $this->redirectRoute('member.bookings', navigate: true);
-            }
-
-        } catch (SlotNotAvailableException $e) {
-            $this->errorMessage = "Slot tidak tersedia: " . $e->getMessage();
-            // Refresh data to show latest availability
-            $this->reloadData();
-        } catch (InvalidBookingTimeException $e) {
-            $this->errorMessage = $e->getMessage();
-        } catch (\Exception $e) {
-            $this->errorMessage = 'Terjadi kesalahan sistem. Silakan coba lagi.';
-        }
+        // Redirect to review page
+        $this->redirect(route('checkout.review'));
     }
 
     public function render()
