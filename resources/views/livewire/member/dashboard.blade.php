@@ -103,11 +103,7 @@
                         <div class="w-16 h-16 bg-gray-50 dark:bg-gray-800 rounded-2xl flex items-center justify-center mx-auto mb-4">
                             <span class="material-symbols-outlined text-gray-300 dark:text-gray-600 text-3xl">event_busy</span>
                         </div>
-                        <p class="text-muted-light font-bold text-sm">Belum ada booking mendatang</p>
-                        <a href="{{ route('home') }}" class="inline-flex items-center gap-2 mt-6 px-6 py-3 bg-primary text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-primary-dark transition-all transform hover:-translate-y-1 shadow-lg shadow-primary/30">
-                            <span class="material-symbols-outlined text-sm">search</span>
-                            Cari Lapangan
-                        </a>
+                        <p class="text-muted-light text-sm">Belum ada booking mendatang</p>
                     </div>
                 @endforelse
             </div>
@@ -152,7 +148,7 @@
                          <div class="w-16 h-16 bg-gray-50 dark:bg-gray-800 rounded-2xl flex items-center justify-center mx-auto mb-4">
                             <span class="material-symbols-outlined text-gray-300 dark:text-gray-600 text-3xl">history</span>
                         </div>
-                        <p class="text-muted-light font-bold text-sm">Belum ada aktivitas</p>
+                        <p class="text-muted-light text-sm">Belum ada aktivitas</p>
                     </div>
                 @endforelse
             </div>

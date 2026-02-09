@@ -4,13 +4,13 @@
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>{{ $title ?? 'Booking Lapangan' }}</title>
+    <title>{{ $title ?? 'Yomabar' }}</title>
     
     <!-- Alpine.js -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap"
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&amp;display=swap"
         rel="stylesheet" />
     <link
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
@@ -33,8 +33,8 @@
                         "muted-dark": "#9CA3AF",
                     },
                     fontFamily: {
-                        display: ["Inter", "sans-serif"],
-                        sans: ["Inter", "sans-serif"],
+                        display: ["Poppins", "sans-serif"],
+                        sans: ["Poppins", "sans-serif"],
                     },
                     borderRadius: {
                         DEFAULT: "0.5rem",
@@ -82,33 +82,7 @@
     <header class="sticky top-0 z-40 bg-primary shadow-lg lg:py-2">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between h-16 lg:h-20">
             <div class="flex items-center gap-8">
-                <a href="/" wire:navigate class="font-black italic text-2xl tracking-tighter text-white">AYO</a>
-                <form action="{{ route('home') }}" method="GET"
-                    class="hidden lg:flex items-center gap-2 bg-white/10 p-1.5 rounded-full backdrop-blur-md border border-white/20">
-                    <div class="relative">
-                        <span
-                            class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-white/70 text-lg">search</span>
-                        <input name="q"
-                            class="bg-transparent border-none focus:ring-0 text-white placeholder-white/60 text-sm w-56 py-2 pl-10 pr-3"
-                            placeholder="Cari venue..." type="text" value="{{ request('q') }}" />
-                    </div>
-                    <div class="h-6 w-px bg-white/20"></div>
-                    <div class="relative">
-                        <span
-                            class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-white/70 text-lg">location_on</span>
-                        <select name="city"
-                            class="bg-transparent border-none focus:ring-0 text-white text-sm py-2 pl-10 pr-8 appearance-none cursor-pointer min-w-[120px]">
-                            <option value="" class="text-black">Semua Kota</option>
-                            <option value="Jakarta" class="text-black" {{ request('city') == 'Jakarta' ? 'selected' : '' }}>Jakarta</option>
-                            <option value="Surabaya" class="text-black" {{ request('city') == 'Surabaya' ? 'selected' : '' }}>Surabaya</option>
-                            <option value="Bandung" class="text-black" {{ request('city') == 'Bandung' ? 'selected' : '' }}>Bandung</option>
-                            <option value="Semarang" class="text-black" {{ request('city') == 'Semarang' ? 'selected' : '' }}>Semarang</option>
-                        </select>
-                        <span class="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-white/50 text-sm pointer-events-none">expand_more</span>
-                    </div>
-                    <button type="submit"
-                        class="bg-white text-primary px-5 py-2 rounded-full text-xs font-bold uppercase tracking-wider hover:bg-gray-100 transition">Cari</button>
-                </form>
+                <a href="/" wire:navigate class="font-black italic text-2xl tracking-tighter text-white">YOMABAR</a>
             </div>
             <div class="flex items-center gap-2 sm:gap-4">
                 @auth
@@ -158,37 +132,6 @@
     <main>
         {{ $slot }}
     </main>
-    <nav
-        class="lg:hidden fixed bottom-0 left-0 right-0 bg-surface-light/80 dark:bg-surface-dark/80 backdrop-blur-xl border-t border-gray-200 dark:border-gray-800 pb-safe pt-2 px-6 z-50">
-        <div class="flex justify-between items-center pb-4 max-w-lg mx-auto">
-            <a class="flex flex-col items-center gap-1 text-primary" href="/" wire:navigate>
-                <span class="material-symbols-outlined fill-1">home</span>
-                <span class="text-[10px] font-bold uppercase tracking-widest">Home</span>
-            </a>
-            <a class="flex flex-col items-center gap-1 text-muted-light dark:text-muted-dark hover:text-primary transition"
-                href="{{ route('member.bookings') }}" wire:navigate>
-                <span class="material-symbols-outlined">calendar_today</span>
-                <span class="text-[10px] font-bold uppercase tracking-widest">Booking</span>
-            </a>
-            <a class="flex flex-col items-center gap-1" href="{{ route('home') }}" wire:navigate>
-                <div
-                    class="bg-primary text-white rounded-full p-3.5 -mt-8 shadow-xl border-4 border-white dark:border-surface-dark transform hover:scale-110 transition">
-                    <span class="material-symbols-outlined text-2xl">add</span>
-                </div>
-                <span class="text-[10px] font-bold uppercase tracking-widest mt-1">Main</span>
-            </a>
-            <a class="flex flex-col items-center gap-1 text-muted-light dark:text-muted-dark hover:text-primary transition"
-                href="#">
-                <span class="material-symbols-outlined">groups</span>
-                <span class="text-[10px] font-bold uppercase tracking-widest">Community</span>
-            </a>
-            <a class="flex flex-col items-center gap-1 text-muted-light dark:text-muted-dark hover:text-primary transition"
-                href="{{ route('member.dashboard') }}" wire:navigate>
-                <span class="material-symbols-outlined">person</span>
-                <span class="text-[10px] font-bold uppercase tracking-widest">Profile</span>
-            </a>
-        </div>
-    </nav>
     
     @livewireScripts
     <script>

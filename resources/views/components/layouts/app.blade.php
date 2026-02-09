@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>{{ $title ?? 'Booking Lapangan' }}</title>
+    <title>{{ $title ?? 'Yomabar' }}</title>
     
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -43,7 +43,7 @@
                 <div class="flex items-center gap-12">
                     <!-- Logo -->
                     <a href="/" wire:navigate class="text-[#8B1538] font-black text-2xl tracking-tight italic">
-                        AYO
+                        YOMABAR
                     </a>
 
                     <!-- Desktop Menu -->

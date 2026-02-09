@@ -8,7 +8,7 @@
                 <span class="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">{{ $venue->name }}</span>
             </div>
             <h1 class="text-4xl font-black text-gray-900 tracking-tight font-display italic uppercase">Jam <span class="text-indigo-600">Operasional</span></h1>
-            <p class="text-gray-500 font-bold mt-1 tracking-tight">Atur jadwal buka dan tutup venue Anda setiap harinya.</p>
+            <p class="text-gray-500 mt-1 tracking-tight">Atur jadwal buka dan tutup venue setiap harinya</p>
         </div>
         
         <div class="flex items-center gap-3">

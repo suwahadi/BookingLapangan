@@ -13,7 +13,7 @@ use Livewire\Attributes\Title;
 use Livewire\Component;
 
 #[Layout('components.layouts.admin')]
-#[Title('Dashboard Admin - BookingLapangan')]
+#[Title('Dashboard - Admin Panel')]
 class AdminDashboard extends Component
 {
     public array $stats = [];

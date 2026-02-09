@@ -3,7 +3,7 @@
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
             <h1 class="text-4xl font-black text-gray-900 tracking-tight font-display italic uppercase">Audit <span class="text-indigo-600">Logs</span></h1>
-            <p class="text-gray-500 font-bold mt-1 tracking-tight">Rekam jejak semua aktivitas dan perubahan penting di dalam sistem.</p>
+            <p class="text-gray-500 mt-1 tracking-tight">Rekam jejak semua aktivitas dan perubahan penting di dalam sistem</p>
         </div>
     </div>
 

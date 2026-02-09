@@ -3,7 +3,7 @@
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
             <h1 class="text-4xl font-black text-gray-900 tracking-tight font-display italic uppercase">Statistik <span class="text-indigo-600">Terbaru</span></h1>
-            <p class="text-gray-500 font-bold mt-1 tracking-tight">Selamat datang kembali, {{ Auth::user()->name }}! Pantau performa bisnis hari ini.</p>
+            <p class="text-gray-500 mt-1 tracking-tight">Selamat datang kembali, {{ Auth::user()->name }}! Pantau performa bisnis hari ini</p>
         </div>
         <button wire:click="refreshStats" wire:loading.attr="disabled"
             class="bg-white border-2 border-gray-900 group relative px-6 py-3 rounded-2xl font-black text-sm tracking-widest hover:bg-gray-900 hover:text-white transition-all transform active:scale-95 shadow-xl shadow-gray-200">
@@ -107,7 +107,7 @@
                     <h4 class="text-xl font-black font-display text-gray-900 uppercase tracking-tight italic">Booking <span class="text-indigo-600">Terbaru</span></h4>
                     <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1">Status dan aktifitas user seketika</p>
                 </div>
-                <a href="{{ route('admin.bookings.index') }}" class="text-xs font-black text-indigo-600 hover:text-black transition-colors uppercase tracking-widest border-b-2 border-indigo-100 hover:border-black py-1">Semua Data &rarr;</a>
+                <a href="{{ route('admin.bookings.index') }}" class="text-xs font-black text-indigo-600 hover:text-black transition-colors uppercase tracking-widest border-b-2 border-indigo-100 hover:border-black py-1">Semua Data</a>
             </div>
 
             <div class="flex-1 overflow-x-auto">
@@ -143,9 +143,7 @@
                         @empty
                         <tr>
                             <td colspan="4" class="px-8 py-20 text-center">
-                                <div class="bg-gray-50 rounded-3xl p-10 inline-block border-2 border-dashed border-gray-200">
-                                    <p class="text-gray-400 font-bold text-sm">Belum ada aktifitas booking terbaru.</p>
-                                </div>
+                                <p class="text-gray-400 text-sm">Belum ada aktifitas booking terbaru.</p>
                             </td>
                         </tr>
                         @endforelse

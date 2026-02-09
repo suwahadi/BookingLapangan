@@ -8,6 +8,7 @@ use Livewire\Component;
 use Livewire\WithPagination;
 
 #[Layout('layouts.admin')]
+#[Title('Member - Admin Panel')]
 class UserIndexAdmin extends Component
 {
     use WithPagination;

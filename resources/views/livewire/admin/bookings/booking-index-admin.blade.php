@@ -3,7 +3,7 @@
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
             <h1 class="text-4xl font-black text-gray-900 tracking-tight font-display italic uppercase">Daftar <span class="text-indigo-600">Pesanan</span></h1>
-            <p class="text-gray-500 font-bold mt-1 tracking-tight">Monitor semua transaksi booking masuk dari pelanggan.</p>
+            <p class="text-gray-500 mt-1 tracking-tight">Monitor semua transaksi booking masuk dari pelanggan</p>
         </div>
         
         <div class="flex items-center gap-4 bg-white p-2 rounded-[1.5rem] shadow-xl border border-gray-50">

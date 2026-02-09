@@ -81,12 +81,12 @@
 
             <div class="pt-6">
                 <button type="submit" class="w-full bg-primary text-white px-8 py-5 rounded-2xl font-black text-sm tracking-[0.2em] hover:bg-primary-dark transition-all transform active:scale-[0.98] shadow-lg hover:shadow-primary/50 uppercase flex items-center justify-center gap-3">
-                     <span class="material-symbols-outlined text-lg">send</span>
+                     <span class="material-symbols-outlined text-lg">downloading</span>
                     Ajukan Penarikan
                 </button>
                 <p class="text-center text-[10px] text-muted-light font-bold mt-4 uppercase tracking-widest flex items-center justify-center gap-1">
                      <span class="material-symbols-outlined text-sm">info</span>
-                    Dana akan diproses oleh admin dalam 1-2 hari kerja.
+                    Dana akan diproses dalam 1-2 hari kerja.
                 </p>
             </div>
         </form>

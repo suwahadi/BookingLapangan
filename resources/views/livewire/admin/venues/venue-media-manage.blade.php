@@ -8,7 +8,7 @@
                 <span class="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">{{ $venue->name }}</span>
             </div>
             <h1 class="text-4xl font-black text-gray-900 tracking-tight font-display italic uppercase">Galeri <span class="text-indigo-600">Media</span></h1>
-            <p class="text-gray-500 font-bold mt-1 tracking-tight">Unggah foto-foto terbaik untuk menarik minat pelanggan.</p>
+            <p class="text-gray-500 mt-1 tracking-tight">Unggah foto-foto terbaik untuk menarik minat pelanggan</p>
         </div>
         
         <div class="relative group">

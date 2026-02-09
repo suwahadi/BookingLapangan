@@ -3,12 +3,12 @@
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
             <div class="flex items-center gap-2 mb-1">
-                <a href="{{ route('admin.venues.courts', $court->venue_id) }}" wire:navigate class="text-[10px] font-black text-indigo-500 uppercase tracking-[0.2em] hover:text-indigo-700 transition-colors">Daftar Lapangan</a>
+                <a href="{{ route('admin.venues.index') }}" wire:navigate class="text-[10px] font-black text-indigo-500 uppercase tracking-[0.2em] hover:text-indigo-700 transition-colors">Daftar Lapangan</a>
                 <span class="text-gray-300">/</span>
                 <span class="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">{{ $court->name }}</span>
             </div>
             <h1 class="text-4xl font-black text-gray-900 tracking-tight font-display italic uppercase">Atur <span class="text-indigo-600">Harga</span></h1>
-            <p class="text-gray-500 font-bold mt-1 tracking-tight">Kustomisasi tarif per jam berdasarkan waktu dan hari.</p>
+            <p class="text-gray-500 mt-1 tracking-tight">Kustomisasi tarif per jam berdasarkan waktu</p>
         </div>
         
         <div class="flex items-center gap-3">

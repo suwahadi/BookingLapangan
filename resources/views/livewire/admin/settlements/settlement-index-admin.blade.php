@@ -3,7 +3,7 @@
     <div class="flex items-end justify-between">
         <div>
             <h1 class="text-4xl font-black text-gray-900 tracking-tight italic uppercase">Settlement <span class="text-indigo-600">Venue</span></h1>
-            <p class="text-gray-500 font-bold mt-1 uppercase text-[10px] tracking-[0.2em]">Pembayaran ke pemilik venue</p>
+            <p class="text-gray-500 mt-1 uppercase text-[10px] tracking-[0.2em]">Pembayaran ke pemilik venue</p>
         </div>
         <button wire:click="openCreateModal" class="px-6 py-3 bg-indigo-600 text-white text-xs font-black uppercase tracking-widest rounded-2xl hover:bg-indigo-700 transition-colors flex items-center gap-2">
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">

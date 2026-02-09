@@ -5,8 +5,8 @@
             <h1 class="text-4xl font-black text-gray-900 tracking-tight font-display italic uppercase">
                 {{ $isEdit ? 'Edit' : 'Tambah' }} <span class="text-indigo-600">Venue</span>
             </h1>
-            <p class="text-gray-500 font-bold mt-1 tracking-tight">
-                {{ $isEdit ? 'Perbarui informasi venue Anda.' : 'Daftarkan tempat olahraga baru ke sistem.' }}
+            <p class="text-gray-500 mt-1 tracking-tight">
+                {{ $isEdit ? 'Perbarui informasi venue' : 'Daftarkan tempat olahraga baru ke sistem' }}
             </p>
         </div>
         <a href="{{ route('admin.venues.index') }}" wire:navigate class="text-sm font-black text-gray-400 hover:text-gray-900 transition-colors uppercase tracking-[0.2em] flex items-center gap-2">
@@ -47,16 +47,18 @@
                     <option value="Futsal">Futsal</option>
                     <option value="Badminton">Badminton</option>
                     <option value="Basket">Basket</option>
+                    <option value="Mini Soccer">Mini Soccer</option>
                     <option value="Tennis">Tennis</option>
-                    <option value="Multi-sport">Multi-sport / Campuran</option>
+                    <option value="Voli">Voli</option>
+                    <option value="Padel">Padel</option>
                 </select>
                 @error('sport_type') <span class="text-[10px] text-rose-500 font-bold ml-2">{{ $message }}</span> @enderror
             </div>
 
             <div class="space-y-2">
                 <label class="block text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-2">Deskripsi Venue</label>
-                <textarea wire:model="description" rows="4" placeholder="Ceritakan tentang keunggulan venue Anda..." 
-                    class="w-full px-6 py-4 bg-gray-50 border-none rounded-2xl text-sm font-bold focus:ring-2 focus:ring-indigo-600 transition-all"></textarea>
+                <textarea wire:model="description" rows="7" placeholder="Ceritakan tentang keunggulan venue Anda..." 
+                    class="w-full px-6 py-4 bg-gray-50 border-none rounded-2xl text-sm focus:ring-2 focus:ring-indigo-600 transition-all"></textarea>
                 @error('description') <span class="text-[10px] text-rose-500 font-bold ml-2">{{ $message }}</span> @enderror
             </div>
         </div>

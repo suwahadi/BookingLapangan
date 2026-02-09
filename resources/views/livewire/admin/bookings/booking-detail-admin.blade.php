@@ -8,7 +8,7 @@
                 <span class="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Detail #{{ $booking->booking_code }}</span>
             </div>
             <h1 class="text-4xl font-black text-gray-900 tracking-tight font-display italic uppercase">Detail <span class="text-indigo-600">Pesanan</span></h1>
-            <p class="text-gray-500 font-bold mt-1 tracking-tight">Rincian lengkap transaksi dan status pembayaran pelanggan.</p>
+            <p class="text-gray-500 mt-1 tracking-tight">Rincian lengkap transaksi dan status pembayaran pelanggan</p>
         </div>
 
         <div class="flex flex-wrap gap-3">

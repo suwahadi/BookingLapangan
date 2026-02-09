@@ -3,7 +3,7 @@
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
             <h1 class="text-4xl font-black text-gray-900 tracking-tight font-display italic uppercase">Kelola <span class="text-indigo-600">Penarikan</span></h1>
-            <p class="text-gray-500 font-bold mt-1 tracking-tight">Proses permintaan withdraw saldo dari user.</p>
+            <p class="text-gray-500 mt-1 tracking-tight">Proses permintaan withdraw saldo dari user</p>
         </div>
         
         <div class="flex gap-2">

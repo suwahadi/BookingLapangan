@@ -3,7 +3,7 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10">
         <div class="flex flex-col md:flex-row md:items-start justify-between gap-6">
             <div>
-                <a href="{{ route('home') }}" class="inline-flex items-center gap-2 text-muted-light font-bold text-[10px] uppercase tracking-[0.2em] mb-4 hover:text-primary transition-colors">
+                <a href="{{ route('member.dashboard') }}" class="inline-flex items-center gap-2 text-muted-light font-bold text-[10px] uppercase tracking-[0.2em] mb-4 hover:text-primary transition-colors">
                     <span class="material-symbols-outlined text-base">arrow_back</span>
                     Kembali ke Beranda
                 </a>
@@ -56,13 +56,12 @@
                         <div>
                             <label class="text-[10px] font-bold text-muted-light uppercase tracking-widest mb-1 block">Tipe</label>
                             <div class="relative">
-                                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-muted-light material-symbols-outlined text-base">category</span>
+                                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-muted-light material-symbols-outlined text-base">format_list_bulleted</span>
                                 <select wire:model.live="type" class="w-full pl-9 pr-4 py-3 bg-gray-50 dark:bg-gray-800 border-none rounded-xl text-xs font-bold text-text-light dark:text-text-dark focus:ring-2 focus:ring-primary cursor-pointer appearance-none">
                                     <option value="">Semua</option>
                                     <option value="CREDIT">Pemasukan (+)</option>
                                     <option value="DEBIT">Pengeluaran (-)</option>
                                 </select>
-                                <span class="absolute right-3 top-1/2 -translate-y-1/2 text-muted-light material-symbols-outlined text-base pointer-events-none">expand_more</span>
                             </div>
                         </div>
                         <div class="grid grid-cols-2 gap-3">
@@ -130,7 +129,7 @@
                                     <span class="material-symbols-outlined text-4xl text-gray-300 dark:text-gray-600">receipt_long</span>
                                 </div>
                                 <h3 class="text-lg font-black text-text-light dark:text-text-dark uppercase italic">Belum Ada Transaksi</h3>
-                                <p class="text-muted-light text-xs font-bold uppercase tracking-widest mt-2 max-w-xs opacity-70">
+                                <p class="text-muted-light text-xs tracking-widest mt-2 max-w-xs opacity-70">
                                     Semua riwayat pengisian dan penggunaan saldo akan muncul di sini.
                                 </p>
                             </div>

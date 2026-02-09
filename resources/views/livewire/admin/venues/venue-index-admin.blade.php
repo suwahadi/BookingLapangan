@@ -3,7 +3,7 @@
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
             <h1 class="text-4xl font-black text-gray-900 tracking-tight font-display italic uppercase">Kelola <span class="text-indigo-600">Venue</span></h1>
-            <p class="text-gray-500 font-bold mt-1 tracking-tight">Menampilkan daftar semua tempat olahraga yang terdaftar di sistem.</p>
+            <p class="text-gray-500 mt-1 tracking-tight">Menampilkan daftar semua tempat olahraga yang terdaftar di sistem</p>
         </div>
         <a href="{{ route('admin.venues.create') }}" wire:navigate class="bg-gray-900 text-white px-8 py-4 rounded-[1.5rem] font-black text-sm tracking-widest hover:bg-black transition-all transform active:scale-95 shadow-2xl shadow-gray-200 inline-flex items-center gap-2">
             <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4" /></svg>
@@ -39,7 +39,7 @@
                     <tr class="bg-gray-50/50">
                         <th class="px-8 py-6 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Info Venue</th>
                         <th class="px-8 py-6 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Lokasi / Cabang</th>
-                        <th class="px-8 py-6 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] text-center">Lapangan</th>
+                        <th class="px-8 py-6 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] text-center"># Lapangan</th>
                         <th class="px-8 py-6 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] text-center">Status</th>
                         <th class="px-8 py-6 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] text-right">Aksi</th>
                     </tr>
@@ -49,9 +49,11 @@
                     <tr class="hover:bg-gray-50/30 transition-colors group">
                         <td class="px-8 py-6">
                             <div class="flex items-center gap-4">
-                                <div class="w-14 h-14 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 font-display font-black text-xl group-hover:bg-indigo-600 group-hover:text-white transition-all duration-300">
-                                    {{ substr($venue->name, 0, 1) }}
-                                </div>
+                                <a href="{{ route('admin.venues.hub', $venue->slug) }}" wire:navigate>
+                                    <div class="w-14 h-14 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 font-display font-black text-xl group-hover:bg-indigo-600 group-hover:text-white transition-all duration-300">
+                                        {{ substr($venue->name, 0, 1) }}
+                                    </div>
+                                </a>
                                 <div>
                                     <a href="{{ route('admin.venues.hub', $venue->slug) }}" wire:navigate>
                                         <h4 class="text-sm font-black text-gray-900 hover:text-indigo-600 transition-colors">{{ $venue->name }}</h4>
@@ -61,12 +63,12 @@
                             </div>
                         </td>
                         <td class="px-8 py-6">
-                            <p class="text-sm font-bold text-gray-700 italic">"{{ $venue->city }}"</p>
-                            <p class="text-[10px] text-gray-400 font-medium truncate max-w-[200px] mt-1">{{ $venue->address }}</p>
+                            <p class="text-sm font-bold text-gray-600">{{ $venue->city }}</p>
+                            <p class="text-[11px] text-gray-400 font-medium truncate max-w-[200px] mt-1">{{ $venue->address }}</p>
                         </td>
                         <td class="px-8 py-6 text-center">
                             <a href="{{ route('admin.venues.courts', $venue->slug) }}" wire:navigate class="inline-flex items-center justify-center px-3 py-1 bg-gray-100 rounded-lg text-xs font-black text-gray-600 hover:bg-indigo-600 hover:text-white transition-all">
-                                {{ $venue->courts_count }} Lapangan
+                                {{ $venue->courts_count }}
                             </a>
                         </td>
                         <td class="px-8 py-6 text-center">

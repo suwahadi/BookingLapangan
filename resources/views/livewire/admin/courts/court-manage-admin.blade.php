@@ -8,7 +8,7 @@
                 <span class="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">{{ $venue->name }}</span>
             </div>
             <h1 class="text-4xl font-black text-gray-900 tracking-tight font-display italic uppercase">Kelola <span class="text-indigo-600">Lapangan</span></h1>
-            <p class="text-gray-500 font-bold mt-1 tracking-tight">Manajemen unit lapangan untuk {{ $venue->name }}.</p>
+            <p class="text-gray-500 mt-1 tracking-tight">Manajemen unit lapangan untuk {{ $venue->name }}</p>
         </div>
         <button wire:click="openCreateModal" class="bg-gray-900 text-white px-8 py-4 rounded-[1.5rem] font-black text-sm tracking-widest hover:bg-black transition-all transform active:scale-95 shadow-2xl shadow-gray-200 inline-flex items-center gap-2">
             <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4" /></svg>
@@ -34,7 +34,7 @@
                     </div>
                 </div>
 
-                <h3 class="text-xl font-black text-gray-900 lowercase tracking-tight mb-1">{{ $court->name }}</h3>
+                <h3 class="text-xl font-black text-gray-900 tracking-tight mb-1">{{ $court->name }}</h3>
                 <p class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] mb-6">{{ $court->sport }} • {{ $court->floor_type ?? 'Standard' }}</p>
 
                 <div class="flex items-center justify-between pt-6 border-t border-gray-50">
@@ -98,7 +98,10 @@
                                 <option value="Futsal">Futsal</option>
                                 <option value="Badminton">Badminton</option>
                                 <option value="Basket">Basket</option>
+                                <option value="Mini Soccer">Mini Soccer</option>
                                 <option value="Tennis">Tennis</option>
+                                <option value="Voli">Voli</option>
+                                <option value="Padel">Padel</option>
                             </select>
                             @error('sport') <span class="text-[10px] text-rose-500 font-bold ml-2">{{ $message }}</span> @enderror
                         </div>

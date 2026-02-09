@@ -95,8 +95,7 @@
                         <p class="text-sm font-medium text-muted-light leading-relaxed" 
                            :class="expanded ? '' : 'line-clamp-3'">
                             {{ $venue->description ?? 'Tidak ada deskripsi tersedia.' }}
-                            <br><br>
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                            <br>
                         </p>
                         <button @click="expanded = !expanded" class="text-primary font-bold text-xs uppercase tracking-widest mt-2 hover:underline">
                             <span x-text="expanded ? 'Sembunyikan' : 'Baca Selengkapnya'"></span>
@@ -115,7 +114,7 @@
                              </div>
                         </div>
                         <a href="https://maps.google.com/?q={{ urlencode($venue->address) }}" target="_blank" class="text-primary font-black text-xs uppercase tracking-widest hover:underline flex items-center gap-1">
-                            Buka Peta
+                            Peta
                             <span class="material-symbols-outlined text-sm">open_in_new</span>
                         </a>
                     </div>
@@ -163,76 +162,13 @@
                     @endif
                 </div>
 
-                <!-- Membership (Placeholder based on image) -->
-                <div class="border-b border-gray-100 dark:border-gray-800 pb-10">
-                     <h3 class="text-lg font-black text-text-light dark:text-text-dark uppercase italic mb-6">Paket Membership</h3>
-                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                         <!-- Card 1 -->
-                         <div class="p-6 rounded-3xl border border-gray-100 dark:border-gray-700 bg-surface-light dark:bg-surface-dark relative overflow-hidden group hover:border-primary/50 transition-all">
-                             <div class="flex justify-between items-start mb-4">
-                                 <div>
-                                     <h4 class="font-black text-text-light dark:text-text-dark">Paket 3 Bulan</h4>
-                                     <ul class="mt-2 text-[10px] text-muted-light space-y-1 font-bold">
-                                         <li>• Langganan 2 slot per minggu</li>
-                                         <li>• Perpanjang setiap 3 bulan</li>
-                                     </ul>
-                                 </div>
-                             </div>
-                             <div class="flex justify-between items-center mt-4 border-t border-gray-100 dark:border-gray-800 pt-4">
-                                 <span class="text-xs font-black text-rose-500 uppercase">Diskon Rp 50rb</span>
-                                 <button class="px-4 py-2 bg-primary text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-primary-dark">Beli Paket</button>
-                             </div>
-                         </div>
-                         <!-- Card 2 -->
-                         <div class="p-6 rounded-3xl border border-gray-100 dark:border-gray-700 bg-surface-light dark:bg-surface-dark relative overflow-hidden group hover:border-primary/50 transition-all">
-                             <div class="flex justify-between items-start mb-4">
-                                 <div>
-                                     <h4 class="font-black text-text-light dark:text-text-dark">Paket 1 Bulan</h4>
-                                      <ul class="mt-2 text-[10px] text-muted-light space-y-1 font-bold">
-                                         <li>• Langganan 1 slot per minggu</li>
-                                         <li>• Perpanjang setiap 1 bulan</li>
-                                     </ul>
-                                 </div>
-                             </div>
-                             <div class="flex justify-between items-center mt-4 border-t border-gray-100 dark:border-gray-800 pt-4">
-                                 <span class="text-xs font-black text-rose-500 uppercase">Diskon 5%</span>
-                                 <button class="px-4 py-2 bg-primary text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-primary-dark">Beli Paket</button>
-                             </div>
-                         </div>
-                     </div>
-                </div>
-
                 <!-- Court Selection & Schedule -->
-                <div class="space-y-6">
+                <div class="space-y-6" id="court-selection">
                     <div class="flex items-center justify-between">
                          <div class="flex items-center gap-2">
                              <span class="material-symbols-outlined text-primary text-2xl animate-pulse">play_arrow</span>
                              <h2 class="text-2xl font-black text-text-light dark:text-text-dark uppercase italic">Pilih Lapangan</h2>
                          </div>
-                    </div>
-
-                    <!-- Date Picker Strip -->
-                    <div class="bg-surface-light dark:bg-surface-dark p-4 rounded-[2rem] border border-gray-100 dark:border-gray-700 shadow-sm">
-                        <div class="flex items-center justify-between mb-4">
-                             <div class="flex gap-2 overflow-x-auto no-scrollbar pb-2">
-                                @foreach(range(0, 6) as $day)
-                                    @php 
-                                        $d = \Carbon\Carbon::now()->addDays($day); 
-                                        $isActive = $d->format('Y-m-d') === $date;
-                                    @endphp
-                                    <button wire:click="$set('date', '{{ $d->format('Y-m-d') }}')" 
-                                            class="min-w-[70px] flex flex-col items-center justify-center p-3 rounded-2xl transition-all border {{ $isActive ? 'bg-primary text-white border-primary shadow-lg shadow-primary/30 transform scale-105' : 'bg-transparent text-muted-light border-transparent hover:bg-gray-50 dark:hover:bg-gray-800' }}">
-                                        <span class="text-[10px] font-bold uppercase tracking-wider mb-1">{{ $d->translatedFormat('D') }}</span>
-                                        <span class="text-lg font-black leading-none">{{ $d->format('d') }}</span>
-                                        <span class="text-[8px] font-bold mt-1">{{ $d->format('M') }}</span>
-                                    </button>
-                                @endforeach
-                             </div>
-                             <div class="h-8 w-[1px] bg-gray-200 dark:bg-gray-700 mx-2"></div>
-                             <button class="p-3 bg-gray-50 dark:bg-gray-800 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-700 text-muted-light transition-colors">
-                                 <span class="material-symbols-outlined">calendar_month</span>
-                             </button>
-                        </div>
                     </div>
 
                     <!-- Court Cards Loop -->
@@ -263,7 +199,7 @@
                                         </div>
                                         
                                         <div class="flex flex-wrap gap-2 text-[10px] font-bold text-muted-light uppercase tracking-wide">
-                                            <span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm">sports_tennis</span> Badminton</span>
+                                            <span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm">sell</span> {{ $court->sport }}</span>
                                             <span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm">roofing</span> Indoor</span>
                                             <span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm">texture</span> {{ $court->floor_type ?? 'Karpet' }}</span>
                                         </div>
@@ -273,21 +209,6 @@
                                                 <span class="material-symbols-outlined text-sm">schedule</span>
                                                 Lihat & Pilih Jadwal
                                             </a>
-                                            <!-- Visual Placeholder for Slots (To match image intent) -->
-                                            <div class="mt-4 grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 opacity-50 pointer-events-none grayscale">
-                                                 <!-- Mock slots to show 'preview' look -->
-                                                <div class="p-2 border rounded-lg text-center bg-gray-50 border-gray-100">
-                                                    <div class="text-[8px] font-bold">08:00</div>
-                                                </div>
-                                                <div class="p-2 border rounded-lg text-center bg-gray-50 border-gray-100">
-                                                    <div class="text-[8px] font-bold">09:00</div>
-                                                </div>
-                                                <div class="p-2 border rounded-lg text-center bg-gray-50 border-gray-100">
-                                                    <div class="text-[8px] font-bold">10:00</div>
-                                                </div>
-                                                <!-- ... -->
-                                            </div>
-                                            <p class="text-[8px] text-muted-light mt-1 italic text-center md:text-left">*Klik tombol merah untuk melihat slot real-time</p>
                                         </div>
                                     </div>
                                 </div>
@@ -314,12 +235,12 @@
                                  <span class="material-symbols-outlined fill-current">star</span>
                                  <span class="material-symbols-outlined fill-current">star</span>
                                  <span class="material-symbols-outlined fill-current">star</span>
-                                 <span class="material-symbols-outlined fill-current">star_half</span>
+                                 <span class="material-symbols-outlined fill-current">star</span>
                              </div>
-                             <span class="text-xs font-bold text-muted-light uppercase tracking-wide">Berdasarkan 86 ulasan</span>
+                             <span class="text-xs text-muted-light tracking-wide">Berdasarkan 127 ulasan</span>
                          </div>
                          <div class="ml-auto">
-                              <button class="text-[10px] font-black text-rose-500 hover:underline uppercase tracking-widest">Lihat Semua Ulasan</button>
+                              <button class="text-[10px] font-black text-rose-500 hover:underline uppercase tracking-widest">Semua Ulasan</button>
                          </div>
                      </div>
 
@@ -329,14 +250,14 @@
                              <div class="flex items-center gap-4 mb-4">
                                  <div class="w-10 h-10 rounded-full bg-gray-200"></div>
                                  <div>
-                                     <h5 class="font-bold text-sm">Indra Putra Medan</h5>
-                                     <p class="text-[10px] text-muted-light">Diulas 30 Januari 2024</p>
+                                     <h5 class="font-bold text-sm">Indra Putra</h5>
+                                     <p class="text-[10px] text-muted-light">Diulas 7 Februari 2026</p>
                                  </div>
-                                 <div class="ml-auto px-2 py-1 bg-amber-100 text-amber-700 rounded-lg text-[10px] font-black flex items-center gap-1">
-                                     <span class="material-symbols-outlined text-xs">star</span> 4.5
+                                 <div class="ml-auto px-2 py-1 bg-amber-100 text-amber-600 rounded-lg text-[10px] font-black flex items-center gap-1">
+                                     <span class="material-symbols-outlined text-xs">star</span> 4.9
                                  </div>
                              </div>
-                             <p class="text-xs font-bold text-muted-light leading-relaxed">"Baik nya kalau masih kurang 10 menit yg main dijam berikutnya ga masuk dulu... soalnya risih banget hahaha"</p>
+                             <p class="text-xs text-muted-light leading-relaxed">"Mantaps, lapangannya enak dan AC nya dingin. Tempat parkir juga luas. Ayo semangat cari keringat hehehe..."</p>
                          </div>
                      </div>
                 </div>
@@ -348,7 +269,7 @@
                 <div class="bg-surface-light dark:bg-surface-dark rounded-[2.5rem] p-8 shadow-2xl border border-gray-100 dark:border-gray-700">
                     <p class="text-[10px] font-bold text-muted-light uppercase tracking-widest mb-1">Mulai Dari</p>
                     <div class="flex items-end gap-1 mb-6">
-                        <h3 class="text-3xl font-black text-primary italic font-display">Rp 70.000</h3>
+                        <h3 class="text-3xl font-black text-primary italic font-display">Rp 50.000</h3>
                         <span class="text-xs font-bold text-muted-light mb-1">/ Sesi</span>
                     </div>
 

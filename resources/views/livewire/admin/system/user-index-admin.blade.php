@@ -2,7 +2,7 @@
     <div class="flex items-end justify-between">
         <div>
             <h1 class="text-4xl font-black text-gray-900 tracking-tight italic uppercase">Manajemen <span class="text-indigo-600">User</span></h1>
-            <p class="text-gray-500 font-bold mt-1 uppercase text-[10px] tracking-[0.2em]">Kelola akses administrator dan member</p>
+            <p class="text-gray-500 mt-1 uppercase text-[10px] tracking-[0.2em]">Kelola akses administrator dan member</p>
         </div>
     </div>
 

@@ -10,7 +10,7 @@
                 <span class="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">{{ $court->name }}</span>
             </div>
             <h1 class="text-4xl font-black text-gray-900 tracking-tight font-display italic uppercase">Court <span class="text-indigo-600">Blackout</span></h1>
-            <p class="text-gray-500 font-bold mt-1 tracking-tight">Atur hari libur atau penutupan khusus untuk lapangan <span class="text-indigo-600">#{{ $court->name }}</span>.</p>
+            <p class="text-gray-500 mt-1 tracking-tight">Atur hari libur atau penutupan khusus untuk lapangan <span class="text-indigo-600">#{{ $court->name }}</span></p>
         </div>
     </div>
 

@@ -3,7 +3,7 @@
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
             <h1 class="text-4xl font-black text-gray-900 tracking-tight font-display italic uppercase">Laporan <span class="text-indigo-600">Keuangan</span></h1>
-            <p class="text-gray-500 font-bold mt-1 tracking-tight">Pantau performa pendapatan dari semua venue.</p>
+            <p class="text-gray-500 mt-1 tracking-tight">Pantau performa pendapatan dari semua venue</p>
         </div>
         
         <button wire:click="exportCsv" class="bg-gray-900 text-white px-8 py-4 rounded-[1.5rem] font-black text-sm tracking-widest hover:bg-black transition-all transform active:scale-95 shadow-2xl shadow-gray-200 inline-flex items-center gap-2 group">

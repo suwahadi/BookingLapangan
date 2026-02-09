@@ -27,14 +27,11 @@
                 </span>
                 <select wire:model.live="status" class="w-full pl-12 pr-10 py-4 bg-gray-50 dark:bg-gray-800 border-none rounded-2xl text-sm font-bold text-text-light dark:text-text-dark focus:ring-2 focus:ring-primary appearance-none cursor-pointer">
                     <option value="">Semua Status</option>
-                    <option value="HOLD">Hold (Menunggu Bayar)</option>
-                    <option value="CONFIRMED">Confirmed (Lunas/DP)</option>
-                    <option value="CANCELLED">Cancelled (Batal)</option>
-                    <option value="EXPIRED">Expired (Kadaluarsa)</option>
+                    <option value="HOLD">Menunggu Bayar</option>
+                    <option value="CONFIRMED">Lunas/DP</option>
+                    <option value="CANCELLED">Batal</option>
+                    <option value="EXPIRED">Kadaluarsa</option>
                 </select>
-                <span class="absolute right-4 top-1/2 -translate-y-1/2 text-muted-light pointer-events-none">
-                    <span class="material-symbols-outlined text-sm">expand_more</span>
-                </span>
             </div>
         </div>
     </div>
@@ -99,7 +96,6 @@
                     <p class="text-muted-light font-bold text-lg">Belum ada booking</p>
                     <p class="text-muted-light text-sm mt-2 opacity-60">Mulai cari lapangan untuk booking pertama Anda</p>
                     <a href="{{ route('home') }}" class="inline-flex items-center gap-2 mt-8 px-8 py-4 bg-primary text-white text-xs font-black uppercase tracking-widest rounded-2xl hover:bg-primary-dark transition-all shadow-lg shadow-primary/30 transform hover:-translate-y-1">
-                        <span class="material-symbols-outlined text-sm">search</span>
                         Cari Lapangan
                     </a>
                 </div>

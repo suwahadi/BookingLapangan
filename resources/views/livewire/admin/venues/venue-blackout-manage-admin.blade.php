@@ -8,7 +8,7 @@
                 <span class="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">{{ $venue->name }}</span>
             </div>
             <h1 class="text-4xl font-black text-gray-900 tracking-tight font-display italic uppercase">Venue <span class="text-rose-600">Blackout</span></h1>
-            <p class="text-gray-500 font-bold mt-1 tracking-tight">Atur hari libur atau penutupan sementara untuk seluruh area {{ $venue->name }}.</p>
+            <p class="text-gray-500 mt-1 tracking-tight">Atur hari libur atau penutupan sementara untuk seluruh area {{ $venue->name }}</p>
         </div>
     </div>
 
