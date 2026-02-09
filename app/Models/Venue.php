@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Venue extends Model
@@ -64,9 +65,9 @@ class Venue extends Model
     /**
      * Get the venue's pricings
      */
-    public function pricings(): HasMany
+    public function pricings(): HasManyThrough
     {
-        return $this->hasMany(VenuePricing::class);
+        return $this->hasManyThrough(VenuePricing::class, VenueCourt::class);
     }
 
     /**

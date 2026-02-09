@@ -20,19 +20,19 @@
                 <h2 class="text-3xl font-black text-text-light dark:text-text-dark tracking-tight italic uppercase">
                     Gabung <span class="text-primary">Squad!</span>
                 </h2>
-                <p class="mt-2 text-sm text-muted-light font-bold tracking-wide uppercase">
+                <p class="mt-2 text-sm text-muted-light tracking-wide">
                     Buat akun baru untuk mulai booking lapangan
                 </p>
             </div>
 
-            <form class="space-y-6" wire:submit="register">
+            <form class="space-y-6" wire:submit.prevent="register">
                 <div class="space-y-5">
                     <!-- Name -->
                      <div>
                         <label for="name" class="block text-[10px] font-black text-muted-light uppercase tracking-widest mb-2 ml-1">Nama Lengkap</label>
                         <div class="relative group">
                             <span class="absolute left-4 top-1/2 -translate-y-1/2 text-muted-light group-focus-within:text-primary transition-colors material-symbols-outlined">badge</span>
-                            <input wire:model="name" id="name" name="name" type="text" required 
+                            <input wire:model="name" id="name" type="text"
                                 class="w-full pl-12 pr-4 py-4 bg-gray-50 dark:bg-gray-800 border-none rounded-2xl text-sm font-bold text-text-light dark:text-text-dark focus:ring-2 focus:ring-primary placeholder-muted-light/30 transition-all" 
                                 placeholder="Nama Lengkap Anda">
                         </div>
@@ -49,7 +49,7 @@
                         <label for="email" class="block text-[10px] font-black text-muted-light uppercase tracking-widest mb-2 ml-1">Email Address</label>
                         <div class="relative group">
                             <span class="absolute left-4 top-1/2 -translate-y-1/2 text-muted-light group-focus-within:text-primary transition-colors material-symbols-outlined">mail</span>
-                            <input wire:model="email" id="email" name="email" type="email" autocomplete="email" required 
+                            <input wire:model="email" id="email" type="email" autocomplete="email"
                                 class="w-full pl-12 pr-4 py-4 bg-gray-50 dark:bg-gray-800 border-none rounded-2xl text-sm font-bold text-text-light dark:text-text-dark focus:ring-2 focus:ring-primary placeholder-muted-light/30 transition-all" 
                                 placeholder="nama@email.com">
                         </div>
@@ -68,7 +68,7 @@
                             
                             <div class="relative group">
                                 <span class="absolute left-4 top-1/2 -translate-y-1/2 text-muted-light group-focus-within:text-primary transition-colors material-symbols-outlined">lock</span>
-                                <input wire:model="password" id="password" name="password" type="password" required 
+                                <input wire:model="password" id="password" type="password"
                                     class="w-full pl-12 pr-4 py-4 bg-gray-50 dark:bg-gray-800 border-none rounded-2xl text-sm font-bold text-text-light dark:text-text-dark focus:ring-2 focus:ring-primary placeholder-muted-light/30 transition-all" 
                                     placeholder="••••••••">
                             </div>
@@ -86,27 +86,32 @@
                             
                             <div class="relative group">
                                 <span class="absolute left-4 top-1/2 -translate-y-1/2 text-muted-light group-focus-within:text-primary transition-colors material-symbols-outlined">lock_reset</span>
-                                <input wire:model="password_confirmation" id="password_confirmation" name="password_confirmation" type="password" required 
+                                <input wire:model="password_confirmation" id="password_confirmation" type="password"
                                     class="w-full pl-12 pr-4 py-4 bg-gray-50 dark:bg-gray-800 border-none rounded-2xl text-sm font-bold text-text-light dark:text-text-dark focus:ring-2 focus:ring-primary placeholder-muted-light/30 transition-all" 
                                     placeholder="••••••••">
                             </div>
+                            @error('password_confirmation') 
+                                <p class="flex items-center gap-1 mt-2 text-xs text-rose-500 font-bold ml-1">
+                                    <span class="material-symbols-outlined text-[14px]">error</span>
+                                    {{ $message }}
+                                </p> 
+                            @enderror
                         </div>
                     </div>
                 </div>
 
                 <div class="pt-4">
-                    <button type="submit" wire:loading.attr="disabled"
-                        class="group relative w-full flex justify-center py-4 px-4 bg-primary text-white text-sm font-black uppercase tracking-[0.2em] rounded-2xl hover:bg-primary-dark transition-all transform active:scale-[0.98] shadow-lg shadow-primary/30">
-                        <span wire:loading.remove class="flex items-center gap-2 group-hover:gap-3 transition-all">
+                    <button type="submit" wire:loading.attr="disabled" wire:target="register"
+                        class="group relative w-full flex justify-center py-4 px-4 bg-primary text-white text-sm font-black uppercase tracking-[0.2em] rounded-2xl hover:bg-primary-dark transition-all transform active:scale-[0.98] shadow-lg shadow-primary/30 disabled:opacity-70 disabled:cursor-not-allowed">
+                        <span wire:loading.remove wire:target="register" class="flex items-center gap-2 group-hover:gap-3 transition-all">
                             DAFTAR SEKARANG
-                            <span class="material-symbols-outlined text-sm">rocket_launch</span>
                         </span>
-                        <span wire:loading class="flex items-center gap-2">
+                        <span wire:loading wire:target="register" class="flex items-center gap-2">
                             <span class="material-symbols-outlined animate-spin text-sm">progress_activity</span>
                             MEMPROSES...
                         </span>
                     </button>
-                    <p class="text-center text-[10px] text-muted-light font-bold mt-4 uppercase tracking-widest">
+                    <p class="text-center text-[12px] mt-4">
                         Dengan mendaftar, Anda menyetujui Syarat & Ketentuan kami.
                     </p>
                 </div>

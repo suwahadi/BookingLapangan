@@ -8,7 +8,7 @@
                     Kembali ke Beranda
                 </a>
                 <h1 class="text-3xl md:text-4xl font-black text-text-light dark:text-text-dark tracking-tight font-display italic uppercase">Dompet <span class="text-primary">Saya</span></h1>
-                <p class="text-muted-light font-bold mt-2 tracking-tight">Kelola saldo dan riwayat transaksi booking Anda.</p>
+                <p class="text-muted-light mt-2 tracking-tight">Kelola saldo dan riwayat transaksi booking Anda</p>
             </div>
             
             <a href="{{ route('member.wallet.withdraw') }}" class="inline-flex items-center gap-2 px-6 py-3 bg-white dark:bg-gray-800 border-2 border-primary text-primary rounded-2xl font-black text-xs tracking-[0.2em] hover:bg-primary hover:text-white transition-all shadow-lg hover:shadow-primary/30 group">

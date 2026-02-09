@@ -1,7 +1,7 @@
 <div class="max-w-3xl mx-auto py-12 px-4">
     <div class="flex items-center justify-between mb-8">
-        <h1 class="text-3xl font-black text-gray-900 tracking-tight uppercase italic">Notifikasi</h1>
-        <button wire:click="markAllAsRead" class="text-xs font-black uppercase tracking-widest hover:underline">
+        <h1 class="text-3xl font-black text-gray-600 tracking-tight uppercase italic">Notifikasi</h1>
+        <button wire:click="markAllAsRead" class="text-xs font-black tracking-widest hover:underline">
             Tandai Semua Dibaca
         </button>
     </div>

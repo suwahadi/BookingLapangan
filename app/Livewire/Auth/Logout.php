@@ -19,7 +19,7 @@ class Logout extends Component
     public function render()
     {
         return <<<'HTML'
-            <button wire:click="logout" class="text-sm font-bold text-rose-600 hover:text-rose-700 transition-colors tracking-tight">
+            <button wire:click="logout" class="w-full text-left block px-4 py-2 text-sm font-bold text-rose-600 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors tracking-tight">
                 Keluar
             </button>
         HTML;

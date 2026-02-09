@@ -40,32 +40,40 @@
         <!-- Date Picker Strip -->
         <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 mb-8">
             <div class="flex items-center gap-3">
-                <!-- Date Slider -->
-                <div class="flex-1 flex items-center gap-2 overflow-x-auto no-scrollbar">
+                <!-- Date Strip -->
+                <div class="flex-1 flex md:grid md:grid-cols-7 gap-2 overflow-x-auto no-scrollbar scroll-smooth snap-x sm:snap-none">
                     @foreach($upcomingDates as $item)
                         @php
                             $isActive = $date === $item['value'];
                         @endphp
                         <button type="button" 
                             wire:click="$set('date', '{{ $item['value'] }}')"
-                            class="flex-shrink-0 flex flex-col items-center px-4 py-2 rounded-xl transition-all duration-200
+                            class="flex-shrink-0 w-[22%] md:w-auto h-20 snap-center flex flex-col items-center justify-center rounded-2xl transition-all duration-300 relative overflow-hidden group
                             {{ $isActive 
-                                ? 'bg-[#8B1538] text-white shadow-lg' 
-                                : 'bg-gray-50 text-gray-600 hover:bg-gray-100' }}">
-                            <span class="text-[10px] font-bold uppercase tracking-wide {{ $isActive ? 'text-white/80' : 'text-gray-400' }}">{{ $item['label_day'] }}</span>
-                            <span class="text-sm font-black mt-0.5">{{ $item['label_date'] }}</span>
+                                ? 'bg-[#981028] text-white shadow-lg shadow-red-900/20 scale-100 ring-2 ring-red-900/10' 
+                                : 'bg-transparent text-gray-500 hover:bg-gray-50 hover:text-gray-900' }}">
+                            
+                            <span class="text-[10px] uppercase tracking-widest mb-1 {{ $isActive ? 'text-white/70' : 'text-gray-400 group-hover:text-gray-500' }}">{{ $item['label_day'] }}</span>
+                            <span class="text-sm font-black font-display {{ $isActive ? 'text-white' : 'text-gray-900' }}">{{ $item['label_date'] }}</span>
+                            
+                            @if($isActive)
+                                <div class="absolute bottom-1 w-1 h-1 rounded-full bg-white/50"></div>
+                            @endif
                         </button>
                     @endforeach
                 </div>
 
-                <!-- Calendar Button with Native Date Input -->
-                <div class="relative flex-shrink-0">
+                <!-- Vertical Divider -->
+                <div class="hidden md:block w-px h-12 bg-gray-200 mx-2"></div>
+
+                <!-- Calendar Button -->
+                <div class="relative flex-shrink-0 ml-auto md:ml-0 pl-2 md:pl-0 border-l md:border-l-0 border-gray-200 h-12 flex items-center">
                     <input type="date" 
                            wire:model.live="date" 
-                           class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                           class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20"
                            min="{{ now()->format('Y-m-d') }}">
-                    <div class="w-12 h-12 rounded-xl border-2 border-gray-200 flex items-center justify-center text-gray-500 hover:border-[#8B1538] hover:text-[#8B1538] transition-colors bg-white pointer-events-none">
-                        <span class="material-symbols-outlined text-xl">calendar_month</span>
+                    <div class="w-12 h-12 rounded-xl border-2 border-gray-200 flex items-center justify-center text-gray-600 hover:border-[#981028] hover:text-[#981028] transition-all bg-white group cursor-pointer">
+                        <span class="material-symbols-outlined text-xl group-hover:scale-110 transition-transform">calendar_month</span>
                     </div>
                 </div>
             </div>
@@ -114,7 +122,7 @@
                 @endif
 
                 <!-- Slots Grid -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
+                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
                     @foreach($timeSlots as $i => $slot)
                         @php
                             $isSelected = in_array($i, $selectedIndexes, true);
@@ -124,17 +132,17 @@
                             $originalAmount = $amount > 0 ? $amount + 10000 : 0;
                         @endphp
 
-                        @if($slot['is_available'])
+                        @if($slot['is_available'] && $amount > 0)
                             <button type="button"
                                     wire:click="toggleSelect({{ $i }})"
                                     wire:loading.attr="disabled"
-                                    class="relative p-4 rounded-xl border transition-all duration-200 text-center group
+                                    class="relative p-3 rounded-xl border transition-all duration-200 text-center group
                                     {{ $isSelected 
                                         ? 'bg-red-50 border-red-200' 
                                         : 'bg-white hover:border-red-200 border-gray-100' 
                                     }}">
                                 
-                                <div class="text-[10px] font-bold uppercase tracking-wider mb-2 {{ $isSelected ? 'text-red-700' : 'text-gray-400' }}">60 Menit</div>
+                                <div class="text-[10px] uppercase tracking-wider mb-2 {{ $isSelected ? 'text-red-700' : 'text-gray-400' }}">60 Menit</div>
                                 @if($isSelected)
                                     <div class="absolute top-2 right-2">
                                         <span class="material-symbols-outlined text-red-600 text-sm">check_circle</span>
@@ -146,23 +154,27 @@
                                 </div>
                                 
                                 <div class="space-y-0.5">
-                                    @if($amount > 0)
-                                        <div class="text-[10px] font-bold text-gray-300 line-through">Rp{{ number_format($originalAmount, 0, ',', '.') }}</div>
-                                        <div class="text-sm font-black {{ $isSelected ? 'text-red-600' : 'text-gray-500' }}">
-                                            Rp{{ number_format($amount, 0, ',', '.') }}
-                                        </div>
-                                    @else
-                                         <div class="text-sm font-black text-gray-900">-</div>
-                                    @endif
+                                    <div class="text-[10px] text-gray-300 line-through">Rp{{ number_format($originalAmount, 0, ',', '.') }}</div>
+                                    <div class="text-sm font-black {{ $isSelected ? 'text-red-600' : 'text-gray-500' }}">
+                                        Rp{{ number_format($amount, 0, ',', '.') }}
+                                    </div>
                                 </div>
                             </button>
+                        @elseif($slot['is_available'] && $amount <= 0)
+                             <div class="p-3 rounded-xl border border-gray-100 bg-gray-50/50 text-center opacity-40 cursor-not-allowed">
+                                <div class="text-[10px] uppercase tracking-wider mb-2 text-gray-300">60 Menit</div>
+                                <div class="text-sm font-black mb-3 text-gray-400">
+                                    {{ $slot['start'] }} - {{ $slot['end'] }}
+                                </div>
+                                <div class="text-sm font-black text-gray-300">-</div>
+                            </div>
                         @else
                             <div class="p-4 rounded-xl border border-gray-100 bg-gray-50 text-center opacity-60 cursor-not-allowed">
-                                <div class="text-[10px] font-bold uppercase tracking-wider mb-2 text-gray-300">60 Menit</div>
+                                <div class="text-[10px] uppercase tracking-wider mb-2 text-gray-300">60 Menit</div>
                                 <div class="text-sm font-black mb-3 text-gray-400 line-through">
                                     {{ $slot['start'] }} - {{ $slot['end'] }}
                                 </div>
-                                <div class="text-xs font-bold text-gray-300 uppercase">Booked</div>
+                                <div class="text-xs text-gray-300 uppercase">Booked</div>
                             </div>
                         @endif
                     @endforeach
@@ -173,7 +185,7 @@
             <div class="lg:col-span-1">
                 @if(!empty($selectedIndexes))
                     <div class="lg:sticky lg:top-8 bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-xl border border-gray-100">
-                        <h3 class="font-black text-lg text-gray-900 mb-6">Ringkasan</h3>
+                        <h3 class="font-black text-lg text-gray-600 mb-6">Ringkasan</h3>
                         
                         <div class="space-y-4 mb-6">
                             @foreach($displayBlocks as $block)
@@ -204,7 +216,7 @@
 
                         <div class="border-t border-dashed border-gray-200 pt-4 mb-6">
                              <div class="flex justify-between items-end">
-                                <span class="text-xs font-bold text-gray-500">Total</span>
+                                <span class="text-xs text-gray-500">Total</span>
                                 <span class="text-2xl font-black text-red-600">Rp {{ number_format($this->selectedTotal, 0, ',', '.') }}</span>
                              </div>
                         </div>

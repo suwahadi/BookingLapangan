@@ -20,19 +20,19 @@
                 <h2 class="text-3xl font-black text-text-light dark:text-text-dark tracking-tight italic uppercase">
                     Welcome <span class="text-primary">Back!</span>
                 </h2>
-                <p class="mt-2 text-sm text-muted-light font-bold tracking-wide uppercase">
+                <p class="mt-2 text-sm text-muted-light tracking-wide">
                     Masuk untuk kelola jadwal mainmu
                 </p>
             </div>
 
-            <form class="space-y-6" wire:submit="login">
+            <form class="space-y-6" wire:submit.prevent="login">
                 <div class="space-y-5">
                     <!-- Email -->
                     <div>
                         <label for="email" class="block text-[10px] font-black text-muted-light uppercase tracking-widest mb-2 ml-1">Email Address</label>
                         <div class="relative group">
                             <span class="absolute left-4 top-1/2 -translate-y-1/2 text-muted-light group-focus-within:text-primary transition-colors material-symbols-outlined">mail</span>
-                            <input wire:model="email" id="email" name="email" type="email" autocomplete="email" required 
+                            <input wire:model="email" id="email" type="email" autocomplete="email" required 
                                 class="w-full pl-12 pr-4 py-4 bg-gray-50 dark:bg-gray-800 border-none rounded-2xl text-sm font-bold text-text-light dark:text-text-dark focus:ring-2 focus:ring-primary placeholder-muted-light/30 transition-all" 
                                 placeholder="nama@email.com">
                         </div>
@@ -53,7 +53,7 @@
                         
                         <div class="relative group">
                             <span class="absolute left-4 top-1/2 -translate-y-1/2 text-muted-light group-focus-within:text-primary transition-colors material-symbols-outlined">lock</span>
-                            <input wire:model="password" id="password" name="password" type="password" autocomplete="current-password" required 
+                            <input wire:model="password" id="password" type="password" autocomplete="current-password" required 
                                 class="w-full pl-12 pr-4 py-4 bg-gray-50 dark:bg-gray-800 border-none rounded-2xl text-sm font-bold text-text-light dark:text-text-dark focus:ring-2 focus:ring-primary placeholder-muted-light/30 transition-all" 
                                 placeholder="••••••••">
                         </div>
@@ -67,24 +67,22 @@
                 </div>
 
                 <div class="flex items-center">
-                    <label class="flex items-center cursor-pointer gap-3 group">
-                        <div class="relative flex items-center">
-                             <input wire:model="remember" id="remember-me" name="remember-me" type="checkbox" class="peer sr-only">
-                             <div class="w-5 h-5 border-2 border-gray-300 rounded-lg peer-checked:bg-primary peer-checked:border-primary transition-all"></div>
-                             <span class="material-symbols-outlined text-white text-[14px] absolute inset-0 m-auto opacity-0 peer-checked:opacity-100 transition-opacity pointer-events-none font-bold">check</span>
+                    <label for="remember-me" class="flex items-center cursor-pointer gap-3 group">
+                        <div class="relative flex items-center justify-center">
+                             <input wire:model="remember" id="remember-me" type="checkbox" 
+                                class="w-5 h-5 rounded-lg border-2 border-gray-300 bg-gray-50 dark:bg-gray-800 text-primary focus:ring-2 focus:ring-primary focus:ring-offset-0 checked:bg-primary checked:border-primary transition-all cursor-pointer">
                         </div>
                         <span class="text-xs text-muted-light font-bold group-hover:text-primary transition-colors select-none">Ingat saya di perangkat ini</span>
                     </label>
                 </div>
 
                 <div class="pt-2">
-                    <button type="submit" wire:loading.attr="disabled"
-                        class="group relative w-full flex justify-center py-4 px-4 bg-primary text-white text-sm font-black uppercase tracking-[0.2em] rounded-2xl hover:bg-primary-dark transition-all transform active:scale-[0.98] shadow-lg shadow-primary/30">
-                        <span wire:loading.remove class="flex items-center gap-2 group-hover:gap-3 transition-all">
+                    <button type="submit" wire:loading.attr="disabled" wire:target="login"
+                        class="group relative w-full flex justify-center py-4 px-4 bg-primary text-white text-sm font-black uppercase tracking-[0.2em] rounded-2xl hover:bg-primary-dark transition-all transform active:scale-[0.98] shadow-lg shadow-primary/30 disabled:opacity-70 disabled:cursor-not-allowed">
+                        <span wire:loading.remove wire:target="login" class="flex items-center gap-2 group-hover:gap-3 transition-all">
                             MASUK
-                            <span class="material-symbols-outlined text-sm">arrow_forward</span>
                         </span>
-                        <span wire:loading class="flex items-center gap-2">
+                        <span wire:loading wire:target="login" class="flex items-center gap-2">
                             <span class="material-symbols-outlined animate-spin text-sm">progress_activity</span>
                             MEMPROSES...
                         </span>

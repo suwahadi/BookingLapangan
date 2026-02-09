@@ -69,10 +69,46 @@ class ReviewOrder extends Component
         $this->redirectRoute('courts.schedule', ['venueCourt' => $this->venueCourt->id], navigate: true);
     }
 
-    public function proceedToPayment()
+    public function proceedToPayment(BookingService $service)
     {
-        // Simple redirect for testing
-        return redirect('/booking/5/checkout');
+        if (!Auth::check()) {
+            $this->dispatch('openAuthModal', mode: 'login');
+            return;
+        }
+
+        if (empty($this->selectedSlots)) {
+            $this->redirectRoute('home', navigate: true);
+            return;
+        }
+
+        // Sort slots by start time
+        $slots = $this->selectedSlots;
+        usort($slots, fn($a, $b) => strcmp($a['start'], $b['start']));
+
+        // Assuming contiguous slots for MVP
+        $start = $slots[0]['start'];
+        $end = end($slots)['end'];
+
+        try {
+            $booking = $service->createHold(
+                userId: Auth::id(),
+                venueCourtId: $this->venueCourt->id,
+                dateYmd: $this->date,
+                startTimeHi: $start,
+                endTimeHi: $end,
+                notes: 'Booking via Website',
+                idempotencyKey: (string) \Illuminate\Support\Str::uuid()
+            );
+
+            // Clear cart
+            Session::forget('booking_cart');
+
+            // Redirect to friendly URL
+            return redirect()->route('checkout.payment', ['booking' => $booking->id]);
+
+        } catch (\Exception $e) {
+            $this->errorMessage = $e->getMessage();
+        }
     }
 
     public function render()

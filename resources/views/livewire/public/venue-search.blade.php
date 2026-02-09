@@ -19,7 +19,7 @@
             <img src="https://yomabar.web.id/storage/hero/hero_slide_001.webp" 
                  alt="Hero Slide" 
                  class="w-full h-full object-cover">
-            <div class="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-transparent"></div>
+            <div class="absolute inset-0 bg-black/60"></div>
         </div>
 
         <!-- Hero Content -->
@@ -138,6 +138,7 @@
                     <!-- Category List -->
                     <div class="space-y-1.5">
                         @foreach($sportCategories as $cat)
+                            <div wire:key="cat-desktop-{{ $cat['key'] }}">
                             @php
                                 $isActive = $sport_type === $cat['key'];
                                 $colorClasses = match($cat['color']) {
@@ -180,6 +181,7 @@
                                     <span class="material-symbols-outlined ml-auto text-lg">check_circle</span>
                                 @endif
                             </button>
+                            </div>
                         @endforeach
                     </div>
 
@@ -192,9 +194,15 @@
                         <p class="text-white/80 text-sm mb-4 leading-relaxed">
                             Daftarkan venue Anda dan jangkau ribuan atlet setiap harinya.
                         </p>
-                        <button class="w-full bg-white text-[#8B1538] py-3 rounded-xl text-sm font-black hover:bg-gray-100 transition-colors">
-                            Daftar Sekarang
-                        </button>
+                        @auth
+                            <a href="{{ route('member.dashboard') }}" wire:navigate class="block text-center w-full bg-white text-[#8B1538] py-3 rounded-xl text-sm font-black hover:bg-gray-100 transition-colors">
+                                Member Area
+                            </a>
+                        @else
+                            <button onclick="Livewire.dispatch('openAuthModal', { mode: 'register' })" class="w-full bg-white text-[#8B1538] py-3 rounded-xl text-sm font-black hover:bg-gray-100 transition-colors">
+                                Daftar Sekarang
+                            </button>
+                        @endauth
                     </div>
                 </div>
             </aside>
@@ -205,6 +213,7 @@
                 <div class="lg:hidden mb-8 -mx-4 px-4">
                     <div class="flex gap-3 overflow-x-auto no-scrollbar pb-2">
                         @foreach($sportCategories as $cat)
+                            <div wire:key="cat-mobile-{{ $cat['key'] }}">
                             @php $isActive = $sport_type === $cat['key']; @endphp
                             <button wire:click="$set('sport_type', '{{ $cat['key'] }}')"
                                     class="flex-shrink-0 px-4 py-2 rounded-full text-sm font-bold transition-all
@@ -214,6 +223,7 @@
                                            }}">
                                 {{ $cat['name'] }}
                             </button>
+                            </div>
                         @endforeach
                     </div>
                 </div>
@@ -235,6 +245,7 @@
                 <!-- Venue Grid -->
                 <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
                     @forelse($venues as $venue)
+                        <div wire:key="venue-{{ $venue->id }}" class="contents">
                         <a href="{{ route('public.venues.show', $venue->slug) }}" 
                            class="group bg-white rounded-2xl shadow-sm overflow-hidden border border-gray-100 hover:shadow-xl hover:border-[#8B1538]/20 transition-all duration-300">
                             <!-- Image -->
@@ -273,7 +284,7 @@
                                     <div>
                                         <span class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Mulai dari</span>
                                         <div class="text-[#8B1538] text-xl font-black">
-                                            Rp {{ number_format($venue->courts->min('price_per_hour') ?? 50000, 0, ',', '.') }}
+                                            Rp {{ number_format($venue->pricings_min_price_per_hour ?? 50000, 0, ',', '.') }}
                                             <span class="text-xs text-gray-400 font-medium">/jam</span>
                                         </div>
                                     </div>
@@ -283,6 +294,7 @@
                                 </div>
                             </div>
                         </a>
+                        </div> <!-- end wire:key wrapper -->
                     @empty
                         <div class="col-span-full text-center py-20 bg-gray-50 rounded-2xl">
                             <div class="w-20 h-20 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4">

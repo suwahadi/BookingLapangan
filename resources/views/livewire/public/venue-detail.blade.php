@@ -13,50 +13,95 @@
     <!-- Main Content Area -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         
-        <!-- Gallery Grid (1 Large, 2 Small Side) -->
-        <div class="grid grid-cols-1 md:grid-cols-4 grid-rows-2 gap-4 h-[400px] md:h-[500px] mb-10">
-             @php 
+        <!-- Gallery Section -->
+        <div class="mb-10">
+            @php 
                 $media = $venue->media; 
+                $images = $media->map(fn($m) => Storage::url($m->file_path))->values();
+                if($images->isEmpty()) {
+                    $images = collect(['https://ui-avatars.com/api/?name='.urlencode($venue->name).'&background=random']);
+                }
                 $mainImage = $media->first();
                 $sideImages = $media->skip(1)->take(2);
             @endphp
 
-            <!-- Main Image (Left Big) -->
-            <div class="md:col-span-2 md:row-span-2 relative rounded-[2rem] overflow-hidden group shadow-lg">
-                @if($mainImage)
-                    <img src="{{ Storage::url($mainImage->file_path) }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
-                @else
-                    <div class="w-full h-full bg-gray-200 dark:bg-gray-800 flex items-center justify-center">
-                        <span class="material-symbols-outlined text-6xl text-gray-400">image</span>
+            <!-- Mobile Slider -->
+            <div class="md:hidden relative h-64 rounded-[2rem] overflow-hidden group shadow-lg" 
+                 x-data="{ 
+                    active: 0, 
+                    images: {{ $images }},
+                    next() { this.active = (this.active === this.images.length - 1) ? 0 : this.active + 1 },
+                    prev() { this.active = (this.active === 0) ? this.images.length - 1 : this.active - 1 }
+                 }">
+                
+                <template x-for="(img, index) in images" :key="index">
+                    <img :src="img" 
+                         x-show="active === index"
+                         x-transition:enter="transition opacity duration-500"
+                         x-transition:enter-start="opacity-0"
+                         x-transition:enter-end="opacity-100"
+                         x-transition:leave="transition opacity duration-500"
+                         x-transition:leave-start="opacity-100"
+                         x-transition:leave-end="opacity-0"
+                         class="absolute inset-0 w-full h-full object-cover">
+                </template>
+
+                <!-- Navigation Arrows -->
+                <button @click.stop="prev()" class="absolute left-4 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center bg-white/20 backdrop-blur-md rounded-full text-white hover:bg-white/40 transition-colors z-20">
+                    <span class="material-symbols-outlined text-lg">chevron_left</span>
+                </button>
+                <button @click.stop="next()" class="absolute right-4 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center bg-white/20 backdrop-blur-md rounded-full text-white hover:bg-white/40 transition-colors z-20">
+                    <span class="material-symbols-outlined text-lg">chevron_right</span>
+                </button>
+
+                <!-- Centered View All -->
+                <div class="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
+                     <div class="flex flex-col items-center justify-center text-white drop-shadow-md">
+                        <span class="material-symbols-outlined text-3xl mb-1">grid_view</span>
+                        <span class="text-[10px] font-black uppercase tracking-widest">Lihat Semua Foto</span>
                     </div>
-                @endif
+                </div>
             </div>
 
-            <!-- Side Images (Right Stack) -->
-            @forelse($sideImages as $img)
-                <div class="md:col-span-1 md:row-span-1 relative rounded-[2rem] overflow-hidden group shadow-lg">
-                    <img src="{{ Storage::url($img->file_path) }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+            <!-- Desktop Grid (Original) -->
+            <div class="hidden md:grid grid-cols-4 grid-rows-2 gap-4 h-[500px]">
+                <!-- Main Image (Left Big) -->
+                <div class="col-span-2 row-span-2 relative rounded-[2rem] overflow-hidden group shadow-lg">
+                    @if($mainImage)
+                        <img src="{{ Storage::url($mainImage->file_path) }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                    @else
+                        <div class="w-full h-full bg-gray-200 dark:bg-gray-800 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-6xl text-gray-400">image</span>
+                        </div>
+                    @endif
                 </div>
-            @empty
-                <div class="md:col-span-1 md:row-span-1 bg-gray-100 dark:bg-gray-800 rounded-[2rem] flex items-center justify-center">
-                     <span class="material-symbols-outlined text-4xl text-gray-300">image</span>
-                </div>
-                <div class="md:col-span-1 md:row-span-1 bg-gray-100 dark:bg-gray-800 rounded-[2rem] flex items-center justify-center">
-                     <span class="material-symbols-outlined text-4xl text-gray-300">image</span>
-                </div>
-            @endforelse
 
-            <!-- View All Button Overlay (Placed on the last available slot visually or over main) -->
-            <div class="md:col-span-1 md:row-span-1 relative rounded-[2rem] overflow-hidden group cursor-pointer">
-                @if($media->count() > 3)
-                   <img src="{{ Storage::url($media[3]->file_path) }}" class="w-full h-full object-cover blur-sm brightness-50">
-                @else
-                   <div class="w-full h-full bg-gray-900/50"></div>
-                @endif
-                
-                <div class="absolute inset-0 flex flex-col items-center justify-center text-white p-4 text-center hover:bg-black/20 transition-colors">
-                    <span class="material-symbols-outlined text-3xl mb-1">grid_view</span>
-                    <span class="text-xs font-black uppercase tracking-widest">Lihat Semua Foto</span>
+                <!-- Side Images (Right Stack) -->
+                @forelse($sideImages as $img)
+                    <div class="col-span-1 row-span-1 relative rounded-[2rem] overflow-hidden group shadow-lg">
+                        <img src="{{ Storage::url($img->file_path) }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                    </div>
+                @empty
+                    <div class="col-span-1 row-span-1 bg-gray-100 dark:bg-gray-800 rounded-[2rem] flex items-center justify-center">
+                         <span class="material-symbols-outlined text-4xl text-gray-300">image</span>
+                    </div>
+                    <div class="col-span-1 row-span-1 bg-gray-100 dark:bg-gray-800 rounded-[2rem] flex items-center justify-center">
+                         <span class="material-symbols-outlined text-4xl text-gray-300">image</span>
+                    </div>
+                @endforelse
+
+                <!-- View All Button Overlay -->
+                <div class="col-span-1 row-span-1 relative rounded-[2rem] overflow-hidden group cursor-pointer bg-black">
+                    @if($media->count() > 3)
+                       <img src="{{ Storage::url($media[3]->file_path) }}" class="w-full h-full object-cover opacity-60 group-hover:opacity-40 transition-opacity">
+                    @else
+                       <div class="w-full h-full bg-gray-900/50"></div>
+                    @endif
+                    
+                    <div class="absolute inset-0 flex flex-col items-center justify-center text-white p-4 text-center">
+                        <span class="material-symbols-outlined text-3xl mb-1 group-hover:scale-110 transition-transform">grid_view</span>
+                        <span class="text-xs font-black uppercase tracking-widest">Lihat Semua Foto</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -77,13 +122,13 @@
                             <span class="font-black text-lg text-text-light dark:text-text-dark">4.9</span>
                         </div>
                         <span class="text-gray-300">|</span>
-                        <div class="flex items-center gap-1 text-muted-light text-sm font-bold uppercase tracking-wide">
+                        <div class="flex items-center gap-1 text-muted-light text-sm">
                              <span class="material-symbols-outlined text-sm">location_on</span>
                              {{ $venue->city }}
                         </div>
                         <span class="text-gray-300">|</span>
-                        <div class="px-3 py-1 bg-gray-100 dark:bg-gray-800 rounded-lg text-[10px] font-black uppercase tracking-widest text-text-light dark:text-text-dark">
-                            Badminton
+                        <div class="px-3 py-1 bg-gray-100 dark:bg-gray-800 rounded-lg text-[12px] text-muted-light">
+                            {{ $venue->courts->pluck('sport')->unique()->implode(', ') ?: 'Olahraga' }}
                         </div>
                     </div>
                 </div>
@@ -92,12 +137,12 @@
                 <div x-data="{ expanded: false }" class="space-y-4 border-b border-gray-100 dark:border-gray-800 pb-10">
                     <h3 class="text-lg font-black text-text-light dark:text-text-dark uppercase italic">Deskripsi</h3>
                     <div class="relative">
-                        <p class="text-sm font-medium text-muted-light leading-relaxed" 
+                        <p class="text-sm text-muted-light leading-relaxed" 
                            :class="expanded ? '' : 'line-clamp-3'">
                             {{ $venue->description ?? 'Tidak ada deskripsi tersedia.' }}
                             <br>
                         </p>
-                        <button @click="expanded = !expanded" class="text-primary font-bold text-xs uppercase tracking-widest mt-2 hover:underline">
+                        <button @click="expanded = !expanded" class="text-primary text-xs hover:underline">
                             <span x-text="expanded ? 'Sembunyikan' : 'Baca Selengkapnya'"></span>
                         </button>
                     </div>
@@ -109,11 +154,11 @@
                                 <span class="material-symbols-outlined text-xl">map</span>
                              </div>
                              <div>
-                                 <p class="text-xs font-black uppercase text-gray-400 tracking-widest mb-0.5">Lokasi Venue</p>
-                                 <p class="text-sm font-bold text-text-light dark:text-text-dark line-clamp-1">{{ $venue->address }}</p>
+                                 <p class="text-xs font-black uppercase">Lokasi Venue</p>
+                                 <p class="text-sm text-text-light dark:text-text-dark line-clamp-1">{{ $venue->address }}</p>
                              </div>
                         </div>
-                        <a href="https://maps.google.com/?q={{ urlencode($venue->address) }}" target="_blank" class="text-primary font-black text-xs uppercase tracking-widest hover:underline flex items-center gap-1">
+                        <a href="https://maps.google.com/?q={{ urlencode($venue->address) }}" target="_blank" class="text-primary font-black text-xs hover:underline flex items-center gap-1">
                             Peta
                             <span class="material-symbols-outlined text-sm">open_in_new</span>
                         </a>
@@ -124,7 +169,7 @@
                 <div class="border-b border-gray-100 dark:border-gray-800 pb-10">
                     <h3 class="text-lg font-black text-text-light dark:text-text-dark uppercase italic mb-6">Fasilitas</h3>
                     @if($venue->amenities->count() > 0)
-                        <div class="grid grid-cols-2 md:grid-cols-4 gap-y-6 gap-x-4">
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                             @foreach($venue->amenities as $amenity)
                                 @php
                                     $iconName = strtolower($amenity->name);
@@ -142,18 +187,16 @@
                                         default => $amenity->icon ?? 'check_circle'
                                     };
                                 @endphp
-                                <div class="flex items-center gap-3 p-3 rounded-2xl hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors border border-transparent hover:border-gray-100 dark:hover:border-gray-700">
-                                    <div class="text-primary">
-                                         @if($icon === 'directions_car') <span class="material-symbols-outlined text-2xl">directions_car</span>
-                                         @elseif($icon === 'wc') <span class="material-symbols-outlined text-2xl">wc</span>
-                                         @elseif($icon === 'restaurant') <span class="material-symbols-outlined text-2xl">restaurant</span>
-                                         @elseif($icon === 'two_wheeler') <span class="material-symbols-outlined text-2xl">two_wheeler</span>
-                                         @elseif($icon === 'wifi') <span class="material-symbols-outlined text-2xl">wifi</span>
-                                         @elseif($icon === 'mosque') <span class="material-symbols-outlined text-2xl">mosque</span>
-                                         @else <span class="material-symbols-outlined text-2xl">{{ $icon }}</span>
-                                         @endif
-                                    </div>
-                                    <span class="text-sm font-bold text-text-light dark:text-text-dark capitalize tracking-wide">{{ $amenity->name }}</span>
+                                <div class="flex items-center gap-2 text-muted-light dark:text-gray-400">
+                                    @if($icon === 'directions_car') <span class="material-symbols-outlined text-xl">directions_car</span>
+                                    @elseif($icon === 'wc') <span class="material-symbols-outlined text-xl">wc</span>
+                                    @elseif($icon === 'restaurant') <span class="material-symbols-outlined text-xl">restaurant</span>
+                                    @elseif($icon === 'two_wheeler') <span class="material-symbols-outlined text-xl">two_wheeler</span>
+                                    @elseif($icon === 'wifi') <span class="material-symbols-outlined text-xl">wifi</span>
+                                    @elseif($icon === 'mosque') <span class="material-symbols-outlined text-xl">mosque</span>
+                                    @else <span class="material-symbols-outlined text-xl">{{ $icon }}</span>
+                                    @endif
+                                    <span class="text-sm font-medium text-text-light dark:text-text-dark capitalize">{{ $amenity->name }}</span>
                                 </div>
                             @endforeach
                         </div>
@@ -180,19 +223,13 @@
                                     <div class="w-full md:w-48 h-40 rounded-3xl overflow-hidden relative shrink-0">
                                         <div class="absolute inset-0 bg-primary/10 group-hover:bg-transparent transition-colors z-10"></div>
                                         <img src="https://ui-avatars.com/api/?name={{ $court->name }}&background=random&size=400" class="w-full h-full object-cover">
-                                        <!-- Nav Icons (Mock) -->
-                                        <div class="absolute top-1/2 left-2 -translate-y-1/2 w-6 h-6 bg-white/50 rounded-full flex items-center justify-center cursor-pointer hover:bg-white text-xs backdrop-blur-sm z-20">❮</div>
-                                        <div class="absolute top-1/2 right-2 -translate-y-1/2 w-6 h-6 bg-white/50 rounded-full flex items-center justify-center cursor-pointer hover:bg-white text-xs backdrop-blur-sm z-20">❯</div>
-                                        <div class="absolute bottom-2 right-2 px-2 py-1 bg-black/60 backdrop-blur-md rounded-lg text-[8px] font-bold text-white uppercase tracking-wider">
-                                            Lihat semua foto
-                                        </div>
                                     </div>
                                     
                                     <!-- Middle: Info -->
                                     <div class="flex-1 space-y-3">
                                         <div class="flex items-center justify-between">
                                             <h3 class="text-xl font-black text-text-light dark:text-text-dark uppercase italic">{{ $court->name }}</h3>
-                                            <a href="{{ route('courts.schedule', ['venueCourt' => $court->id]) }}" class="hidden md:flex items-center gap-1 text-[10px] font-black uppercase text-text-light dark:text-text-dark hover:text-primary">
+                                            <a href="{{ route('courts.schedule', ['venue' => $venue->slug, 'venueCourt' => $court->id]) }}" class="hidden md:flex items-center gap-1 text-[10px] font-black uppercase text-text-light dark:text-text-dark hover:text-primary">
                                                 Detail 
                                                 <span class="material-symbols-outlined text-sm">arrow_forward</span>
                                             </a>
@@ -205,7 +242,7 @@
                                         </div>
 
                                         <div class="pt-4 mt-2 border-t border-gray-50 dark:border-gray-800">
-                                            <a href="{{ route('courts.schedule', ['venueCourt' => $court->id]) }}" class="w-full md:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 bg-primary text-white rounded-xl font-black text-xs uppercase tracking-widest hover:bg-primary-dark transition-all shadow-lg shadow-primary/20 group-hover:scale-105 active:scale-95">
+                                            <a href="{{ route('courts.schedule', ['venue' => $venue->slug, 'venueCourt' => $court->id]) }}" class="w-full md:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 bg-primary text-white rounded-xl font-black text-xs uppercase tracking-widest hover:bg-primary-dark transition-all shadow-lg shadow-primary/20 group-hover:scale-105 active:scale-95">
                                                 <span class="material-symbols-outlined text-sm">schedule</span>
                                                 Lihat & Pilih Jadwal
                                             </a>
@@ -269,7 +306,9 @@
                 <div class="bg-surface-light dark:bg-surface-dark rounded-[2.5rem] p-8 shadow-2xl border border-gray-100 dark:border-gray-700">
                     <p class="text-[10px] font-bold text-muted-light uppercase tracking-widest mb-1">Mulai Dari</p>
                     <div class="flex items-end gap-1 mb-6">
-                        <h3 class="text-3xl font-black text-primary italic font-display">Rp 50.000</h3>
+                        <h3 class="text-3xl font-black text-primary italic font-display">
+                            Rp {{ number_format($venue->pricings()->min('price_per_hour') ?? 50000, 0, ',', '.') }}
+                        </h3>
                         <span class="text-xs font-bold text-muted-light mb-1">/ Sesi</span>
                     </div>
 
@@ -279,24 +318,28 @@
 
                     <div class="space-y-4">
                         <h5 class="font-black text-sm text-text-light dark:text-text-dark">Booking lewat aplikasi lebih banyak keuntungan!</h5>
-                        <ul class="space-y-3">
-                            <li class="flex items-start gap-3">
-                                <span class="material-symbols-outlined text-primary text-lg">check_circle</span>
-                                <span class="text-xs font-bold text-muted-light leading-snug">Opsi pembayaran down payment (DP)*</span>
+                        <ul class="space-y-2">
+                            <li class="flex items-start gap-2">
+                                <span class="material-symbols-outlined text-primary text-base">check_circle</span>
+                                <span class="text-xs text-muted-light leading-snug">Opsi pembayaran down payment (DP)*</span>
                             </li>
-                             <li class="flex items-start gap-3">
-                                <span class="material-symbols-outlined text-primary text-lg">check_circle</span>
-                                <span class="text-xs font-bold text-muted-light leading-snug">Reschedule jadwal booking*</span>
+                             <li class="flex items-start gap-2">
+                                <span class="material-symbols-outlined text-primary text-base">check_circle</span>
+                                <span class="text-xs text-muted-light leading-snug">Reschedule jadwal booking*</span>
                             </li>
-                             <li class="flex items-start gap-3">
-                                <span class="material-symbols-outlined text-primary text-lg">check_circle</span>
-                                <span class="text-xs font-bold text-muted-light leading-snug">Lebih banyak promo & voucher</span>
+                             <li class="flex items-start gap-2">
+                                <span class="material-symbols-outlined text-primary text-base">check_circle</span>
+                                <span class="text-xs text-muted-light leading-snug">Lebih banyak promo & voucher</span>
                             </li>
                         </ul>
                     </div>
 
                     <div class="mt-6 pt-6 border-t border-gray-100 dark:border-gray-800 text-center">
-                         <button class="px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                         <button 
+                             @click="navigator.share({ title: '{{ $venue->name }}', text: 'Cek venue {{ $venue->name }} di Yomabar!', url: window.location.href })"
+                             class="w-full flex items-center justify-center gap-2 px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-xl text-primary font-bold text-xs uppercase tracking-widest hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                         >
+                             <span class="material-symbols-outlined text-sm">share</span>
                              Bagikan Venue
                          </button>
                     </div>

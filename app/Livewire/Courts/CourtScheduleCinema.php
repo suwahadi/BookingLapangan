@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Courts;
 
+use App\Models\Venue;
 use App\Models\VenueCourt;
 use App\Services\Booking\AvailabilityService;
 use App\Services\Booking\BookingService;
@@ -33,7 +34,7 @@ class CourtScheduleCinema extends Component
 
     public ?string $errorMessage = null;
 
-    public function mount(VenueCourt $venueCourt): void
+    public function mount(Venue $venue, VenueCourt $venueCourt): void
     {
         $this->venueCourt = $venueCourt->load('venue.policy');
         $this->date = CarbonImmutable::now()->format('Y-m-d');
@@ -186,7 +187,7 @@ class CourtScheduleCinema extends Component
     {
         $startDate = CarbonImmutable::now();
         $upcomingDates = [];
-        for ($i = 0; $i < 14; $i++) {
+        for ($i = 0; $i < 7; $i++) {
             $d = $startDate->addDays($i);
             $upcomingDates[] = [
                 'value' => $d->format('Y-m-d'),

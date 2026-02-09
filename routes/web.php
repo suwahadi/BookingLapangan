@@ -10,21 +10,22 @@ Route::get('/', VenueSearch::class)->name('home');
 Route::get('/venues/{venue}', VenueDetail::class)->name('public.venues.show');
 
 // Court Schedule (Cinema Style)
-Route::get('/court/{venueCourt}', CourtScheduleCinema::class)->name('courts.schedule');
+Route::get('/venues/{venue:slug}/court/{venueCourt}', CourtScheduleCinema::class)->name('courts.schedule');
 
 // Checkout
 Route::get('/checkout/review-order', \App\Livewire\Checkout\ReviewOrder::class)->name('checkout.review');
 
-// Auth
+// Auth (menggunakan modal popup)
 Route::middleware(['guest'])->group(function () {
-    Route::get('/login', \App\Livewire\Auth\Login::class)->name('login');
-    Route::get('/register', \App\Livewire\Auth\Register::class)->name('register');
+    Route::get('/login', fn() => redirect('/')->with('openAuth', 'login'))->name('login');
+    Route::get('/register', fn() => redirect('/')->with('openAuth', 'register'))->name('register');
 });
 
 // Bookings (Auth required)
 Route::middleware(['auth'])->group(function () {
     Route::get('/booking/{booking}', \App\Livewire\Bookings\BookingShow::class)->name('bookings.show');
     Route::get('/booking/{booking}/checkout', \App\Livewire\Bookings\BookingCheckout::class)->name('bookings.checkout');
+    Route::get('/checkout/payment/{booking}', \App\Livewire\Bookings\BookingCheckout::class)->name('checkout.payment');
     
     Route::get('/payments/{payment}', \App\Livewire\Payments\PaymentShow::class)->name('payments.show');
 });

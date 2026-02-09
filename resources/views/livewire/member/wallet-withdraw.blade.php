@@ -84,9 +84,9 @@
                      <span class="material-symbols-outlined text-lg">downloading</span>
                     Ajukan Penarikan
                 </button>
-                <p class="text-center text-[10px] text-muted-light font-bold mt-4 uppercase tracking-widest flex items-center justify-center gap-1">
+                <p class="text-center text-[12px] text-muted-light font-600 mt-4 tracking-widest flex items-center justify-center gap-1">
                      <span class="material-symbols-outlined text-sm">info</span>
-                    Dana akan diproses dalam 1-2 hari kerja.
+                    Dana akan diproses dalam 1-2 hari kerja
                 </p>
             </div>
         </form>
