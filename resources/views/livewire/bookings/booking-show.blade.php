@@ -5,18 +5,18 @@
             <div>
                 <a href="{{ route('member.dashboard') }}" class="inline-flex items-center gap-2 text-muted-light font-bold text-[10px] uppercase tracking-[0.2em] mb-4 hover:text-primary transition-colors">
                     <span class="material-symbols-outlined text-base">arrow_back</span>
-                    Kembali ke Beranda
+                    Kembali ke Dashboard
                 </a>
                 <h1 class="text-3xl md:text-4xl font-black text-text-light dark:text-text-dark tracking-tight font-display italic uppercase">Detail <span class="text-primary">Booking</span></h1>
                 
-                <div class="grid grid-cols-2 gap-4 mt-4 w-full max-w-[20rem]">
+                <div class="grid grid-cols-2 gap-4 mt-4 w-full max-w-[30rem]">
                     <div class="h-full">
                         <span class="flex items-center justify-center w-full h-full px-3 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest border text-center {{ $booking->status->color() === 'primary' ? 'bg-primary/10 text-primary border-primary/20' : ($booking->status->color() === 'emerald' ? 'bg-emerald-100 text-emerald-600 border-emerald-200' : 'bg-gray-100 text-gray-600 border-gray-200') }}">
                             {{ $booking->status->label() }}
                         </span>
                     </div>
                     <div class="flex items-center justify-between gap-2 bg-gray-100 dark:bg-gray-800 px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700 w-full h-full">
-                        <span class="font-mono text-xs text-text-light dark:text-text-dark truncate">{{ $booking->booking_code }}</span>
+                        <span class="text-xs text-text-light dark:text-text-dark">{{ $booking->booking_code }}</span>
                         <button onclick="navigator.clipboard.writeText('{{ $booking->booking_code }}'); this.querySelector('span').textContent = 'check'; setTimeout(() => { this.querySelector('span').textContent = 'content_copy'; }, 1500);"
                                 class="text-muted-light hover:text-primary transition-colors shrink-0 flex items-center" title="Salin kode booking">
                             <span class="material-symbols-outlined text-sm">content_copy</span>
@@ -48,7 +48,7 @@
                             </div>
                         </div>
                         <div class="space-y-2">
-                            <p class="text-[10px] font-bold text-muted-light uppercase tracking-widest">Lapangan</p>
+                            <p class="text-[10px] font-bold text-muted-light uppercase tracking-widest">Arena</p>
                             <div class="flex items-center gap-3">
                                 <span class="material-symbols-outlined text-primary text-xl">{{ \App\Models\Venue::sportIcon($booking->court->sport ?? $booking->venue->sport_type) }}</span>
                                 <p class="text-base font-bold text-primary">{{ $booking->court->name }}</p>

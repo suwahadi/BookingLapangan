@@ -192,8 +192,8 @@
                              {{ $venue->city }}
                         </div>
                         <span class="text-gray-300">|</span>
-                        <div class="px-3 py-1 bg-gray-100 dark:bg-gray-800 rounded-lg text-[12px] text-muted-light">
-                            {{ $venue->courts->pluck('sport')->unique()->implode(', ') ?: 'Olahraga' }}
+                        <div class="flex items-center gap-1 text-muted-light text-sm">
+                           {{ $venue->courts->pluck('sport')->unique()->implode(', ') ?: 'Olahraga' }}
                         </div>
                     </div>
                 </div>
@@ -223,7 +223,7 @@
                                  <p class="text-sm text-text-light dark:text-text-dark line-clamp-1">{{ $venue->address }}</p>
                              </div>
                         </div>
-                        <a href="https://maps.google.com/?q={{ urlencode($venue->address) }}" target="_blank" class="text-primary font-black text-xs hover:underline flex items-center gap-1">
+                        <a href="https://maps.google.com/?q={{ urlencode($venue->address) }}" target="_blank" class="text-primary text-xs flex items-center gap-1">
                             Peta
                             <span class="material-symbols-outlined text-sm">open_in_new</span>
                         </a>
@@ -239,8 +239,8 @@
                                 @php
                                     $iconName = strtolower($amenity->name);
                                     $icon = match(true) {
-                                        Str::contains($iconName, ['parkir', 'parking', 'car']) => 'directions_car',
-                                        Str::contains($iconName, ['motor', 'bike']) => 'two_wheeler',
+                                        Str::contains($iconName, ['mobil', 'parking', 'car']) => 'directions_car',
+                                        Str::contains($iconName, ['motor', 'sepeda']) => 'two_wheeler',
                                         Str::contains($iconName, ['toilet', 'wc', 'restroom']) => 'wc',
                                         Str::contains($iconName, ['kantin', 'canteen', 'cafe', 'makan', 'minum']) => 'restaurant',
                                         Str::contains($iconName, ['wifi', 'wi-fi', 'internet']) => 'wifi',
@@ -249,6 +249,7 @@
                                         Str::contains($iconName, ['ganti', 'changing']) => 'checkroom',
                                         Str::contains($iconName, ['ac', 'air conditioner']) => 'ac_unit',
                                         Str::contains($iconName, ['shower', 'mandi']) => 'shower',
+                                        Str::contains($iconName, ['cctv', 'kamera']) => 'videocam',
                                         default => $amenity->icon ?? 'check_circle'
                                     };
                                 @endphp

@@ -29,7 +29,9 @@
 
                     <!-- Selected Slots -->
                     <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-                        <h3 class="text-lg font-black text-gray-900 mb-6">{{ $venueCourt->name ?? 'Lapangan' }}</h3>
+                        <h3 class="text-lg font-black text-gray-900">{{ $venueCourt->name ?? 'Lapangan' }}</h3>
+                        <span class="material-symbols-outlined text-sm mb-6">{{ \App\Models\Venue::sportIcon($venueCourt->sport ?? '') }}</span>
+                            <span class="text-sm">{{ $venueCourt->sport }}</span>
                         
                         <div class="space-y-4">
                             @foreach($selectedSlots as $index => $slot)
@@ -164,7 +166,7 @@
                 
                 <h3 class="text-xl font-bold text-gray-900 mb-2">Item Booking Kosong</h3>
                 
-                <p class="text-gray-500 mb-8 max-w-md mx-auto">
+                <p class="text-gray-500 text-sm mb-8 max-w-md mx-auto">
                     Anda belum memilih jadwal lapangan. Silakan pilih jadwal terlebih dahulu untuk melanjutkan pemesanan.
                 </p>
 
@@ -206,7 +208,7 @@
                     @if($voucherError)
                         <div class="mt-3 flex items-start gap-2 text-rose-600 text-sm font-semibold bg-rose-50 p-3 rounded-lg border border-rose-100">
                             <span class="material-symbols-outlined text-base mt-0.5">error</span>
-                            <span>{{ $voucherError }}</span>
+                            <span class="text-sm mt-1">{{ $voucherError }}</span>
                         </div>
                     @endif
 
@@ -238,7 +240,7 @@
             
             <div class="p-6 space-y-4 text-sm text-gray-600 leading-relaxed">
                 <p>
-                    Proses reschedule atau pembatalan booking hanya dapat dilakukan melalui aplikasi AYO Indonesia.
+                    Proses reschedule atau pembatalan booking hanya dapat dilakukan melalui aplikasi ini.
                 </p>
                 <p>
                     Pengajuan reschedule maksimal dilakukan 24 jam sebelum jadwal main. Jika kurang dari itu, maka reschedule tidak dapat dilakukan.

@@ -1,10 +1,10 @@
 <div class="max-w-6xl mx-auto py-12 px-4">
     <!-- Header -->
     <div class="mb-10">
-        <h1 class="text-3xl md:text-4xl font-black text-text-light dark:text-text-dark tracking-tight uppercase italic">
+        <h3 class="text-xl md:text-2xl font-black text-text-light dark:text-text-dark tracking-tight uppercase italic">
             Halo, <span class="text-primary">{{ auth()->user()->name }}</span>
-        </h1>
-        <p class="text-muted-light font-bold mt-2 uppercase text-xs tracking-widest">Selamat datang di dashboard member</p>
+        </h3>
+        <p class="text-muted-light mt-2 uppercase text-xs tracking-widest">Selamat datang di dashboard member</p>
     </div>
 
     <!-- Stats Cards -->

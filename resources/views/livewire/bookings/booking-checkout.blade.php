@@ -26,13 +26,11 @@
                         <span class="material-symbols-outlined text-lg">{{ \App\Models\Venue::sportIcon($booking->court->sport ?? $booking->venue->sport_type) }}</span>
                         {{ $booking->court->name }}
                     </div>
-                    <div class="flex items-center gap-2 text-xs font-mono text-muted-light mt-1">
-                        <span class="material-symbols-outlined text-sm">calendar_today</span>
+                    <div class="flex items-center gap-2 text-xs text-muted-light mt-1">
                         {{ $booking->booking_date->translatedFormat('d M Y') }}
 
                         @foreach($booking->grouped_slots as $slot)
-                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-gray-100 dark:bg-gray-700 text-xs font-bold text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-600">
-                            <span class="material-symbols-outlined text-sm">schedule</span>
+                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-red-100 dark:bg-gray-700 text-xs font-bold text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-600">
                             {{ $slot['start'] }} - {{ $slot['end'] }}
                         </span>
                         @endforeach
@@ -71,9 +69,9 @@
                             <input type="radio" wire:model.live="payPlan" value="FULL" class="peer sr-only">
                             <div class="h-full p-5 bg-white dark:bg-gray-800 rounded-2xl border-2 border-gray-100 dark:border-gray-700 peer-checked:border-primary peer-checked:bg-primary/5 transition-all hover:border-primary/30 flex flex-col justify-between gap-3 shadow-sm hover:shadow-md">
                                 <div class="flex items-center justify-between">
-                                    <span class="font-black text-xs uppercase tracking-widest text-gray-500 peer-checked:text-primary">LUNAS</span>
+                                    <span class="font-black text-xs uppercase tracking-widest text-gray-500 peer-checked:text-primary">BAYAR LUNAS</span>
                                     <div class="relative">
-                                        <span class="material-symbols-outlined text-2xl text-gray-300 peer-checked:hidden">radio_button_unchecked</span>
+                                        <span class="material-symbols-outlined text-2xl text-gray-300 peer-checked:hidden">radio_button_checked</span>
                                         <span class="material-symbols-outlined text-2xl text-primary hidden peer-checked:block">check_circle</span>
                                     </div>
                                 </div>

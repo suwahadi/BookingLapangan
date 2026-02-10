@@ -3,7 +3,7 @@
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
             <h1 class="text-4xl font-black text-gray-900 tracking-tight font-display italic uppercase">Statistik <span class="text-indigo-600">Terbaru</span></h1>
-            <p class="text-gray-500 mt-1 tracking-tight">Selamat datang kembali, {{ Auth::user()->name }}! Pantau performa bisnis hari ini</p>
+            <p class="text-gray-500 mt-1 tracking-tight">Selamat datang, {{ Auth::user()->name }}! Pantau performa bisnis hari ini</p>
         </div>
         <button wire:click="refreshStats" wire:loading.attr="disabled"
             class="bg-white border-2 border-gray-900 group relative px-6 py-3 rounded-2xl font-black text-sm tracking-widest hover:bg-gray-900 hover:text-white transition-all transform active:scale-95 shadow-xl shadow-gray-200">
@@ -105,7 +105,6 @@
             <div class="p-10 flex items-center justify-between border-b border-gray-50 bg-white/50 backdrop-blur-md">
                 <div>
                     <h4 class="text-xl font-black font-display text-gray-900 uppercase tracking-tight italic">Booking <span class="text-indigo-600">Terbaru</span></h4>
-                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1">Status dan aktifitas user seketika</p>
                 </div>
                 <a href="{{ route('admin.bookings.index') }}" class="text-xs font-black text-indigo-600 hover:text-black transition-colors uppercase tracking-widest border-b-2 border-indigo-100 hover:border-black py-1">Semua Data</a>
             </div>
@@ -115,7 +114,7 @@
                     <thead>
                         <tr class="bg-gray-50/50">
                             <th class="px-8 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">User / Kode</th>
-                            <th class="px-8 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Venue & Lapangan</th>
+                            <th class="px-8 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Venue & Arena</th>
                             <th class="px-8 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Total</th>
                             <th class="px-8 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Status</th>
                         </tr>

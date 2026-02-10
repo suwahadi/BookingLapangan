@@ -60,7 +60,7 @@
                                 </div>
                                 <div class="relative">
                                     <div class="text-[10px] font-black text-primary uppercase tracking-widest mb-3">
-                                        Nomor Rekening {{ strtoupper($va['bank'] ?? 'VIRTUAL ACCOUNT') }}
+                                        Nomor Rekening {{ strtoupper($va['bank'] ?? 'VIRTUAL ACCOUNT') }}:
                                     </div>
                                     <div class="flex flex-col gap-3">
                                         <div class="text-xl sm:text-2xl md:text-3xl font-mono font-black text-text-light dark:text-text-dark tracking-tighter select-all break-all" id="va-number-{{ $loop->index }}">

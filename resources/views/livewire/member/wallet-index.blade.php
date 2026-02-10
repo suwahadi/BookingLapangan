@@ -5,7 +5,7 @@
             <div>
                 <a href="{{ route('member.dashboard') }}" class="inline-flex items-center gap-2 text-muted-light font-bold text-[10px] uppercase tracking-[0.2em] mb-4 hover:text-primary transition-colors">
                     <span class="material-symbols-outlined text-base">arrow_back</span>
-                    Kembali ke Beranda
+                    Kembali ke Dashboard
                 </a>
                 <h1 class="text-3xl md:text-4xl font-black text-text-light dark:text-text-dark tracking-tight font-display italic uppercase">Dompet <span class="text-primary">Saya</span></h1>
                 <p class="text-muted-light mt-2 tracking-tight">Kelola saldo dan riwayat transaksi booking Anda</p>
@@ -130,7 +130,7 @@
                                 </div>
                                 <h3 class="text-lg font-black text-text-light dark:text-text-dark uppercase italic">Belum Ada Transaksi</h3>
                                 <p class="text-muted-light text-xs tracking-widest mt-2 max-w-xs opacity-70">
-                                    Semua riwayat pengisian dan penggunaan saldo akan muncul di sini.
+                                    Semua riwayat saldo member akan muncul disini.
                                 </p>
                             </div>
                         @endforelse

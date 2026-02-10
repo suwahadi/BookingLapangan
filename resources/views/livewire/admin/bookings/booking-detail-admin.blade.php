@@ -8,7 +8,7 @@
                 <span class="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Detail #{{ $booking->booking_code }}</span>
             </div>
             <h1 class="text-4xl font-black text-gray-900 tracking-tight font-display italic uppercase">Detail <span class="text-indigo-600">Pesanan</span></h1>
-            <p class="text-gray-500 mt-1 tracking-tight">Rincian lengkap transaksi dan status pembayaran pelanggan</p>
+            <p class="text-gray-500 mt-1 tracking-tight">Rincian lengkap transaksi dan status pembayaran booking</p>
         </div>
 
         <div class="flex flex-wrap gap-3">
@@ -47,7 +47,7 @@
                 
                 <div class="p-10 grid grid-cols-2 md:grid-cols-3 gap-10">
                     <div class="space-y-1">
-                        <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Tempat Olahraga</p>
+                        <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Venue / Arena</p>
                         <p class="text-sm font-black text-gray-900">{{ $booking->venue->name }}</p>
                         <p class="text-[10px] font-bold text-indigo-500 uppercase italic">{{ $booking->court->name }}</p>
                     </div>
@@ -88,7 +88,7 @@
                             <tr class="bg-gray-50/50">
                                 <th class="px-10 py-6 text-[10px] font-black text-gray-400 uppercase tracking-widest">Order ID</th>
                                 <th class="px-10 py-6 text-[10px] font-black text-gray-400 uppercase tracking-widest">Metode</th>
-                                <th class="px-10 py-8 text-[10px] font-black text-gray-400 uppercase tracking-widest text-right">Nominal (Rp)</th>
+                                <th class="px-10 py-8 text-[10px] font-black text-gray-400 uppercase tracking-widest text-right">Nominal</th>
                                 <th class="px-10 py-6 text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">Status</th>
                             </tr>
                         </thead>

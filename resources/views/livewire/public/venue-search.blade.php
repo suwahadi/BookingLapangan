@@ -6,8 +6,8 @@
         ['key' => 'basket', 'name' => 'Basket', 'icon' => 'sports_basketball', 'color' => 'orange'],
         ['key' => 'mini soccer', 'name' => 'Mini Soccer', 'icon' => 'sports_soccer', 'color' => 'green'],
         ['key' => 'tennis', 'name' => 'Tenis', 'icon' => 'sports_tennis', 'color' => 'lime'],
-        ['key' => 'voli', 'name' => 'Voli', 'icon' => 'sports_volleyball', 'color' => 'yellow'],
         ['key' => 'padel', 'name' => 'Padel', 'icon' => 'sports_tennis', 'color' => 'emerald'],
+        ['key' => 'voli', 'name' => 'Voli', 'icon' => 'sports_volleyball', 'color' => 'yellow'],
     ];
 @endphp
 
@@ -34,8 +34,7 @@
                     
                     <!-- Subtitle -->
                     <p class="text-white/90 text-lg lg:text-xl font-medium leading-relaxed mb-10 max-w-lg">
-                        Platform all-in-one untuk sewa lapangan, cari lawan sparring, atau cari kawan main bareng. 
-                        Olahraga makin mudah dan menyenangkan!
+                        Platform all-in-one untuk sewa lapangan online. Olahraga makin mudah dan menyenangkan!
                     </p>
 
                     <!-- App Store Buttons -->
@@ -216,11 +215,11 @@
                             <div wire:key="cat-mobile-{{ $cat['key'] }}">
                             @php $isActive = $sport_type === $cat['key']; @endphp
                             <button wire:click="$set('sport_type', '{{ $cat['key'] }}')"
-                                    class="flex-shrink-0 px-4 py-2 rounded-full text-sm font-bold transition-all
-                                           {{ $isActive 
-                                               ? 'bg-[#8B1538] text-white' 
-                                               : 'bg-white text-gray-600 border border-gray-200' 
-                                           }}">
+                            class="flex-shrink-0 px-4 py-2 rounded-full text-sm font-bold transition-all whitespace-nowrap
+                               {{ $isActive 
+                                   ? 'bg-[#8B1538] text-white' 
+                                   : 'bg-white text-gray-600 border border-gray-200' 
+                               }}">
                                 {{ $cat['name'] }}
                             </button>
                             </div>

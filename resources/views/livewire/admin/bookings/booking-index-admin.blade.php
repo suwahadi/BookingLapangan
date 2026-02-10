@@ -48,10 +48,10 @@
                     <tr class="bg-gray-50/50">
                         <th class="px-10 py-8 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Kode & Tanggal</th>
                         <th class="px-10 py-8 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Pelanggan</th>
-                        <th class="px-10 py-8 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Venue / Lapangan</th>
+                        <th class="px-10 py-8 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Venue / Arena</th>
                         <th class="px-10 py-8 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Waktu Main</th>
                         <th class="px-10 py-8 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] text-center">Status</th>
-                        <th class="px-10 py-8 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] text-right">Total</th>
+                        <th class="px-10 py-8 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] text-right">Total (Rp)</th>
                         <th class="px-10 py-8 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] text-right">Aksi</th>
                     </tr>
                 </thead>
@@ -59,7 +59,7 @@
                     @forelse($bookings as $booking)
                     <tr class="hover:bg-gray-50/30 transition-colors group">
                         <td class="px-10 py-8">
-                            <span class="text-sm font-black text-indigo-600 tracking-tighter">#{{ $booking->booking_code }}</span>
+                            <a href="{{ route('admin.bookings.show', $booking->id) }}"><span class="text-sm font-black text-indigo-600 tracking-tighter">#{{ $booking->booking_code }}</span></a>
                             <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1">{{ $booking->created_at->format('d M Y, H:i') }}</p>
                         </td>
                         <td class="px-10 py-8">
@@ -95,11 +95,11 @@
                             </span>
                         </td>
                         <td class="px-10 py-8 text-right">
-                            <span class="text-sm font-black text-gray-900 tracking-tighter">Rp {{ number_format($booking->total_amount, 0, ',', '.') }}</span>
+                            <span class="text-sm font-black text-gray-900 tracking-tighter">{{ number_format($booking->total_amount, 0, ',', '.') }}</span>
                         </td>
                         <td class="px-10 py-8 text-right">
                             <a href="{{ route('admin.bookings.show', $booking->id) }}" wire:navigate class="inline-flex items-center gap-2 text-[10px] font-black text-indigo-500 uppercase tracking-widest hover:text-gray-900 transition-colors">
-                                DETAIL &rarr;
+                                DETAIL
                             </a>
                         </td>
                     </tr>

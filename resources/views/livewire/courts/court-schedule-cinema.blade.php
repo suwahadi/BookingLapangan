@@ -30,7 +30,7 @@
                 <a href="{{ route('public.venues.show', ['venue' => $venueCourt->venue->slug]) }}">
                      <span class="material-symbols-outlined text-red-600 text-2xl cursor-pointer">play_circle</span>
                 </a>
-                <h1 class="text-xl font-black text-text-light dark:text-text-dark tracking-tight">Pilih Lapangan</h1>
+                <h1 class="text-xl font-black text-text-light dark:text-text-dark tracking-tight">Pilih Jadwal</h1>
             </div>
         </div>
     </div>
@@ -86,8 +86,7 @@
                         <h2 class="text-lg font-black text-gray-900 dark:text-white">{{ $venueCourt->name }}</h2>
                         <span class="material-symbols-outlined text-gray-400 text-sm">chevron_right</span>
                      </div>
-                     <p class="text-sm font-medium text-gray-500 mb-4">{{ $venueCourt->description ?? 'Lapangan dengan fasilitas terbaik' }}</p>
-                     
+
                      <div class="flex flex-wrap gap-4 text-xs font-bold text-gray-500">
                         <div class="flex items-center gap-1.5">
                             <span class="material-symbols-outlined text-sm">{{ \App\Models\Venue::sportIcon($venueCourt->sport ?? '') }}</span>

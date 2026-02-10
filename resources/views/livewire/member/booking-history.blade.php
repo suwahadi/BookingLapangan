@@ -98,7 +98,7 @@
                         <span class="material-symbols-outlined text-4xl text-gray-300 dark:text-gray-600">calendar_today</span>
                     </div>
                     <p class="text-muted-light font-bold text-lg">Belum ada booking</p>
-                    <p class="text-muted-light text-sm mt-2 opacity-60">Mulai cari lapangan untuk booking pertama Anda</p>
+                    <p class="text-muted-light text-sm mt-2 opacity-60">Mulai cari lapangan untuk booking Anda</p>
                     <a href="{{ route('home') }}" class="inline-flex items-center gap-2 mt-8 px-8 py-4 bg-primary text-white text-xs font-black uppercase tracking-widest rounded-2xl hover:bg-primary-dark transition-all shadow-lg shadow-primary/30 transform hover:-translate-y-1">
                         Cari Lapangan
                     </a>
