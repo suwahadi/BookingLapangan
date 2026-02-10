@@ -2,12 +2,13 @@
     <div class="flex items-center justify-between mb-8">
         <div>
             <h1 class="text-3xl font-black text-text-light dark:text-text-dark tracking-tight uppercase italic">Notifikasi</h1>
-            <p class="text-muted-light font-bold mt-1 uppercase text-xs tracking-widest">Semua pemberitahuan untuk Anda</p>
+            <p class="text-muted-light mt-1 text-xs">Semua pemberitahuan untuk Anda</p>
         </div>
         @if($notifications->count() > 0)
-            <button wire:click="markAllAsRead" class="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary text-xs font-black uppercase tracking-widest rounded-xl hover:bg-primary/20 transition-colors">
-                <span class="material-symbols-outlined text-sm">done_all</span>
-                Tandai Semua Dibaca
+            <button wire:click="markAllAsRead" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-primary/10 text-primary text-[10px] font-black uppercase tracking-widest rounded-lg hover:bg-primary/20 transition-colors">
+                <span class="material-symbols-outlined text-base">done_all</span>
+                <span class="hidden sm:inline">Tandai Semua Dibaca</span>
+                <span class="sm:hidden">Semua Dibaca</span>
             </button>
         @endif
     </div>
@@ -43,7 +44,7 @@
                         @if($notification->body)
                             <p class="text-sm text-muted-light mt-1 leading-relaxed">{{ $notification->body }}</p>
                         @endif
-                        <p class="text-[10px] font-bold text-muted-light uppercase tracking-widest mt-2 flex items-center gap-1">
+                        <p class="text-[10px] font-bold text-muted-light tracking-widest mt-2 flex items-center gap-1">
                             <span class="material-symbols-outlined text-[10px]">schedule</span>
                             {{ $notification->created_at->diffForHumans() }}
                         </p>

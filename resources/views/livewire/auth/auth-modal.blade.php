@@ -13,7 +13,7 @@
         ></div>
         
         <!-- Modal Content -->
-        <div class="relative w-full max-w-sm bg-white dark:bg-gray-900 rounded-2xl shadow-2xl overflow-hidden">
+        <div class="relative w-full max-w-md bg-white dark:bg-gray-900 rounded-2xl shadow-2xl overflow-hidden">
             <!-- Close Button -->
             <button 
                 type="button"
@@ -24,57 +24,57 @@
             </button>
 
             <!-- Modal Body -->
-            <div class="p-5 sm:p-6">
+            <div class="p-6 sm:p-8">
                 <!-- Header -->
-                <div class="text-center mb-4">
-                    <h2 class="text-lg font-black text-gray-900 dark:text-white uppercase tracking-tight">
+                <div class="text-center mb-6">
+                    <h2 class="text-xl font-black text-gray-900 dark:text-white uppercase tracking-tight">
                         {{ $mode === 'login' ? 'Masuk' : 'Daftar' }}
                     </h2>
-                    <p class="mt-1 text-xs text-gray-500">
+                    <p class="mt-2 text-sm text-gray-500">
                         @if($mode === 'login')
                             Belum punya akun? 
-                            <button type="button" wire:click="switchMode('register')" class="text-primary font-semibold hover:underline">Daftar</button>
+                            <button type="button" wire:click="switchMode('register')" class="text-primary font-bold hover:underline">Daftar</button>
                         @else
                             Sudah punya akun? 
-                            <button type="button" wire:click="switchMode('login')" class="text-primary font-semibold hover:underline">Masuk</button>
+                            <button type="button" wire:click="switchMode('login')" class="text-primary font-bold hover:underline">Masuk</button>
                         @endif
                     </p>
                 </div>
 
                 <!-- Login Form -->
                 @if($mode === 'login')
-                <form wire:submit.prevent="login" class="space-y-4">
+                <form wire:submit.prevent="login" class="space-y-5">
                     <!-- Email Field -->
                     <div>
-                        <label for="login-email" class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">
+                        <label for="login-email" class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1.5">
                             Email
                         </label>
                         <input 
                             wire:model="email" 
                             type="email" 
                             id="login-email"
-                            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-1 focus:ring-primary focus:border-transparent transition-all text-xs"
+                            class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-transparent transition-all text-sm font-medium placeholder-gray-400"
                             placeholder="email@example.com"
                         >
                         @error('email')
-                            <p class="mt-0.5 text-[10px] text-red-500">{{ $message }}</p>
+                            <p class="mt-1 text-xs text-red-500 font-bold">{{ $message }}</p>
                         @enderror
                     </div>
 
                     <!-- Password Field -->
                     <div>
-                        <label for="login-password" class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">
+                        <label for="login-password" class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1.5">
                             Password
                         </label>
                         <input 
                             wire:model="password" 
                             type="password" 
                             id="login-password"
-                            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-1 focus:ring-primary focus:border-transparent transition-all text-xs"
+                            class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-transparent transition-all text-sm font-medium placeholder-gray-400"
                             placeholder="••••••••"
                         >
                         @error('password')
-                            <p class="mt-0.5 text-[10px] text-red-500">{{ $message }}</p>
+                            <p class="mt-1 text-xs text-red-500 font-bold">{{ $message }}</p>
                         @enderror
                     </div>
 
@@ -86,7 +86,7 @@
                             id="login-remember"
                             class="w-4 h-4 rounded border-gray-300 text-primary focus:ring-primary"
                         >
-                        <label for="login-remember" class="ml-2 text-xs text-gray-600 dark:text-gray-400">
+                        <label for="login-remember" class="ml-2 text-xs font-medium text-gray-600 dark:text-gray-400">
                             Ingat saya
                         </label>
                     </div>
@@ -94,7 +94,7 @@
                     <!-- Submit Button -->
                     <button 
                         type="submit"
-                        class="w-full py-2 px-4 bg-primary hover:bg-primary-dark text-white font-bold rounded-lg transition-all transform active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-xs uppercase tracking-wider"
+                        class="w-full py-3.5 px-4 bg-primary hover:bg-primary-dark text-white font-black rounded-xl transition-all transform active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm uppercase tracking-wider shadow-lg shadow-primary/25"
                         wire:loading.attr="disabled"
                         wire:target="login"
                     >
@@ -109,79 +109,76 @@
 
                 <!-- Register Form -->
                 @if($mode === 'register')
-                <form wire:submit.prevent="register" class="space-y-4">
+                <form wire:submit.prevent="register" class="space-y-5">
                     <!-- Name Field -->
                     <div>
-                        <label for="register-name" class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">
+                        <label for="register-name" class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1.5">
                             Nama Lengkap
                         </label>
                         <input 
                             wire:model="name" 
                             type="text" 
                             id="register-name"
-                            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-1 focus:ring-primary focus:border-transparent transition-all text-xs"
+                            class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-transparent transition-all text-sm font-medium placeholder-gray-400"
                             placeholder="Nama lengkap Anda"
                         >
                         @error('name')
-                            <p class="mt-0.5 text-[10px] text-red-500">{{ $message }}</p>
+                            <p class="mt-1 text-xs text-red-500 font-bold">{{ $message }}</p>
                         @enderror
                     </div>
 
                     <!-- Email Field -->
                     <div>
-                        <label for="register-email" class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">
+                        <label for="register-email" class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1.5">
                             Email
                         </label>
                         <input 
                             wire:model="email" 
                             type="email" 
                             id="register-email"
-                            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-1 focus:ring-primary focus:border-transparent transition-all text-xs"
+                            class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-transparent transition-all text-sm font-medium placeholder-gray-400"
                             placeholder="email@example.com"
                         >
                         @error('email')
-                            <p class="mt-0.5 text-[10px] text-red-500">{{ $message }}</p>
+                            <p class="mt-1 text-xs text-red-500 font-bold">{{ $message }}</p>
                         @enderror
                     </div>
 
                     <!-- Password Field -->
                     <div>
-                        <label for="register-password" class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">
+                        <label for="register-password" class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1.5">
                             Password
                         </label>
                         <input 
                             wire:model="password" 
                             type="password" 
                             id="register-password"
-                            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-1 focus:ring-primary focus:border-transparent transition-all text-xs"
+                            class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-transparent transition-all text-sm font-medium placeholder-gray-400"
                             placeholder="Minimal 8 karakter"
                         >
                         @error('password')
-                            <p class="mt-0.5 text-[10px] text-red-500">{{ $message }}</p>
+                            <p class="mt-1 text-xs text-red-500 font-bold">{{ $message }}</p>
                         @enderror
                     </div>
 
                     <!-- Confirm Password -->
                     <div>
-                        <label for="register-password-confirm" class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">
+                        <label for="register-password-confirm" class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1.5">
                             Konfirmasi Password
                         </label>
                         <input 
                             wire:model="password_confirmation" 
                             type="password" 
                             id="register-password-confirm"
-                            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-1 focus:ring-primary focus:border-transparent transition-all text-xs"
+                            class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-transparent transition-all text-sm font-medium placeholder-gray-400"
                             placeholder="Ulangi password"
                         >
-                        @error('password_confirmation')
-                            <p class="mt-0.5 text-[10px] text-red-500">{{ $message }}</p>
-                        @enderror
                     </div>
 
                     <!-- Submit Button -->
                     <button 
                         type="submit"
-                        class="w-full py-2 px-4 bg-primary hover:bg-primary-dark text-white font-bold rounded-lg transition-all transform active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-xs uppercase tracking-wider"
+                        class="w-full py-3.5 px-4 bg-primary hover:bg-primary-dark text-white font-black rounded-xl transition-all transform active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm uppercase tracking-wider shadow-lg shadow-primary/25"
                         wire:loading.attr="disabled"
                         wire:target="register"
                     >

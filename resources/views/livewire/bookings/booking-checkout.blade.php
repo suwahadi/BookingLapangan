@@ -22,13 +22,20 @@
                 <div class="space-y-1">
                     <div class="text-[10px] font-black text-muted-light uppercase tracking-widest mb-1">Booking Detail</div>
                     <div class="font-bold text-lg text-gray-900 dark:text-gray-100">{{ $booking->venue->name }}</div>
-                    <div class="text-sm text-gray-600 dark:text-gray-400 font-medium">{{ $booking->court->name }}</div>
+                    <div class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 font-medium">
+                        <span class="material-symbols-outlined text-lg">{{ \App\Models\Venue::sportIcon($booking->court->sport ?? $booking->venue->sport_type) }}</span>
+                        {{ $booking->court->name }}
+                    </div>
                     <div class="flex items-center gap-2 text-xs font-mono text-muted-light mt-1">
                         <span class="material-symbols-outlined text-sm">calendar_today</span>
                         {{ $booking->booking_date->translatedFormat('d M Y') }}
-                        <span class="mx-1">•</span>
-                        <span class="material-symbols-outlined text-sm">schedule</span>
-                        {{ substr($booking->start_time, 0, 5) }} - {{ substr($booking->end_time, 0, 5) }}
+
+                        @foreach($booking->grouped_slots as $slot)
+                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-gray-100 dark:bg-gray-700 text-xs font-bold text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-600">
+                            <span class="material-symbols-outlined text-sm">schedule</span>
+                            {{ $slot['start'] }} - {{ $slot['end'] }}
+                        </span>
+                        @endforeach
                     </div>
                 </div>
                 <div class="md:text-right flex flex-col md:items-end justify-center border-t md:border-t-0 md:border-l border-gray-200 dark:border-gray-700 pt-4 md:pt-0 md:pl-6 mt-4 md:mt-0">
@@ -62,10 +69,13 @@
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <label class="relative group cursor-pointer">
                             <input type="radio" wire:model.live="payPlan" value="FULL" class="peer sr-only">
-                            <div class="h-full p-5 bg-white dark:bg-gray-800 rounded-2xl border-2 border-gray-100 dark:border-gray-700 peer-checked:border-primary peer-checked:bg-primary/5 transition-all hover:border-primary/30 flex flex-col justify-between gap-3">
+                            <div class="h-full p-5 bg-white dark:bg-gray-800 rounded-2xl border-2 border-gray-100 dark:border-gray-700 peer-checked:border-primary peer-checked:bg-primary/5 transition-all hover:border-primary/30 flex flex-col justify-between gap-3 shadow-sm hover:shadow-md">
                                 <div class="flex items-center justify-between">
-                                    <span class="font-black text-xs uppercase tracking-widest">LUNAS</span>
-                                    <div class="w-4 h-4 rounded-full border-2 border-gray-300 peer-checked:border-primary peer-checked:bg-primary transition-all"></div>
+                                    <span class="font-black text-xs uppercase tracking-widest text-gray-500 peer-checked:text-primary">LUNAS</span>
+                                    <div class="relative">
+                                        <span class="material-symbols-outlined text-2xl text-gray-300 peer-checked:hidden">radio_button_unchecked</span>
+                                        <span class="material-symbols-outlined text-2xl text-primary hidden peer-checked:block">check_circle</span>
+                                    </div>
                                 </div>
                                 <div>
                                     <p class="text-xl font-black text-primary font-display italic">Rp {{ number_format($booking->total_amount, 0, ',', '.') }}</p>
@@ -77,10 +87,13 @@
                         @if(($booking->venue->policy?->allow_dp) && $booking->dp_required_amount > 0)
                         <label class="relative group cursor-pointer">
                             <input type="radio" wire:model.live="payPlan" value="DP" class="peer sr-only">
-                            <div class="h-full p-5 bg-white dark:bg-gray-800 rounded-2xl border-2 border-gray-100 dark:border-gray-700 peer-checked:border-primary peer-checked:bg-primary/5 transition-all hover:border-primary/30 flex flex-col justify-between gap-3">
+                            <div class="h-full p-5 bg-white dark:bg-gray-800 rounded-2xl border-2 border-gray-100 dark:border-gray-700 peer-checked:border-primary peer-checked:bg-primary/5 transition-all hover:border-primary/30 flex flex-col justify-between gap-3 shadow-sm hover:shadow-md">
                                 <div class="flex items-center justify-between">
-                                    <span class="font-black text-xs uppercase tracking-widest">DP (Down Payment)</span>
-                                    <div class="w-4 h-4 rounded-full border-2 border-gray-300 peer-checked:border-primary peer-checked:bg-primary transition-all"></div>
+                                    <span class="font-black text-xs uppercase tracking-widest text-gray-500 peer-checked:text-primary">DP (Down Payment)</span>
+                                    <div class="relative">
+                                        <span class="material-symbols-outlined text-2xl text-gray-300 peer-checked:hidden">radio_button_unchecked</span>
+                                        <span class="material-symbols-outlined text-2xl text-primary hidden peer-checked:block">check_circle</span>
+                                    </div>
                                 </div>
                                 <div>
                                     <p class="text-xl font-black text-primary font-display italic">Rp {{ number_format($booking->dp_required_amount, 0, ',', '.') }}</p>
@@ -162,7 +175,7 @@
                     
                     <div class="flex items-center justify-center gap-2 text-center mt-4 opacity-75">
                         <span class="material-symbols-outlined text-green-500 text-xs">lock</span>
-                        <p class="text-[10px] font-bold text-muted-light">Transaksi Aman & Terenkripsi</p>
+                        <p class="text-[10px] font-bold text-muted-light">Transaksi Aman & Otomatis</p>
                     </div>
 
                     <!-- Confirmation Modal (Simplified) -->

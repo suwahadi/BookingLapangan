@@ -14,25 +14,48 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         
         <!-- Gallery Section -->
-        <div class="mb-10">
-            @php 
-                $media = $venue->media; 
-                $images = $media->map(fn($m) => Storage::url($m->file_path))->values();
-                if($images->isEmpty()) {
-                    $images = collect(['https://ui-avatars.com/api/?name='.urlencode($venue->name).'&background=random']);
+        @php 
+            $media = $venue->media; 
+            $images = $media->map(fn($m) => Storage::url($m->file_path))->values();
+            if($images->isEmpty()) {
+                $images = collect(['https://ui-avatars.com/api/?name='.urlencode($venue->name).'&background=random']);
+            }
+            $mainImage = $media->first();
+            $sideImages = $media->skip(1)->take(2);
+        @endphp
+
+        <div class="mb-10" 
+             x-data="{ 
+                galleryOpen: false,
+                activeGallery: 0,
+                images: {{ $images }},
+                touchStartX: 0,
+                touchEndX: 0,
+                nextGallery() { this.activeGallery = (this.activeGallery === this.images.length - 1) ? 0 : this.activeGallery + 1 },
+                prevGallery() { this.activeGallery = (this.activeGallery === 0) ? this.images.length - 1 : this.activeGallery - 1 },
+                handleSwipe() {
+                    if (this.touchEndX < this.touchStartX - 50) this.nextGallery();
+                    if (this.touchEndX > this.touchStartX + 50) this.prevGallery();
                 }
-                $mainImage = $media->first();
-                $sideImages = $media->skip(1)->take(2);
-            @endphp
+             }"
+             @keydown.escape.window="galleryOpen = false">
 
             <!-- Mobile Slider -->
             <div class="md:hidden relative h-64 rounded-[2rem] overflow-hidden group shadow-lg" 
                  x-data="{ 
                     active: 0, 
                     images: {{ $images }},
+                    touchStartX: 0,
+                    touchEndX: 0,
                     next() { this.active = (this.active === this.images.length - 1) ? 0 : this.active + 1 },
-                    prev() { this.active = (this.active === 0) ? this.images.length - 1 : this.active - 1 }
-                 }">
+                    prev() { this.active = (this.active === 0) ? this.images.length - 1 : this.active - 1 },
+                    handleSwipe() {
+                        if (this.touchEndX < this.touchStartX - 50) this.next();
+                        if (this.touchEndX > this.touchStartX + 50) this.prev();
+                    }
+                 }"
+                 @touchstart="touchStartX = $event.changedTouches[0].screenX"
+                 @touchend="touchEndX = $event.changedTouches[0].screenX; handleSwipe()">
                 
                 <template x-for="(img, index) in images" :key="index">
                     <img :src="img" 
@@ -53,22 +76,15 @@
                 <button @click.stop="next()" class="absolute right-4 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center bg-white/20 backdrop-blur-md rounded-full text-white hover:bg-white/40 transition-colors z-20">
                     <span class="material-symbols-outlined text-lg">chevron_right</span>
                 </button>
-
-                <!-- Centered View All -->
-                <div class="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
-                     <div class="flex flex-col items-center justify-center text-white drop-shadow-md">
-                        <span class="material-symbols-outlined text-3xl mb-1">grid_view</span>
-                        <span class="text-[10px] font-black uppercase tracking-widest">Lihat Semua Foto</span>
-                    </div>
-                </div>
             </div>
 
             <!-- Desktop Grid (Original) -->
             <div class="hidden md:grid grid-cols-4 grid-rows-2 gap-4 h-[500px]">
                 <!-- Main Image (Left Big) -->
-                <div class="col-span-2 row-span-2 relative rounded-[2rem] overflow-hidden group shadow-lg">
+                <div class="col-span-2 row-span-2 relative rounded-[2rem] overflow-hidden group shadow-lg"
+                     @click="galleryOpen = true; activeGallery = 0">
                     @if($mainImage)
-                        <img src="{{ Storage::url($mainImage->file_path) }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                        <img src="{{ Storage::url($mainImage->file_path) }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 cursor-pointer">
                     @else
                         <div class="w-full h-full bg-gray-200 dark:bg-gray-800 flex items-center justify-center">
                             <span class="material-symbols-outlined text-6xl text-gray-400">image</span>
@@ -77,9 +93,10 @@
                 </div>
 
                 <!-- Side Images (Right Stack) -->
-                @forelse($sideImages as $img)
-                    <div class="col-span-1 row-span-1 relative rounded-[2rem] overflow-hidden group shadow-lg">
-                        <img src="{{ Storage::url($img->file_path) }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                @forelse($sideImages as $index => $img)
+                    <div class="col-span-1 row-span-1 relative rounded-[2rem] overflow-hidden group shadow-lg"
+                         @click="galleryOpen = true; activeGallery = {{ $index + 1 }}">
+                        <img src="{{ Storage::url($img->file_path) }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 cursor-pointer">
                     </div>
                 @empty
                     <div class="col-span-1 row-span-1 bg-gray-100 dark:bg-gray-800 rounded-[2rem] flex items-center justify-center">
@@ -91,7 +108,8 @@
                 @endforelse
 
                 <!-- View All Button Overlay -->
-                <div class="col-span-1 row-span-1 relative rounded-[2rem] overflow-hidden group cursor-pointer bg-black">
+                <div class="col-span-1 row-span-1 relative rounded-[2rem] overflow-hidden group cursor-pointer bg-black"
+                     @click="galleryOpen = true; activeGallery = 0">
                     @if($media->count() > 3)
                        <img src="{{ Storage::url($media[3]->file_path) }}" class="w-full h-full object-cover opacity-60 group-hover:opacity-40 transition-opacity">
                     @else
@@ -102,6 +120,53 @@
                         <span class="material-symbols-outlined text-3xl mb-1 group-hover:scale-110 transition-transform">grid_view</span>
                         <span class="text-xs font-black uppercase tracking-widest">Lihat Semua Foto</span>
                     </div>
+                </div>
+            </div>
+
+            <!-- Fullscreen Gallery Modal -->
+            <div x-show="galleryOpen" 
+                 style="display: none;"
+                 class="fixed inset-0 z-[60] bg-black/95 backdrop-blur-sm flex items-center justify-center"
+                 x-transition:enter="transition ease-out duration-300"
+                 x-transition:enter-start="opacity-0"
+                 x-transition:enter-end="opacity-100"
+                 x-transition:leave="transition ease-in duration-200"
+                 x-transition:leave-start="opacity-100"
+                 x-transition:leave-end="opacity-0">
+                
+                <!-- Close Button -->
+                <button @click="galleryOpen = false" class="absolute top-6 right-6 text-white/50 hover:text-white transition-colors z-50">
+                    <span class="material-symbols-outlined text-4xl">close</span>
+                </button>
+
+                <!-- Navigation -->
+                <button @click.stop="prevGallery()" class="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 flex items-center justify-center bg-white/10 rounded-full text-white hover:bg-white/20 transition-colors z-50">
+                    <span class="material-symbols-outlined text-3xl">chevron_left</span>
+                </button>
+                <button @click.stop="nextGallery()" class="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 flex items-center justify-center bg-white/10 rounded-full text-white hover:bg-white/20 transition-colors z-50">
+                    <span class="material-symbols-outlined text-3xl">chevron_right</span>
+                </button>
+
+                <!-- Main Image -->
+                <div class="w-full h-full flex items-center justify-center p-4"
+                     @touchstart="touchStartX = $event.changedTouches[0].screenX"
+                     @touchend="touchEndX = $event.changedTouches[0].screenX; handleSwipe()">
+                    <template x-for="(img, index) in images" :key="index">
+                        <img :src="img" 
+                             x-show="activeGallery === index"
+                             x-transition:enter="transition opacity duration-300"
+                             x-transition:enter-start="opacity-0 scale-95"
+                             x-transition:enter-end="opacity-100 scale-100"
+                             x-transition:leave="transition opacity duration-300"
+                             x-transition:leave-start="opacity-100 scale-100"
+                             x-transition:leave-end="opacity-0 scale-95"
+                             class="max-w-full max-h-full object-contain absolute select-none">
+                    </template>
+                </div>
+                
+                <!-- Counter -->
+                <div class="absolute bottom-6 left-1/2 -translate-x-1/2 px-4 py-2 bg-black/50 rounded-full text-white text-sm font-bold tracking-widest">
+                    <span x-text="activeGallery + 1"></span> / <span x-text="images.length"></span>
                 </div>
             </div>
         </div>
@@ -219,10 +284,16 @@
                         @forelse($venue->courts as $court)
                             <div class="bg-surface-light dark:bg-surface-dark rounded-[2.5rem] p-6 border border-gray-100 dark:border-gray-700 shadow-card hover:shadow-xl transition-all duration-300 group">
                                 <div class="flex flex-col md:flex-row gap-6">
+
                                     <!-- Left: Image -->
                                     <div class="w-full md:w-48 h-40 rounded-3xl overflow-hidden relative shrink-0">
                                         <div class="absolute inset-0 bg-primary/10 group-hover:bg-transparent transition-colors z-10"></div>
-                                        <img src="https://ui-avatars.com/api/?name={{ $court->name }}&background=random&size=400" class="w-full h-full object-cover">
+                                        @php
+                                            // Get venue media by index corresponding to loop iteration
+                                            $courtImage = $venue->media->get($loop->index); 
+                                            $courtImageUrl = $courtImage ? Storage::url($courtImage->file_path) : 'https://placehold.co/400x300?text=No+Image';
+                                        @endphp
+                                        <img src="{{ $courtImageUrl }}" class="w-full h-full object-cover">
                                     </div>
                                     
                                     <!-- Middle: Info -->
@@ -236,7 +307,7 @@
                                         </div>
                                         
                                         <div class="flex flex-wrap gap-2 text-[10px] font-bold text-muted-light uppercase tracking-wide">
-                                            <span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm">sell</span> {{ $court->sport }}</span>
+                                            <span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm">{{ \App\Models\Venue::sportIcon($court->sport) }}</span> {{ $court->sport }}</span>
                                             <span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm">roofing</span> Indoor</span>
                                             <span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm">texture</span> {{ $court->floor_type ?? 'Karpet' }}</span>
                                         </div>

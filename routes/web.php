@@ -37,6 +37,7 @@ Route::middleware(['auth'])->prefix('member')->name('member.')->group(function (
     Route::get('/wallet', \App\Livewire\Member\WalletIndex::class)->name('wallet');
     Route::get('/wallet/withdraw', \App\Livewire\Member\WalletWithdraw::class)->name('wallet.withdraw');
     Route::get('/notifications', \App\Livewire\Member\NotificationIndex::class)->name('notifications');
+    Route::get('/profile', \App\Livewire\Member\Profile::class)->name('profile');
 });
 
 // Admin
@@ -73,7 +74,4 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/system/audit-logs', \App\Livewire\Admin\System\AuditLogIndex::class)->name('system.audit-logs');
 });
 
-
 Route::post('/midtrans/notification', \App\Http\Controllers\Midtrans\MidtransNotificationController::class);
-
-

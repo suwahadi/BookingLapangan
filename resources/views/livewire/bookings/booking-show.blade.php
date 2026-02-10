@@ -7,18 +7,21 @@
                     <span class="material-symbols-outlined text-base">arrow_back</span>
                     Kembali ke Beranda
                 </a>
-                <div class="flex items-center gap-3">
-                    <h1 class="text-3xl md:text-4xl font-black text-text-light dark:text-text-dark tracking-tight font-display italic uppercase">Detail <span class="text-primary">Booking</span></h1>
-                    <span class="px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest border {{ $booking->status->color() === 'primary' ? 'bg-primary/10 text-primary border-primary/20' : ($booking->status->color() === 'emerald' ? 'bg-emerald-100 text-emerald-600 border-emerald-200' : 'bg-gray-100 text-gray-600 border-gray-200') }}">
-                        {{ $booking->status->label() }}
-                    </span>
-                </div>
-                <div class="inline-flex items-center gap-2 bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded-lg border border-gray-200 dark:border-gray-700">
-                    <span class="font-mono text-sm text-text-light dark:text-text-dark select-all" id="booking-code">{{ $booking->booking_code }}</span>
-                    <button onclick="navigator.clipboard.writeText('{{ $booking->booking_code }}'); this.querySelector('span').textContent = 'check'; setTimeout(() => { this.querySelector('span').textContent = 'content_copy'; }, 1500);"
-                            class="text-muted-light hover:text-primary transition-colors" title="Salin kode booking">
-                        <span class="material-symbols-outlined text-sm">content_copy</span>
-                    </button>
+                <h1 class="text-3xl md:text-4xl font-black text-text-light dark:text-text-dark tracking-tight font-display italic uppercase">Detail <span class="text-primary">Booking</span></h1>
+                
+                <div class="grid grid-cols-2 gap-4 mt-4 w-full max-w-[20rem]">
+                    <div class="h-full">
+                        <span class="flex items-center justify-center w-full h-full px-3 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest border text-center {{ $booking->status->color() === 'primary' ? 'bg-primary/10 text-primary border-primary/20' : ($booking->status->color() === 'emerald' ? 'bg-emerald-100 text-emerald-600 border-emerald-200' : 'bg-gray-100 text-gray-600 border-gray-200') }}">
+                            {{ $booking->status->label() }}
+                        </span>
+                    </div>
+                    <div class="flex items-center justify-between gap-2 bg-gray-100 dark:bg-gray-800 px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700 w-full h-full">
+                        <span class="font-mono text-xs text-text-light dark:text-text-dark truncate">{{ $booking->booking_code }}</span>
+                        <button onclick="navigator.clipboard.writeText('{{ $booking->booking_code }}'); this.querySelector('span').textContent = 'check'; setTimeout(() => { this.querySelector('span').textContent = 'content_copy'; }, 1500);"
+                                class="text-muted-light hover:text-primary transition-colors shrink-0 flex items-center" title="Salin kode booking">
+                            <span class="material-symbols-outlined text-sm">content_copy</span>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -37,32 +40,32 @@
                     <h2 class="text-2xl font-black text-text-light dark:text-text-dark uppercase italic tracking-tight mb-8 relative z-10">Informasi <span class="text-primary">Venue</span></h2>
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8 relative z-10">
-                        <div class="space-y-1">
-                            <p class="text-[10px] font-black text-muted-light uppercase tracking-widest">Venue</p>
-                            <div class="flex items-center gap-2">
-                                <span class="material-symbols-outlined text-primary">location_city</span>
-                                <p class="text-lg font-black text-text-light dark:text-text-dark">{{ $booking->venue->name }}</p>
+                        <div class="space-y-2">
+                            <p class="text-[10px] font-bold text-muted-light uppercase tracking-widest">Venue</p>
+                            <div class="flex items-center gap-3">
+                                <span class="material-symbols-outlined text-primary text-xl">map</span>
+                                <p class="text-base font-bold text-text-light dark:text-text-dark">{{ $booking->venue->name }}</p>
                             </div>
                         </div>
-                        <div class="space-y-1">
-                            <p class="text-[10px] font-black text-muted-light uppercase tracking-widest">Lapangan</p>
-                            <div class="flex items-center gap-2">
-                                <span class="material-symbols-outlined text-primary">{{ \App\Models\Venue::sportIcon($booking->court->sport ?? '') }}</span>
-                                <p class="text-lg font-black text-primary">{{ $booking->court->name }}</p>
+                        <div class="space-y-2">
+                            <p class="text-[10px] font-bold text-muted-light uppercase tracking-widest">Lapangan</p>
+                            <div class="flex items-center gap-3">
+                                <span class="material-symbols-outlined text-primary text-xl">{{ \App\Models\Venue::sportIcon($booking->court->sport ?? $booking->venue->sport_type) }}</span>
+                                <p class="text-base font-bold text-primary">{{ $booking->court->name }}</p>
                             </div>
                         </div>
-                        <div class="space-y-1">
-                            <p class="text-[10px] font-black text-muted-light uppercase tracking-widest">Tanggal</p>
-                            <div class="flex items-center gap-2">
-                                <span class="material-symbols-outlined text-primary">calendar_month</span>
-                                <p class="text-lg font-black text-text-light dark:text-text-dark">{{ $booking->booking_date->translatedFormat('l, d F Y') }}</p>
+                        <div class="space-y-2">
+                            <p class="text-[10px] font-bold text-muted-light uppercase tracking-widest">Tanggal</p>
+                            <div class="flex items-center gap-3">
+                                <span class="material-symbols-outlined text-primary text-xl">calendar_month</span>
+                                <p class="text-base font-bold text-text-light dark:text-text-dark">{{ $booking->booking_date->translatedFormat('l, d F Y') }}</p>
                             </div>
                         </div>
-                        <div class="space-y-1">
-                            <p class="text-[10px] font-black text-muted-light uppercase tracking-widest">Jam Main</p>
-                            <div class="flex flex-wrap items-center gap-1.5 mt-1">
+                        <div class="space-y-2">
+                            <p class="text-[10px] font-bold text-muted-light uppercase tracking-widest">Jam Main</p>
+                            <div class="flex flex-wrap items-center gap-2 mt-1">
                                 @foreach($booking->grouped_slots as $slot)
-                                    <span class="inline-flex items-center px-3 py-1 bg-primary/10 text-primary rounded-lg text-xs font-black font-mono">
+                                    <span class="inline-flex items-center px-3 py-1 bg-primary/10 text-primary rounded-lg text-xs font-bold font-mono">
                                         {{ $slot['start'] }} - {{ $slot['end'] }}
                                     </span>
                                 @endforeach
@@ -78,23 +81,24 @@
                         <span class="material-symbols-outlined text-[15rem]">payments</span>
                     </div>
 
-                    <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
-                        <div>
-                            <h2 class="text-2xl font-black uppercase italic tracking-tight mb-2">Selesaikan Pembayaran</h2>
-                            <p class="text-white/80 font-medium text-sm max-w-md leading-relaxed">
+                    <div class="relative z-10 flex flex-col items-center text-center md:text-left md:items-start md:flex-row md:justify-between gap-8">
+                        <div class="space-y-4 max-w-xl">
+                            <h2 class="text-2xl md:text-3xl font-black uppercase italic tracking-tight leading-none">Selesaikan Pembayaran</h2>
+                            <p class="text-white/90 font-medium text-sm leading-relaxed">
                                 Segera lakukan pembayaran sebelum batas waktu berakhir agar booking Anda tidak dibatalkan otomatis.
                             </p>
                             @if($booking->expires_at)
-                            <div class="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-white/20 rounded-xl backdrop-blur-md border border-white/20 text-xs font-bold text-white shadow-sm">
-                                <span class="material-symbols-outlined text-sm animate-pulse">timer</span>
+                            <div class="inline-flex items-center gap-2 px-4 py-2.5 bg-white/20 rounded-xl backdrop-blur-md border border-white/20 text-xs font-bold text-white shadow-sm hover:bg-white/25 transition-colors cursor-help">
+                                <span class="material-symbols-outlined text-base animate-pulse">timer</span>
                                 Batas Bayar: {{ $booking->expires_at->format('H:i') }}
                             </div>
                             @endif
                         </div>
+                        
                         <a href="{{ route('bookings.checkout', ['booking' => $booking->id]) }}" 
-                           class="whitespace-nowrap bg-white text-primary px-8 py-4 rounded-2xl font-black text-xs uppercase tracking-[0.2em] hover:bg-gray-50 transition-all transform hover:-translate-y-1 shadow-lg shadow-black/20 flex items-center gap-2 group-hover:gap-3">
+                           class="w-full md:w-auto md:min-w-[200px] bg-white text-primary px-8 py-5 rounded-3xl font-black text-xs uppercase tracking-[0.2em] hover:bg-gray-50 transition-all transform hover:-translate-y-1 shadow-2xl shadow-black/20 flex flex-shrink-0 items-center justify-center gap-3 group">
                             Bayar Sekarang 
-                            <span class="material-symbols-outlined text-base">arrow_forward</span>
+                            <span class="material-symbols-outlined text-xl group-hover:translate-x-1 transition-transform">arrow_forward</span>
                         </a>
                     </div>
                 </div>

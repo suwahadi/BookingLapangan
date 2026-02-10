@@ -110,6 +110,7 @@
                             
                             <a href="{{ route('member.dashboard') }}" wire:navigate class="block px-4 py-2 text-sm hover:bg-gray-50 dark:hover:bg-gray-700">Dashboard</a>
                             <a href="{{ route('member.bookings') }}" wire:navigate class="block px-4 py-2 text-sm hover:bg-gray-50 dark:hover:bg-gray-700">Booking Saya</a>
+                            <a href="{{ route('member.profile') }}" wire:navigate class="block px-4 py-2 text-sm hover:bg-gray-50 dark:hover:bg-gray-700">Profil</a>
                             
                             @if(Auth::user()->is_admin)
                                 <a href="{{ route('admin.dashboard') }}" wire:navigate class="block px-4 py-2 text-sm text-primary font-bold hover:bg-gray-50 dark:hover:bg-gray-700">Admin Panel</a>
@@ -145,18 +146,8 @@
             @if(session('error'))
                 window.dispatchEvent(new CustomEvent('toast', { detail: { message: "{{ session('error') }}", type: 'error' } }));
             @endif
-        });
-        
-        // Initial load
-        window.addEventListener('DOMContentLoaded', () => {
-            @if(session('success'))
-                window.dispatchEvent(new CustomEvent('toast', { detail: { message: "{{ session('success') }}", type: 'success' } }));
-            @endif
-            @if(session('error'))
-                window.dispatchEvent(new CustomEvent('toast', { detail: { message: "{{ session('error') }}", type: 'error' } }));
-            @endif
-            
-            // Auto-open auth modal if redirected from /login or /register
+
+            // Open auth modal if redirected from /login or /register
             @if(session('openAuth'))
                 Livewire.dispatch('openAuthModal', { mode: "{{ session('openAuth') }}" });
             @endif

@@ -62,7 +62,7 @@ class AuthModal extends Component
             session()->regenerate();
             $this->closeModal();
             
-            $this->dispatch('toast', message: 'Selamat datang kembali!', type: 'success');
+            session()->flash('success', 'Selamat datang kembali!');
             
             return $this->redirect(request()->header('Referer', '/'), navigate: true);
         }
@@ -100,7 +100,7 @@ class AuthModal extends Component
         
         $this->closeModal();
         
-        $this->dispatch('toast', message: 'Akun berhasil dibuat! Selamat datang.', type: 'success');
+        session()->flash('success', 'Akun berhasil dibuat! Selamat datang.');
         
         return $this->redirect(request()->header('Referer', '/'), navigate: false);
     }
