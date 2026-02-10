@@ -108,4 +108,96 @@ class Booking extends Model
     {
         return $this->hasMany(RefundRequest::class);
     }
+
+    /**
+     * Get formatted grouped slots
+     * Returns array of ['court_name' => string, 'start' => 'H:i', 'end' => 'H:i', 'date' => string]
+     */
+    public function getGroupedSlotsAttribute(): array
+    {
+        $slots = $this->slots()
+            ->with(['court'])
+            // Sort by Court -> Date -> Start Time to ensure contiguous slots are adjacent
+            ->orderBy('venue_court_id')
+            ->orderBy('slot_date')
+            ->orderBy('slot_start_time')
+            ->get();
+
+        if ($slots->isEmpty()) {
+            return [
+                [
+                    'court_name' => $this->court->name ?? 'Unknown Court',
+                    'start' => substr($this->start_time, 0, 5),
+                    'end' => substr($this->end_time, 0, 5),
+                    'date' => $this->booking_date->format('Y-m-d'),
+                ]
+            ];
+        }
+
+        $grouped = [];
+        // State tracking
+        $currentStart = null;
+        $currentEnd = null;
+        $lastDateStr = null;
+        $lastCourtName = null;
+        $lastCourtId = null;
+
+        foreach ($slots as $slot) {
+            $start = substr($slot->slot_start_time, 0, 5);
+            $end = substr($slot->slot_end_time, 0, 5);
+            
+            // Normalize date to string
+            $dateObj = $slot->slot_date;
+            $dateStr = $dateObj instanceof \DateTimeInterface ? $dateObj->format('Y-m-d') : (string)$dateObj;
+            
+            $courtName = $slot->court->name ?? 'Unknown Court';
+            $courtId = $slot->venue_court_id;
+
+            if ($currentStart === null) {
+                // Initialize first group
+                $currentStart = $start;
+                $currentEnd = $end;
+                $lastDateStr = $dateStr;
+                $lastCourtName = $courtName;
+                $lastCourtId = $courtId;
+            } else {
+                // Check connectivity
+                $isSameCourt = ($courtId === $lastCourtId);
+                $isSameDate = ($dateStr === $lastDateStr);
+                $isContiguous = ($start === $currentEnd); // e.g. 08:00 == 08:00
+
+                if ($isSameCourt && $isSameDate && $isContiguous) {
+                    // Merge: extend end time
+                    $currentEnd = $end;
+                } else {
+                    // Commit previous group
+                    $grouped[] = [
+                        'court_name' => $lastCourtName,
+                        'start' => $currentStart, 
+                        'end' => $currentEnd, 
+                        'date' => $lastDateStr
+                    ];
+                    
+                    // Start new group
+                    $currentStart = $start;
+                    $currentEnd = $end;
+                    $lastDateStr = $dateStr;
+                    $lastCourtName = $courtName;
+                    $lastCourtId = $courtId;
+                }
+            }
+        }
+
+        // Commit final group
+        if ($currentStart !== null) {
+            $grouped[] = [
+                'court_name' => $lastCourtName,
+                'start' => $currentStart, 
+                'end' => $currentEnd, 
+                'date' => $lastDateStr
+            ];
+        }
+
+        return $grouped;
+    }
 }

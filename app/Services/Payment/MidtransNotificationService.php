@@ -10,6 +10,7 @@ use App\Models\Payment;
 use App\Notifications\BookingConfirmedNotification;
 use App\Notifications\BookingExpiredNotification;
 use App\Services\Booking\SlotLifecycleService;
+use App\Services\Notification\NotificationService;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -18,7 +19,8 @@ class MidtransNotificationService
 {
     public function __construct(
         private readonly SlotLifecycleService $slotLifecycle,
-        private readonly \App\Services\Observability\DomainLogger $log
+        private readonly \App\Services\Observability\DomainLogger $log,
+        private readonly NotificationService $notificationService
     ) {}
 
     /**
@@ -99,9 +101,10 @@ class MidtransNotificationService
                     // Release slots logic
                     $this->slotLifecycle->snapshotAndRelease($booking);
 
-                    // Notify User
+                    // Notify User (email + in-app)
                     if ($booking->user) {
                         $booking->user->notify(new BookingExpiredNotification($booking));
+                        $this->notificationService->notifyBookingExpired($booking);
                     }
                 }
                 return;
@@ -199,9 +202,10 @@ class MidtransNotificationService
         
         $booking->save();
 
-        // Notify user
+        // Notify user (email + in-app)
         if ($booking->user) {
             $booking->user->notify(new BookingConfirmedNotification($booking));
+            $this->notificationService->notifyBookingPaid($booking, (int) $payment->amount);
         }
 
         $this->log->info('payment.paid', [

@@ -109,4 +109,31 @@ class Venue extends Model
     {
         return $this->belongsToMany(Amenity::class, 'amenity_venue');
     }
+
+    /**
+     * Get the Material Symbols icon name for a given sport type.
+     */
+    public static function sportIcon(?string $sportType): string
+    {
+        return match (strtolower(trim($sportType ?? ''))) {
+            'futsal'       => 'sports_soccer',
+            'mini soccer'  => 'sports_soccer',
+            'badminton'    => 'sports_tennis',
+            'tennis'       => 'sports_tennis',
+            'padel'        => 'sports_tennis',
+            'basket',
+            'basketball'   => 'sports_basketball',
+            'voli',
+            'volleyball'   => 'sports_volleyball',
+            default        => 'emoji_events',
+        };
+    }
+
+    /**
+     * Get the sport icon for this venue instance.
+     */
+    public function getSportIconAttribute(): string
+    {
+        return static::sportIcon($this->sport_type);
+    }
 }

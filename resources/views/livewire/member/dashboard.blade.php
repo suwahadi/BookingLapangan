@@ -87,10 +87,13 @@
                             </div>
                             <div class="flex-1 min-w-0">
                                 <p class="text-sm font-black text-text-light dark:text-text-dark uppercase truncate group-hover:text-primary transition-colors">{{ $booking->venue->name ?? 'Venue' }}</p>
-                                <p class="text-xs text-muted-light mt-1 flex items-center gap-1">
-                                    <span class="material-symbols-outlined text-[10px]">schedule</span>
-                                    {{ $booking->start_time }} - {{ $booking->end_time }}
-                                </p>
+                                <div class="flex flex-wrap items-center gap-1 mt-1">
+                                    @foreach($booking->grouped_slots as $slot)
+                                        <span class="inline-flex items-center px-2 py-0.5 bg-primary/10 text-primary rounded text-[10px] font-bold font-mono">
+                                            {{ $slot['start'] }} - {{ $slot['end'] }}
+                                        </span>
+                                    @endforeach
+                                </div>
                             </div>
                             <span class="px-3 py-1 rounded-full text-[8px] font-black uppercase tracking-widest border shadow-sm
                                 {{ $booking->status->value === 'CONFIRMED' ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800' : 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 border-amber-200 dark:border-amber-800' }}">
@@ -159,7 +162,7 @@
     <div class="mt-10 bg-text-light dark:bg-black rounded-[2.5rem] p-8 flex flex-col md:flex-row items-center justify-between gap-6 shadow-2xl relative overflow-hidden group">
         <div class="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
         <div class="absolute -right-10 -bottom-10 opacity-10 rotate-12 group-hover:scale-110 transition-transform duration-700">
-             <span class="material-symbols-outlined text-[12rem] text-white">sports_tennis</span>
+             <span class="material-symbols-outlined text-[12rem] text-white">emoji_events</span>
         </div>
         
         <div class="relative z-10 text-center md:text-left">

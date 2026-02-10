@@ -52,15 +52,22 @@
                         <p class="text-[10px] font-bold text-indigo-500 uppercase italic">{{ $booking->court->name }}</p>
                     </div>
                     <div class="space-y-1">
-                        <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Tanggal Main</p>
+                        <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Tanggal / Jam Main</p>
                         <p class="text-sm font-black text-gray-900">{{ $booking->booking_date->translatedFormat('l, d F Y') }}</p>
-                        <p class="text-[10px] font-bold text-gray-500 uppercase tracking-widest leading-none">{{ substr($booking->start_time, 0, 5) }} - {{ substr($booking->end_time, 0, 5) }}</p>
+                        <div class="flex flex-wrap items-center gap-1.5 mt-1">
+                            @foreach($booking->grouped_slots as $slot)
+                                <span class="inline-flex items-center px-2 py-0.5 bg-indigo-50 text-indigo-600 rounded text-[10px] font-bold font-mono">
+                                    {{ $slot['start'] }} - {{ $slot['end'] }}
+                                </span>
+                            @endforeach
+                        </div>
                     </div>
                     <div class="space-y-1">
                         <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Total Bayar</p>
                         <p class="text-lg font-black text-gray-900 tracking-tighter italic">Rp {{ number_format($booking->total_amount, 0, ',', '.') }}</p>
                         <p class="text-[10px] font-bold text-emerald-500 uppercase tracking-widest">Terbayar: Rp {{ number_format($booking->paid_amount, 0, ',', '.') }}</p>
                     </div>
+
                 </div>
             </div>
 
@@ -81,7 +88,7 @@
                             <tr class="bg-gray-50/50">
                                 <th class="px-10 py-6 text-[10px] font-black text-gray-400 uppercase tracking-widest">Order ID</th>
                                 <th class="px-10 py-6 text-[10px] font-black text-gray-400 uppercase tracking-widest">Metode</th>
-                                <th class="px-10 py-8 text-[10px] font-black text-gray-400 uppercase tracking-widest text-right">Nominal</th>
+                                <th class="px-10 py-8 text-[10px] font-black text-gray-400 uppercase tracking-widest text-right">Nominal (Rp)</th>
                                 <th class="px-10 py-6 text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">Status</th>
                             </tr>
                         </thead>
@@ -91,10 +98,10 @@
                                 <td class="px-10 py-6 font-bold text-gray-600">#{{ $payment->provider_order_id }}</td>
                                 <td class="px-10 py-6">
                                     <span class="font-black text-gray-900 uppercase text-[10px] tracking-widest">{{ $payment->payment_method ?? 'Gateway' }}</span>
-                                    <p class="text-[10px] text-gray-400">{{ $payment->type->label() }}</p>
+                                    <!-- <p class="text-[10px] text-gray-400">{{ $payment->type->label() }}</p> -->
                                 </td>
                                 <td class="px-10 py-8 text-right font-black text-gray-900 italic tracking-tighter">
-                                    Rp {{ number_format($payment->amount, 0, ',', '.') }}
+                                    {{ number_format($payment->amount, 0, ',', '.') }}
                                 </td>
                                 <td class="px-10 py-6 text-center">
                                     <span class="px-3 py-1 bg-{{ $payment->status->color() }}-100 text-{{ $payment->status->color() }}-600 rounded-lg text-[9px] font-black uppercase tracking-widest">

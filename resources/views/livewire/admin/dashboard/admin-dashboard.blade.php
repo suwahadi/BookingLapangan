@@ -124,11 +124,11 @@
                         @forelse($recentBookings as $booking)
                         <tr onclick="window.location='{{ route('admin.bookings.show', $booking->id) }}'" class="hover:bg-gray-50/50 transition-colors group cursor-pointer">
                             <td class="px-8 py-6">
-                                <p class="text-sm font-black text-gray-900 lowercase">{{ $booking->user->name }}</p>
+                                <p class="text-sm font-black text-gray-900">{{ $booking->user->name }}</p>
                                 <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest group-hover:text-indigo-600 transition-colors ">{{ $booking->booking_code }}</p>
                             </td>
                             <td class="px-8 py-6">
-                                <p class="text-sm font-bold text-gray-900 lowercase">{{ $booking->venue->name }}</p>
+                                <p class="text-sm font-bold text-gray-900">{{ $booking->venue->name }}</p>
                                 <p class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">{{ $booking->court->name }}</p>
                             </td>
                             <td class="px-8 py-6">

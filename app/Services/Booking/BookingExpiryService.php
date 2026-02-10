@@ -8,6 +8,7 @@ use App\Models\Booking;
 use App\Models\Payment;
 use App\Repositories\Booking\OccupiedSlotsRepository;
 use App\Services\Audit\AuditService;
+use App\Services\Notification\NotificationService;
 use App\Services\Observability\DomainLogger;
 use Illuminate\Support\Facades\DB;
 
@@ -17,7 +18,8 @@ class BookingExpiryService
         private readonly AuditService $audit,
         private readonly DomainLogger $log,
         private readonly OccupiedSlotsRepository $occupiedRepo,
-        private readonly SlotLifecycleService $slotLifecycle
+        private readonly SlotLifecycleService $slotLifecycle,
+        private readonly NotificationService $notificationService
     ) {}
 
     /**
@@ -131,6 +133,11 @@ class BookingExpiryService
                     'booking_code' => $booking->booking_code ?? null,
                 ]);
 
+                // Kirim notifikasi in-app ke member
+                if ($booking->user) {
+                    $this->notificationService->notifyBookingExpired($booking);
+                }
+
                 return true;
             }, 3);
         } catch (\Throwable $e) {
@@ -170,6 +177,11 @@ class BookingExpiryService
                     $booking->save();
 
                     $this->slotLifecycle->snapshotAndRelease($booking);
+
+                    // Kirim notifikasi in-app ke member
+                    if ($booking->user) {
+                        $this->notificationService->notifyBookingExpired($booking);
+                    }
 
                     if ($actorUserId) {
                         $this->audit->record(

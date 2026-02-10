@@ -81,21 +81,12 @@ class ReviewOrder extends Component
             return;
         }
 
-        // Sort slots by start time
-        $slots = $this->selectedSlots;
-        usort($slots, fn($a, $b) => strcmp($a['start'], $b['start']));
-
-        // Assuming contiguous slots for MVP
-        $start = $slots[0]['start'];
-        $end = end($slots)['end'];
-
         try {
             $booking = $service->createHold(
                 userId: Auth::id(),
                 venueCourtId: $this->venueCourt->id,
                 dateYmd: $this->date,
-                startTimeHi: $start,
-                endTimeHi: $end,
+                slots: $this->selectedSlots,
                 notes: 'Booking via Website',
                 idempotencyKey: (string) \Illuminate\Support\Str::uuid()
             );

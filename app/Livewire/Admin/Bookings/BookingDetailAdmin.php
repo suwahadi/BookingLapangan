@@ -10,6 +10,7 @@ use App\Models\Booking;
 use App\Notifications\BookingRescheduledNotification;
 use App\Notifications\BookingRefundedNotification;
 use App\Services\Audit\AuditService;
+use App\Services\Notification\NotificationService;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
@@ -23,7 +24,7 @@ class BookingDetailAdmin extends Component
 
     public function mount(Booking $booking)
     {
-        $this->booking = $booking->load(['user', 'venue', 'court', 'payments', 'rescheduleRequests', 'refundRequests']);
+        $this->booking = $booking->load(['user', 'venue', 'court', 'payments', 'rescheduleRequests', 'refundRequests', 'slots']);
     }
 
     public function confirmManual()
@@ -166,9 +167,10 @@ class BookingDetailAdmin extends Component
                 meta: ['request_id' => $request->id, 'amount' => $request->amount]
             );
 
-            // Notify User
+            // Notify User (email + in-app)
             if ($this->booking->user) {
                 $this->booking->user->notify(new BookingRefundedNotification($this->booking, $request->amount));
+                app(NotificationService::class)->notifyRefundProcessed($this->booking, (int) $request->amount);
             }
 
             $this->dispatch('toast', message: 'Refund diproses!', type: 'success');
@@ -183,6 +185,11 @@ class BookingDetailAdmin extends Component
             );
 
             $this->dispatch('toast', message: 'Refund ditolak.', type: 'info');
+
+            // Notify member in-app
+            if ($this->booking->user) {
+                app(NotificationService::class)->notifyRefundRejected($this->booking);
+            }
         }
 
         $this->booking->refresh();

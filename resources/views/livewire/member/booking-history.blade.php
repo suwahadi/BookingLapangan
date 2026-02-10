@@ -67,11 +67,15 @@
                             <div>
                                 <p class="text-sm font-bold text-text-light dark:text-text-dark">{{ $booking->venue->name ?? '-' }}</p>
                                 <div class="flex items-center gap-1 text-xs text-muted-light mt-0.5">
-                                    <span class="material-symbols-outlined text-[14px]">sports_tennis</span>
+                                    <span class="material-symbols-outlined text-[14px]">{{ \App\Models\Venue::sportIcon($booking->court->sport ?? '') }}</span>
                                     {{ $booking->court->name ?? '-' }}
-                                    <span class="mx-1">•</span>
-                                    <span class="material-symbols-outlined text-[14px]">schedule</span>
-                                    {{ substr($booking->start_time, 0, 5) }} - {{ substr($booking->end_time, 0, 5) }}
+                                </div>
+                                <div class="flex flex-wrap items-center gap-1 mt-1">
+                                    @foreach($booking->grouped_slots as $slot)
+                                        <span class="inline-flex items-center px-2 py-0.5 bg-primary/10 text-primary rounded text-[10px] font-bold font-mono">
+                                            {{ $slot['start'] }} - {{ $slot['end'] }}
+                                        </span>
+                                    @endforeach
                                 </div>
                             </div>
                         </div>

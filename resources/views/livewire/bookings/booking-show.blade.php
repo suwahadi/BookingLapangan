@@ -3,7 +3,7 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10">
         <div class="flex flex-col md:flex-row md:items-start justify-between gap-6">
             <div>
-                <a href="{{ route('home') }}" class="inline-flex items-center gap-2 text-muted-light font-bold text-[10px] uppercase tracking-[0.2em] mb-4 hover:text-primary transition-colors">
+                <a href="{{ route('member.dashboard') }}" class="inline-flex items-center gap-2 text-muted-light font-bold text-[10px] uppercase tracking-[0.2em] mb-4 hover:text-primary transition-colors">
                     <span class="material-symbols-outlined text-base">arrow_back</span>
                     Kembali ke Beranda
                 </a>
@@ -13,10 +13,13 @@
                         {{ $booking->status->label() }}
                     </span>
                 </div>
-                <p class="text-muted-light font-bold mt-2 tracking-tight flex items-center gap-2">
-                    Kode Booking: 
-                    <span class="font-mono text-text-light dark:text-text-dark bg-gray-100 dark:bg-gray-800 px-2 py-0.5 rounded border border-gray-200 dark:border-gray-700">{{ $booking->booking_code }}</span>
-                </p>
+                <div class="inline-flex items-center gap-2 bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded-lg border border-gray-200 dark:border-gray-700">
+                    <span class="font-mono text-sm text-text-light dark:text-text-dark select-all" id="booking-code">{{ $booking->booking_code }}</span>
+                    <button onclick="navigator.clipboard.writeText('{{ $booking->booking_code }}'); this.querySelector('span').textContent = 'check'; setTimeout(() => { this.querySelector('span').textContent = 'content_copy'; }, 1500);"
+                            class="text-muted-light hover:text-primary transition-colors" title="Salin kode booking">
+                        <span class="material-symbols-outlined text-sm">content_copy</span>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -44,7 +47,7 @@
                         <div class="space-y-1">
                             <p class="text-[10px] font-black text-muted-light uppercase tracking-widest">Lapangan</p>
                             <div class="flex items-center gap-2">
-                                <span class="material-symbols-outlined text-primary">sports_tennis</span>
+                                <span class="material-symbols-outlined text-primary">{{ \App\Models\Venue::sportIcon($booking->court->sport ?? '') }}</span>
                                 <p class="text-lg font-black text-primary">{{ $booking->court->name }}</p>
                             </div>
                         </div>
@@ -57,9 +60,12 @@
                         </div>
                         <div class="space-y-1">
                             <p class="text-[10px] font-black text-muted-light uppercase tracking-widest">Jam Main</p>
-                            <div class="inline-flex items-center gap-2 px-3 py-1.5 bg-text-light dark:bg-black rounded-lg text-white font-mono text-sm font-bold shadow-md">
-                                <span class="material-symbols-outlined text-sm">schedule</span>
-                                {{ substr($booking->start_time, 0, 5) }} - {{ substr($booking->end_time, 0, 5) }}
+                            <div class="flex flex-wrap items-center gap-1.5 mt-1">
+                                @foreach($booking->grouped_slots as $slot)
+                                    <span class="inline-flex items-center px-3 py-1 bg-primary/10 text-primary rounded-lg text-xs font-black font-mono">
+                                        {{ $slot['start'] }} - {{ $slot['end'] }}
+                                    </span>
+                                @endforeach
                             </div>
                         </div>
                     </div>

@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Models\VenueCourt;
 use App\Repositories\Booking\OccupiedSlotsRepository;
 use App\Services\Audit\AuditService;
+use App\Services\Notification\NotificationService;
 use App\Services\Booking\Exceptions\InvalidBookingTimeException;
 use App\Services\Booking\Exceptions\SlotNotAvailableException;
 use App\Services\Booking\Support\BookingCodeGenerator;
@@ -25,21 +26,22 @@ class BookingService
         private readonly AuditService $audit,
         private readonly DomainLogger $log,
         private readonly OccupiedSlotsRepository $occupiedRepo,
-        private readonly AvailabilityService $availabilityService
+        private readonly AvailabilityService $availabilityService,
+        private readonly NotificationService $notificationService
     ) {}
 
     /**
      * Buat booking HOLD + lock slot secara atomik.
      *
+     * @param array $slots Array of ['start' => 'H:i', 'end' => 'H:i', 'amount' => int]
      * @throws InvalidBookingTimeException
      * @throws SlotNotAvailableException
      */
     public function createHold(
         int $userId,
         int $venueCourtId,
-        string $dateYmd,        // Y-m-d
-        string $startTimeHi,    // H:i
-        string $endTimeHi,      // H:i
+        string $dateYmd,
+        array $slots,
         ?string $customerName = null,
         ?string $customerEmail = null,
         ?string $customerPhone = null,
@@ -53,25 +55,16 @@ class BookingService
             }
         }
 
+        if (empty($slots)) {
+            throw new InvalidBookingTimeException('Tidak ada slot yang dipilih.');
+        }
+
         $user = User::findOrFail($userId);
         $customerName = $customerName ?? $user->name;
         $customerEmail = $customerEmail ?? $user->email;
-        $customerPhone = $customerPhone ?? '-'; // Fallback to avoid DB error
+        $customerPhone = $customerPhone ?? '-';
 
-        $slotMinutes = (int) config('booking.slot_minutes', 60);
         $holdDuration = (int) config('booking.hold_duration_minutes', 15);
-
-        $start = CarbonImmutable::createFromFormat('Y-m-d H:i', "{$dateYmd} {$startTimeHi}");
-        $end   = CarbonImmutable::createFromFormat('Y-m-d H:i', "{$dateYmd} {$endTimeHi}");
-
-        if ($end->lessThanOrEqualTo($start)) {
-            throw new InvalidBookingTimeException('Waktu selesai harus lebih besar dari waktu mulai.');
-        }
-
-        $durationMinutes = $start->diffInMinutes($end);
-        if ($durationMinutes % $slotMinutes !== 0) {
-            throw new InvalidBookingTimeException("Durasi harus kelipatan {$slotMinutes} menit.");
-        }
 
         $court = VenueCourt::query()
             ->with(['venue.policy', 'venue.setting'])
@@ -83,18 +76,19 @@ class BookingService
             throw new InvalidBookingTimeException('Venue tidak aktif.');
         }
 
-        // Use venue-specific hold duration if available
         if ($court->venue->policy?->hold_duration_minutes) {
             $holdDuration = $court->venue->policy->hold_duration_minutes;
         }
 
-        // Hitung harga (strict: harus ada pricing)
-        $totalAmount = $this->pricingService->calculateTotalAmount(
-            $venueCourtId,
-            $dateYmd,
-            $startTimeHi,
-            $endTimeHi
-        );
+        // Sort slots by start time
+        usort($slots, fn($a, $b) => strcmp($a['start'], $b['start']));
+
+        // Derive overall start/end for the booking record
+        $overallStart = $slots[0]['start'];
+        $overallEnd = end($slots)['end'];
+
+        // Calculate total from the individual slot amounts
+        $totalAmount = array_sum(array_column($slots, 'amount'));
 
         // Kebijakan DP
         $policy = $court->venue->policy;
@@ -110,14 +104,12 @@ class BookingService
                 $userId,
                 $court,
                 $dateYmd,
-                $startTimeHi,
-                $endTimeHi,
+                $overallStart,
+                $overallEnd,
                 $totalAmount,
                 $dpRequired,
                 $expiresAt,
-                $slotMinutes,
-                $start,
-                $end,
+                $slots,
                 $customerName,
                 $customerEmail,
                 $customerPhone,
@@ -130,8 +122,8 @@ class BookingService
                     'venue_court_id' => $court->id,
 
                     'booking_date' => $dateYmd,
-                    'start_time' => $startTimeHi,
-                    'end_time' => $endTimeHi,
+                    'start_time' => $overallStart,
+                    'end_time' => $overallEnd,
 
                     'status' => BookingStatus::HOLD,
                     'booking_code' => $this->bookingCodeGenerator->generate(),
@@ -142,7 +134,7 @@ class BookingService
                     'dp_paid_amount' => 0,
 
                     'expires_at' => $expiresAt,
-                    
+
                     'customer_name' => $customerName,
                     'customer_email' => $customerEmail,
                     'customer_phone' => $customerPhone,
@@ -150,17 +142,14 @@ class BookingService
                     'idempotency_key' => $idempotencyKey,
                 ]);
 
-                // Lock slot per unit (misal 60 menit per slot)
-                $slots = $this->buildSlots($court->id, $dateYmd, $start, $end, $slotMinutes);
-
-                // Insert satu per satu agar mudah tangkap duplicate unique constraint
+                // Insert ONLY the selected slots (not the entire range)
                 foreach ($slots as $slot) {
                     BookingSlot::create([
                         'booking_id' => $booking->id,
-                        'venue_court_id' => $slot['venue_court_id'],
-                        'slot_date' => $slot['slot_date'],
-                        'slot_start_time' => $slot['slot_start_time'],
-                        'slot_end_time' => $slot['slot_end_time'],
+                        'venue_court_id' => $court->id,
+                        'slot_date' => $dateYmd,
+                        'slot_start_time' => $slot['start'] . ':00',
+                        'slot_end_time' => $slot['end'] . ':00',
                     ]);
                 }
 
@@ -171,11 +160,11 @@ class BookingService
                     auditable: $booking,
                     before: null,
                     after: $booking->toArray(),
-                    meta: ['venue_court_id' => $court->id, 'date' => $dateYmd]
+                    meta: ['venue_court_id' => $court->id, 'date' => $dateYmd, 'slots_count' => count($slots)]
                 );
 
                 return $booking->fresh(['slots', 'venue', 'court']);
-            }, 3); // retry deadlock 3x
+            }, 3);
 
             // Invalidate cache
             $this->occupiedRepo->forget($venueCourtId, $dateYmd);
@@ -190,7 +179,11 @@ class BookingService
                 'venue_court_id' => $venueCourtId,
                 'date' => $dateYmd,
                 'user_id' => $userId,
+                'slots_count' => count($slots),
             ]);
+
+            // Kirim notifikasi in-app ke member
+            $this->notificationService->notifyBookingCreated($booking);
 
             return $booking;
         } catch (QueryException $e) {
@@ -199,36 +192,6 @@ class BookingService
             }
             throw $e;
         }
-    }
-
-    /**
-     * Generate array slot untuk disimpan di booking_slots.
-     */
-    private function buildSlots(
-        int $venueCourtId,
-        string $dateYmd,
-        CarbonImmutable $start,
-        CarbonImmutable $end,
-        int $slotMinutes
-    ): array {
-        $slots = [];
-        $cursor = $start;
-
-        while ($cursor->lessThan($end)) {
-            $slotStart = $cursor;
-            $slotEnd = $cursor->addMinutes($slotMinutes);
-
-            $slots[] = [
-                'venue_court_id' => $venueCourtId,
-                'slot_date' => $dateYmd,
-                'slot_start_time' => $slotStart->format('H:i:s'),
-                'slot_end_time' => $slotEnd->format('H:i:s'),
-            ];
-
-            $cursor = $slotEnd;
-        }
-
-        return $slots;
     }
 
     /**
@@ -244,7 +207,7 @@ class BookingService
         }
 
         $message = $e->getMessage();
-        return str_contains($message, 'uniq_court_date_time') || 
+        return str_contains($message, 'uniq_court_date_time') ||
                str_contains($message, 'booking_slots_venue_court_id');
     }
 }

@@ -15,7 +15,7 @@ Route::get('/venues/{venue:slug}/court/{venueCourt}', CourtScheduleCinema::class
 // Checkout
 Route::get('/checkout/review-order', \App\Livewire\Checkout\ReviewOrder::class)->name('checkout.review');
 
-// Auth (menggunakan modal popup)
+// Auth (modal popup)
 Route::middleware(['guest'])->group(function () {
     Route::get('/login', fn() => redirect('/')->with('openAuth', 'login'))->name('login');
     Route::get('/register', fn() => redirect('/')->with('openAuth', 'register'))->name('register');

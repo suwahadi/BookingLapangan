@@ -53,15 +53,51 @@ class NotificationService
             ]);
     }
 
+    // ─────────────────────────────────────────────
+    //  Booking Lifecycle Notifications
+    // ─────────────────────────────────────────────
+
     /**
-     * Notify booking confirmed
+     * Booking baru dibuat (HOLD) — menunggu pembayaran
+     */
+    public function notifyBookingCreated($booking): void
+    {
+        $this->send(
+            $booking->user,
+            'booking.created',
+            'Booking Berhasil Dibuat',
+            "Booking #{$booking->booking_code} berhasil dibuat. Segera selesaikan pembayaran sebelum batas waktu berakhir.",
+            route('bookings.show', $booking->id),
+            $booking
+        );
+    }
+
+    /**
+     * Pembayaran berhasil — booking dikonfirmasi
+     */
+    public function notifyBookingPaid($booking, int $amount): void
+    {
+        $formattedAmount = 'Rp ' . number_format($amount, 0, ',', '.');
+
+        $this->send(
+            $booking->user,
+            'booking.paid',
+            'Pembayaran Berhasil',
+            "Pembayaran sebesar {$formattedAmount} untuk booking #{$booking->booking_code} telah diterima. Booking Anda terkonfirmasi!",
+            route('bookings.show', $booking->id),
+            $booking
+        );
+    }
+
+    /**
+     * Booking dikonfirmasi (alias — untuk backward compat)
      */
     public function notifyBookingConfirmed($booking): void
     {
         $this->send(
             $booking->user,
             'booking.confirmed',
-            'Booking Dikonfirmasi!',
+            'Booking Dikonfirmasi',
             "Booking #{$booking->booking_code} telah dikonfirmasi. Sampai jumpa di lapangan!",
             route('bookings.show', $booking->id),
             $booking
@@ -69,7 +105,22 @@ class NotificationService
     }
 
     /**
-     * Notify booking cancelled
+     * Booking kedaluwarsa
+     */
+    public function notifyBookingExpired($booking): void
+    {
+        $this->send(
+            $booking->user,
+            'booking.expired',
+            'Booking Kedaluwarsa',
+            "Booking #{$booking->booking_code} telah kedaluwarsa karena batas waktu pembayaran terlampaui. Slot telah dilepas.",
+            route('bookings.show', $booking->id),
+            $booking
+        );
+    }
+
+    /**
+     * Booking dibatalkan
      */
     public function notifyBookingCancelled($booking): void
     {
@@ -84,18 +135,51 @@ class NotificationService
     }
 
     /**
-     * Notify refund executed
+     * Refund sedang diproses oleh admin/operator
      */
-    public function notifyRefundExecuted($refund): void
+    public function notifyRefundProcessed($booking, int $amount): void
     {
-        $booking = $refund->booking;
+        $formattedAmount = 'Rp ' . number_format($amount, 0, ',', '.');
+
         $this->send(
             $booking->user,
-            'refund.executed',
+            'refund.processed',
+            'Refund Sedang Diproses',
+            "Permintaan refund sebesar {$formattedAmount} untuk booking #{$booking->booking_code} telah disetujui dan sedang diproses.",
+            route('bookings.show', $booking->id),
+            $booking
+        );
+    }
+
+    /**
+     * Refund berhasil masuk ke wallet
+     */
+    public function notifyRefundSuccess($booking, int $amount): void
+    {
+        $formattedAmount = 'Rp ' . number_format($amount, 0, ',', '.');
+
+        $this->send(
+            $booking->user,
+            'refund.success',
             'Refund Berhasil',
-            "Refund sebesar Rp " . number_format($refund->refund_amount, 0, ',', '.') . " telah masuk ke wallet Anda.",
+            "Refund sebesar {$formattedAmount} untuk booking #{$booking->booking_code} telah masuk ke wallet Anda.",
             '/member/wallet',
-            $refund
+            $booking
+        );
+    }
+
+    /**
+     * Refund ditolak
+     */
+    public function notifyRefundRejected($booking): void
+    {
+        $this->send(
+            $booking->user,
+            'refund.rejected',
+            'Refund Ditolak',
+            "Permintaan refund untuk booking #{$booking->booking_code} ditolak oleh admin. Silakan hubungi customer service untuk informasi lebih lanjut.",
+            route('bookings.show', $booking->id),
+            $booking
         );
     }
 }
