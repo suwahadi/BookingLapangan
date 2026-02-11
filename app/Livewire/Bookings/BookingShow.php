@@ -5,6 +5,11 @@ namespace App\Livewire\Bookings;
 use App\Models\Booking;
 use App\Models\VenuePolicy;
 use Illuminate\Support\Facades\Auth;
+use App\Enums\BookingStatus;
+use Illuminate\Support\Facades\DB;
+use App\Services\Notification\NotificationService;
+use App\Services\Audit\AuditService;
+use App\Services\Wallet\WalletService;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
@@ -63,6 +68,75 @@ class BookingShow extends Component
 
         $this->showRefundModal = false;
         $this->dispatch('toast', message: 'Permintaan refund berhasil dikirim.', type: 'success');
+    }
+
+    public function cancelBooking()
+    {
+        $this->authorize('update', $this->booking);
+
+        if ($this->booking->status->isFinal()) {
+            $this->dispatch('toast', message: 'Booking sudah tidak aktif.', type: 'error');
+            return;
+        }
+
+        // Logic Cancel Booking
+        DB::transaction(function () {
+            // 1. Release Slots
+            $this->booking->slots()->delete();
+
+            // 2. Update Status
+            $this->booking->update([
+                'status' => BookingStatus::CANCELLED,
+            ]);
+
+            // 3. Refund to Wallet if paid
+            if ($this->booking->paid_amount > 0) {
+                $walletService = app(WalletService::class);
+                $wallet = $walletService->getWallet($this->booking->user);
+                
+                $walletService->credit(
+                    wallet: $wallet,
+                    amount: (float) $this->booking->paid_amount,
+                    source: $this->booking,
+                    description: "Refund otomatis pembatalan booking #{$this->booking->booking_code}"
+                );
+
+                // Update booking payment status for traceability)
+                 $this->booking->payments()->where('status', \App\Enums\PaymentStatus::SETTLEMENT)->update([
+                    'status' => \App\Enums\PaymentStatus::REFUNDED
+                ]);
+
+                // Create Refund Request Record
+                $this->booking->refundRequests()->create([
+                    'amount' => $this->booking->paid_amount,
+                    'status' => \App\Enums\RefundStatus::PROCESSED,
+                    'reason' => 'Otomatis - Pembatalan oleh pengguna',
+                    'processed_by' => auth()->id(),
+                    'processed_at' => now(),
+                    'notes' => 'Refund otomatis ke wallet karena pembatalan booking.'
+                ]);
+
+                // Notify Refund
+                app(NotificationService::class)->notifyRefundSuccess($this->booking, (int) $this->booking->paid_amount);
+            }
+
+            // 4. Notify
+            app(NotificationService::class)->notifyBookingCancelled($this->booking);
+
+            // 5. Audit
+            app(AuditService::class)->record(
+                actorUserId: auth()->id(),
+                action: 'booking.cancelled',
+                auditable: $this->booking,
+                meta: [
+                    'reason' => 'User cancelled via app',
+                    'refund_amount' => $this->booking->paid_amount
+                ]
+            );
+        });
+
+        $this->showCancelModal = false;
+        $this->dispatch('toast', message: 'Booking berhasil dibatalkan.', type: 'success');
     }
 
     public function render()

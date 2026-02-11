@@ -42,10 +42,16 @@ class BookingCheckout extends Component
             $this->isRemaining = true;
             $this->payPlan = 'REMAINING';
         } else {
-            if ($policy?->allow_dp && (int)$this->booking->dp_required_amount > 0) {
+            $requestedPlan = request()->query('plan');
+            $canDp = $policy?->allow_dp && (int)$this->booking->dp_required_amount > 0;
+
+            if ($requestedPlan === 'FULL') {
+                $this->payPlan = 'FULL';
+            } elseif ($requestedPlan === 'DP' && $canDp) {
                 $this->payPlan = 'DP';
             } else {
-                $this->payPlan = 'FULL';
+                // Default fallback: prefer DP if available, otherwise FULL
+                $this->payPlan = $canDp ? 'DP' : 'FULL';
             }
         }
 

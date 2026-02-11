@@ -24,7 +24,9 @@ class WalletWithdraw extends Component
         $this->availableBalance = (int) $wallet->balance;
     }
 
-    public function submit(WalletService $walletService)
+    public bool $showConfirmationModal = false;
+
+    public function confirmWithdraw()
     {
         $this->validate([
             'amount' => "required|integer|min:10000|max:{$this->availableBalance}",
@@ -36,6 +38,11 @@ class WalletWithdraw extends Component
             'amount.min' => 'Minimal penarikan adalah Rp 10.000.',
         ]);
 
+        $this->showConfirmationModal = true;
+    }
+
+    public function processWithdraw()
+    {
         WithdrawRequest::create([
             'user_id' => auth()->id(),
             'amount' => $this->amount,
@@ -45,6 +52,8 @@ class WalletWithdraw extends Component
             'status' => WithdrawStatus::PENDING,
         ]);
 
+        $this->showConfirmationModal = false;
+        
         // Note: Saldo belum dikurangi di sini. 
         // Saldo baru dikurangi setelah ADMIN APPROVE (Step 62 rules).
 

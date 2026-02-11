@@ -5,6 +5,8 @@ namespace App\Livewire\Admin\Withdraws;
 use App\Enums\WithdrawStatus;
 use App\Models\WithdrawRequest;
 use App\Services\Wallet\WalletService;
+use App\Services\Notification\NotificationService;
+use App\Services\Audit\AuditService;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
@@ -52,6 +54,18 @@ class WithdrawIndexAdmin extends Component
                 'amount' => $request->amount,
                 'admin_id' => auth()->id()
             ]);
+
+            // Audit
+            app(AuditService::class)->record(
+                auth()->id(),
+                'withdraw.approved',
+                $request,
+                ['status' => 'PENDING'],
+                ['status' => 'APPROVED']
+            );
+
+            // Notify
+            app(NotificationService::class)->notifyWithdrawApproved($request);
         });
 
         session()->flash('success', "Permintaan #{$request->id} disetujui dan saldo user telah dikurangi.");
@@ -80,6 +94,18 @@ class WithdrawIndexAdmin extends Component
             'admin_id' => auth()->id(),
             'reason' => $reason
         ]);
+
+        // Audit
+        app(AuditService::class)->record(
+            auth()->id(),
+            'withdraw.rejected',
+            $request,
+            ['status' => 'PENDING'],
+            ['status' => 'REJECTED', 'reason' => $reason]
+        );
+
+        // Notify
+        app(NotificationService::class)->notifyWithdrawRejected($request, $reason ?: 'Ditolak oleh admin.');
 
         session()->flash('info', "Permintaan #{$request->id} ditolak.");
     }

@@ -24,7 +24,114 @@ class BookingDetailAdmin extends Component
 
     public function mount(Booking $booking)
     {
-        $this->booking = $booking->load(['user', 'venue', 'court', 'payments', 'rescheduleRequests', 'refundRequests', 'slots']);
+        $this->booking = $booking->load(['user', 'venue', 'court', 'payments', 'rescheduleRequests', 'refundRequests', 'slots', 'audits.actor']);
+    }
+
+    public function getTimelineProperty()
+    {
+        $events = collect();
+
+        // 1. Created
+        $events->push([
+            'label' => 'Booking Dibuat',
+            'timestamp' => $this->booking->created_at,
+            'color' => 'emerald',
+            'icon' => 'add_circle',
+            'description' => 'Booking ID #' . $this->booking->booking_code . ' dibuat.'
+        ]);
+
+        // 2. Payments (Settlement/Success)
+        foreach ($this->booking->payments as $payment) {
+            if (in_array($payment->status, [\App\Enums\PaymentStatus::SETTLEMENT, \App\Enums\PaymentStatus::SETTLEMENT])) {
+                $events->push([
+                    'label' => 'Pembayaran Berhasil',
+                    'timestamp' => $payment->paid_at ?? $payment->updated_at,
+                    'color' => 'indigo',
+                    'icon' => 'payments',
+                    'description' => 'Pembayaran sebesar Rp ' . number_format($payment->amount, 0, ',', '.') . ' diterima via ' . ($payment->payment_method ?? 'Gateway')
+                ]);
+            }
+        }
+
+        // 3. Audits
+        foreach ($this->booking->audits as $audit) {
+            switch ($audit->action) {
+                case 'booking.confirm_manual':
+                    $events->push([
+                        'label' => 'Konfirmasi Manual',
+                        'timestamp' => $audit->created_at,
+                        'color' => 'blue',
+                        'icon' => 'verified',
+                        'description' => 'Dikonfirmasi manual oleh ' . ($audit->actor->name ?? 'Admin')
+                    ]);
+                    break;
+                case 'booking.cancel': 
+                    $events->push([
+                        'label' => 'Booking Dibatalkan (Admin)',
+                        'timestamp' => $audit->created_at,
+                        'color' => 'rose',
+                        'icon' => 'cancel',
+                        'description' => 'Dibatalkan oleh ' . ($audit->actor->name ?? 'Admin')
+                    ]);
+                    break;
+                case 'booking.cancelled': 
+                    $refundDesc = '';
+                    if (!empty($audit->meta['refund_amount'])) {
+                        $refundDesc = ' (Refund: Rp ' . number_format($audit->meta['refund_amount'], 0, ',', '.') . ')';
+                    }
+                    $events->push([
+                        'label' => 'Booking Dibatalkan (Member)',
+                        'timestamp' => $audit->created_at,
+                        'color' => 'rose',
+                        'icon' => 'cancel',
+                        'description' => 'Member membatalkan booking ini.' . $refundDesc
+                    ]);
+                    break;
+                case 'booking.reschedule_approve':
+                    $events->push([
+                        'label' => 'Reschedule Disetujui',
+                        'timestamp' => $audit->created_at,
+                        'color' => 'amber',
+                        'icon' => 'event',
+                        'description' => 'Jadwal baru disetujui oleh ' . ($audit->actor->name ?? 'Admin')
+                    ]);
+                    break;
+                 case 'booking.refund_approve':
+                    $amount = $audit->meta['amount'] ?? 0;
+                    $events->push([
+                        'label' => 'Refund Disetujui',
+                        'timestamp' => $audit->created_at,
+                        'color' => 'teal',
+                        'icon' => 'currency_exchange',
+                        'description' => 'Refund Rp ' . number_format($amount, 0, ',', '.') . ' disetujui oleh ' . ($audit->actor->name ?? 'Admin')
+                    ]);
+                    break;
+                 case 'booking.refund_request':
+                     $events->push([
+                        'label' => 'Pengajuan Refund',
+                        'timestamp' => $audit->created_at,
+                        'color' => 'gray',
+                        'icon' => 'help',
+                        'description' => 'Member mengajukan refund.'
+                    ]);
+                    break;
+            }
+        }
+
+        // 4. Expiration
+        if ($this->booking->status === \App\Enums\BookingStatus::EXPIRED) {
+             // Deduplicate if we ever add audit for expiration
+             // For now assume no audit for expiration
+             $events->push([
+                    'label' => 'Booking Kedaluwarsa',
+                    'timestamp' => $this->booking->updated_at,
+                    'color' => 'gray',
+                    'icon' => 'timer_off',
+                    'description' => 'Waktu pembayaran habis, booking otomatis kedaluwarsa.'
+                ]);
+        }
+
+        return $events->sortByDesc('timestamp')->values();
     }
 
     public function confirmManual()
@@ -47,7 +154,7 @@ class BookingDetailAdmin extends Component
             $this->booking->payments()
                 ->where('status', PaymentStatus::PENDING)
                 ->update([
-                    'status' => PaymentStatus::SUCCESS,
+                    'status' => PaymentStatus::SETTLEMENT,
                     'paid_at' => now(),
                 ]);
 

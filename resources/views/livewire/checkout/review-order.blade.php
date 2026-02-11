@@ -7,6 +7,62 @@
                 <!-- Left Column: Order Details -->
                 <div class="lg:col-span-3 space-y-6">
                     
+                    <!-- Guest Info Form (Only for Guest) -->
+                    @guest
+                    <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                        <div class="flex items-center gap-2 mb-4">
+                            <span class="material-symbols-outlined text-[#8B1538]">person</span>
+                            <h3 class="text-lg font-black text-gray-900">Data Penyewa</h3>
+                        </div>
+
+                        <div class="mb-6">
+                            <p class="text-sm text-gray-500">Sudah punya akun member? <button type="button" onclick="Livewire.dispatch('openAuthModal', { mode: 'login' })" class="text-[#8B1538] font-bold hover:underline">Masuk disini</button></p>
+                        </div>
+
+                        <div class="space-y-4">
+                            <!-- Name -->
+                            <div>
+                                <input type="text" wire:model="guestName" placeholder="Nama Lengkap" 
+                                class="w-full px-4 py-3 rounded-xl border-gray-200 focus:border-[#8B1538] focus:ring-[#8B1538] placeholder-gray-400 text-sm transition-all"
+                                >
+                                @error('guestName') <span class="text-xs text-rose-500 font-bold ml-1">{{ $message }}</span> @enderror
+                            </div>
+
+                            <!-- Phone & Email -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <div class="relative">
+                                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                            <span class="text-gray-500 text-sm font-bold flex items-center gap-1">
+                                                <img src="https://flagcdn.com/w20/id.png" class="w-5 rounded-sm" alt="ID">
+                                                +62
+                                            </span>
+                                            <span class="text-gray-300 mx-2">|</span>
+                                        </div>
+                                        <input type="text" wire:model="guestPhone" placeholder="Nomor Ponsel" 
+                                        class="w-full pl-24 pr-4 py-3 rounded-xl border-gray-200 focus:border-[#8B1538] focus:ring-[#8B1538] placeholder-gray-400 text-sm transition-all"
+                                        >
+                                    </div>
+                                    @error('guestPhone') <span class="text-xs text-rose-500 font-bold ml-1">{{ $message }}</span> @enderror
+                                </div>
+                                <div>
+                                    <input type="email" wire:model="guestEmail" placeholder="Email" 
+                                    class="w-full px-4 py-3 rounded-xl border-gray-200 focus:border-[#8B1538] focus:ring-[#8B1538] placeholder-gray-400 text-sm transition-all"
+                                    >
+                                    @error('guestEmail') <span class="text-xs text-rose-500 font-bold ml-1">{{ $message }}</span> @enderror
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 p-3 bg-gray-50 rounded-xl flex items-start gap-3">
+                            <span class="material-symbols-outlined text-gray-400 text-lg mt-0.5">info</span>
+                            <p class="text-xs text-gray-500 leading-relaxed">
+                                Dengan melakukan booking lapangan, Anda akan otomatis terdaftar sebagai member {{ env('APP_NAME') }}.
+                            </p>
+                        </div>
+                    </div>
+                    @endguest
+
                     <!-- Venue Info -->
                     <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
                         <h2 class="text-xl font-black text-gray-900 mb-1">{{ $venueCourt->venue->name ?? 'Venue' }}</h2>
@@ -176,20 +232,24 @@
                     </div>
 
                     <!-- CTA Button -->
-                    <button type="button"
-                            wire:click="proceedToPayment"
-                            wire:loading.attr="disabled"
-                            wire:loading.class="opacity-70 cursor-wait"
-                            class="w-full py-4 bg-[#8B1538] hover:bg-[#6d1029] text-white font-bold text-base rounded-2xl shadow-lg shadow-[#8B1538]/20 transition-all active:scale-[0.98]">
-                        <span wire:loading.remove wire:target="proceedToPayment">Lanjutkan ke Pembayaran</span>
-                        <span wire:loading wire:target="proceedToPayment" class="flex items-center justify-center gap-2">
-                            <svg class="animate-spin h-5 w-5" viewBox="0 0 24 24">
-                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle>
-                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                            </svg>
-                            Memproses...
-                        </span>
-                    </button>
+                    <div class="fixed bottom-0 left-0 right-0 p-4 bg-white border-t border-gray-200 lg:static lg:bg-transparent lg:border-0 lg:p-0 z-50">
+                        <button type="button"
+                                wire:click="proceedToPayment"
+                                wire:loading.attr="disabled"
+                                wire:loading.class="opacity-70 cursor-wait"
+                                class="w-full py-4 bg-[#8B1538] hover:bg-[#6d1029] text-white font-bold text-base rounded-2xl shadow-lg shadow-[#8B1538]/20 transition-all active:scale-[0.98]">
+                            <span wire:loading.remove wire:target="proceedToPayment">Lanjutkan ke Pembayaran</span>
+                            <span wire:loading wire:target="proceedToPayment" class="flex items-center justify-center gap-2">
+                                <svg class="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                                Memproses...
+                            </span>
+                        </button>
+                    </div>
+                     <!-- Spacer for fixed bottom button on mobile -->
+                    <div class="h-24 lg:hidden"></div>
                 </div>
             </div>
         @else
@@ -230,14 +290,18 @@
                 </div>
                 
                 <div class="p-5">
-                    <div class="flex gap-3">
+                    <div class="flex flex-col sm:flex-row gap-3">
                         <input type="text" 
-                               wire:model="voucherCode" 
+                               wire:model.live="voucherCode" 
                                wire:keydown.enter="applyVoucher"
                                placeholder="Masukkan kode promo" 
-                               class="flex-1 h-11 rounded-xl border-gray-300 focus:border-[#8B1538] focus:ring-[#8B1538] placeholder-gray-400 text-sm">
+                               class="w-full sm:flex-1 h-11 rounded-xl border-gray-300 focus:border-[#8B1538] focus:ring-[#8B1538] placeholder-gray-400 text-sm transition-all">
                         <button wire:click="applyVoucher" 
-                                class="h-11 px-6 bg-[#8B1538] text-white font-bold rounded-xl hover:bg-[#6d1029] transition-colors shadow-lg shadow-[#8B1538]/20 text-sm">
+                                @if(strlen($voucherCode) < 3) disabled @endif
+                                class="h-11 px-6 font-bold rounded-xl transition-all text-sm w-full sm:w-auto
+                                    {{ strlen($voucherCode) < 3 
+                                        ? 'bg-gray-100 text-gray-400 cursor-not-allowed border border-gray-200' 
+                                        : 'bg-[#8B1538] text-white hover:bg-[#6d1029] shadow-lg shadow-[#8B1538]/20' }}">
                             Terapkan
                         </button>
                     </div>

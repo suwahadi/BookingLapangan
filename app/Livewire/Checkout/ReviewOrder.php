@@ -26,6 +26,11 @@ class ReviewOrder extends Component
     public ?VenuePolicy $venuePolicy = null;
     public int $dpAmount = 0;
 
+    // Guest Data
+    public string $guestName = '';
+    public string $guestPhone = '';
+    public string $guestEmail = '';
+
     public function mount(): void
     {
         // Get cart data from session
@@ -53,6 +58,14 @@ class ReviewOrder extends Component
 
         // Calculate DP amount based on policy
         $this->calculateDpAmount();
+
+        // Prefill if logged in
+        if (Auth::check()) {
+            $user = Auth::user();
+            $this->guestName = $user->name;
+            $this->guestPhone = $user->phone ?? '';
+            $this->guestEmail = $user->email;
+        }
     }
 
     public bool $showVoucherModal = false;
@@ -112,24 +125,52 @@ class ReviewOrder extends Component
         $this->showVoucherModal = false;
     }
 
+    // Guest Data block removed from here (it is defined above)
+
     public function proceedToPayment(BookingService $service)
     {
-        if (!Auth::check()) {
-            $this->dispatch('openAuthModal', mode: 'login');
-            return;
-        }
-
         if (empty($this->selectedSlots)) {
             $this->redirectRoute('courts.schedule', ['venueCourt' => $this->venueCourt->id], navigate: true);
             return;
         }
 
+        $userId = Auth::id();
+
+        // Handle Guest
+        if (!$userId) {
+            $this->validate([
+                'guestName' => 'required|string|max:255',
+                'guestPhone' => 'required|string|max:20',
+                'guestEmail' => 'required|email|max:255|unique:users,email',
+            ], [
+                'guestName.required' => 'Nama lengkap wajib diisi',
+                'guestPhone.required' => 'Nomor ponsel wajib diisi',
+                'guestEmail.required' => 'Email wajib diisi',
+                'guestEmail.unique' => 'Email sudah terdaftar, silakan login',
+            ]);
+
+            // Create User implicitly
+            $user = \App\Models\User::create([
+                'name' => $this->guestName,
+                'email' => $this->guestEmail,
+                'phone' => $this->guestPhone,
+                'password' => \Illuminate\Support\Facades\Hash::make('password'), // TODO: Generate random password & email
+                // 'role' => 'member', // Role is handled by event/observer or default
+            ]);
+            
+            Auth::login($user);
+            $userId = $user->id;
+        }
+
         try {
             $booking = $service->createHold(
-                userId: Auth::id(),
+                userId: $userId,
                 venueCourtId: $this->venueCourt->id,
                 dateYmd: $this->date,
                 slots: $this->selectedSlots,
+                customerName: $this->guestName ?: Auth::user()->name,
+                customerEmail: $this->guestEmail ?: Auth::user()->email,
+                customerPhone: $this->guestPhone ?: (Auth::user()->phone ?? '-'),
                 notes: 'Booking via Website',
                 idempotencyKey: (string) \Illuminate\Support\Str::uuid()
             );
@@ -137,8 +178,11 @@ class ReviewOrder extends Component
             // Clear cart
             Session::forget('booking_cart');
 
-            // Redirect to friendly URL
-            return redirect()->route('checkout.payment', ['booking' => $booking->id]);
+            // Redirect to friendly URL with plan
+            return redirect()->route('checkout.payment', [
+                'booking' => $booking->id,
+                'plan' => $this->payPlan
+            ]);
 
         } catch (\Exception $e) {
             $this->errorMessage = $e->getMessage();

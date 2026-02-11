@@ -26,7 +26,7 @@ class RefundIndexAdmin extends Component
         }
 
         $refund->update([
-            'status' => RefundStatus::APPROVED,
+            'status' => RefundStatus::PROCESSED,
             'processed_by' => auth()->id(),
             'processed_at' => now(),
         ]);
@@ -36,7 +36,7 @@ class RefundIndexAdmin extends Component
             'refund.approved',
             $refund,
             ['status' => RefundStatus::PENDING->value],
-            ['status' => RefundStatus::APPROVED->value]
+            ['status' => RefundStatus::PROCESSED->value]
         );
 
         session()->flash('success', 'Refund berhasil diapprove');

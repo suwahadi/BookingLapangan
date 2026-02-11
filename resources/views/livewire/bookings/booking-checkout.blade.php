@@ -70,40 +70,58 @@
                 <div class="space-y-4">
                     <label class="text-[10px] font-black text-muted-light uppercase tracking-widest px-1">Pilih Skema Bayar</label>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <label class="relative group cursor-pointer">
-                            <input type="radio" wire:model.live="payPlan" value="FULL" class="peer sr-only">
-                            <div class="h-full p-5 bg-white dark:bg-gray-800 rounded-2xl border-2 border-gray-100 dark:border-gray-700 peer-checked:border-primary peer-checked:bg-primary/5 transition-all hover:border-primary/30 flex flex-col justify-between gap-3 shadow-sm hover:shadow-md">
-                                <div class="flex items-center justify-between">
-                                    <span class="font-black text-xs uppercase tracking-widest text-gray-500 peer-checked:text-primary">BAYAR LUNAS</span>
-                                    <div class="relative">
-                                        <span class="material-symbols-outlined text-2xl text-gray-300 peer-checked:hidden">radio_button_checked</span>
-                                        <span class="material-symbols-outlined text-2xl text-primary hidden peer-checked:block">check_circle</span>
+                        <!-- FULL Payment Option -->
+                        <div class="relative cursor-pointer group" wire:click="$set('payPlan', 'FULL')">
+                            <div class="h-full p-5 rounded-3xl border-2 transition-all duration-300 flex flex-col justify-between gap-4 shadow-sm relative overflow-hidden
+                                {{ $payPlan === 'FULL' 
+                                    ? 'bg-[#FFF5F7] border-[#8B1538] ring-1 ring-[#8B1538]/20' 
+                                    : 'bg-white border-gray-100 hover:border-gray-200 hover:shadow-md' }}">
+                                
+                                <div class="flex items-start justify-between">
+                                    <span class="font-black text-[10px] uppercase tracking-[0.2em] {{ $payPlan === 'FULL' ? 'text-[#8B1538]' : 'text-gray-400' }}">
+                                        Bayar Lunas
+                                    </span>
+                                    <div class="relative w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all duration-300
+                                        {{ $payPlan === 'FULL' ? 'border-[#8B1538] bg-white' : 'border-gray-200 bg-white' }}">
+                                        <div class="w-2.5 h-2.5 rounded-full bg-[#8B1538] transition-all duration-300 transform {{ $payPlan === 'FULL' ? 'scale-100' : 'scale-0 opacity-0' }}"></div>
                                     </div>
                                 </div>
+                                
                                 <div>
-                                    <p class="text-xl font-black text-primary font-display italic">Rp {{ number_format($booking->total_amount, 0, ',', '.') }}</p>
-                                    <p class="text-[10px] font-bold text-muted-light mt-1">Tanpa Sisa Tagihan</p>
+                                    <p class="text-2xl font-black {{ $payPlan === 'FULL' ? 'text-[#8B1538]' : 'text-gray-900' }} font-display italic tracking-tight">
+                                        Rp {{ number_format($booking->total_amount, 0, ',', '.') }}
+                                    </p>
+                                    <p class="text-[10px] font-bold text-gray-400 mt-1">Tanpa Sisa Tagihan</p>
                                 </div>
                             </div>
-                        </label>
+                        </div>
 
+                        <!-- DP Payment Option -->
                         @if(($booking->venue->policy?->allow_dp) && $booking->dp_required_amount > 0)
-                        <label class="relative group cursor-pointer">
-                            <input type="radio" wire:model.live="payPlan" value="DP" class="peer sr-only">
-                            <div class="h-full p-5 bg-white dark:bg-gray-800 rounded-2xl border-2 border-gray-100 dark:border-gray-700 peer-checked:border-primary peer-checked:bg-primary/5 transition-all hover:border-primary/30 flex flex-col justify-between gap-3 shadow-sm hover:shadow-md">
-                                <div class="flex items-center justify-between">
-                                    <span class="font-black text-xs uppercase tracking-widest text-gray-500 peer-checked:text-primary">DP (Down Payment)</span>
-                                    <div class="relative">
-                                        <span class="material-symbols-outlined text-2xl text-gray-300 peer-checked:hidden">radio_button_unchecked</span>
-                                        <span class="material-symbols-outlined text-2xl text-primary hidden peer-checked:block">check_circle</span>
+                        <div class="relative cursor-pointer group" wire:click="$set('payPlan', 'DP')">
+                            <div class="h-full p-5 rounded-3xl border-2 transition-all duration-300 flex flex-col justify-between gap-4 shadow-sm relative overflow-hidden
+                                {{ $payPlan === 'DP' 
+                                    ? 'bg-[#FFF5F7] border-[#8B1538] ring-1 ring-[#8B1538]/20' 
+                                    : 'bg-white border-gray-100 hover:border-gray-200 hover:shadow-md' }}">
+                                
+                                <div class="flex items-start justify-between">
+                                    <span class="font-black text-[10px] uppercase tracking-[0.2em] {{ $payPlan === 'DP' ? 'text-[#8B1538]' : 'text-gray-400' }}">
+                                        DP (Down Payment)
+                                    </span>
+                                    <div class="relative w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all duration-300
+                                        {{ $payPlan === 'DP' ? 'border-[#8B1538] bg-white' : 'border-gray-200 bg-white' }}">
+                                        <div class="w-2.5 h-2.5 rounded-full bg-[#8B1538] transition-all duration-300 transform {{ $payPlan === 'DP' ? 'scale-100' : 'scale-0 opacity-0' }}"></div>
                                     </div>
                                 </div>
+                                
                                 <div>
-                                    <p class="text-xl font-black text-primary font-display italic">Rp {{ number_format($booking->dp_required_amount, 0, ',', '.') }}</p>
-                                    <p class="text-[10px] font-bold text-muted-light mt-1">Sisa dibayar nanti</p>
+                                    <p class="text-2xl font-black {{ $payPlan === 'DP' ? 'text-[#8B1538]' : 'text-gray-900' }} font-display italic tracking-tight">
+                                        Rp {{ number_format($booking->dp_required_amount, 0, ',', '.') }}
+                                    </p>
+                                    <p class="text-[10px] font-bold text-gray-400 mt-1">Sisa dibayar nanti</p>
                                 </div>
                             </div>
-                        </label>
+                        </div>
                         @endif
                     </div>
                 </div>

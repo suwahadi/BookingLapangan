@@ -154,10 +154,10 @@ class CourtScheduleCinema extends Component
     {
         $this->errorMessage = null;
 
-        if (!Auth::check()) {
-            $this->redirect(route('login'));
-            return;
-        }
+        // if (!Auth::check()) {
+        //     $this->redirect(route('login'));
+        //     return;
+        // }
 
         if (empty($this->selectedIndexes)) {
             $this->errorMessage = 'Silakan pilih jam terlebih dahulu.';

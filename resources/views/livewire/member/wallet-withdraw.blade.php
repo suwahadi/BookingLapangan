@@ -21,7 +21,7 @@
             </div>
         </div>
 
-        <form wire:submit="submit" class="space-y-6">
+        <form wire:submit.prevent="confirmWithdraw" class="space-y-6">
             <div class="space-y-2">
                 <label class="text-[10px] font-black text-muted-light uppercase tracking-[0.2em] ml-2">Nominal Penarikan</label>
                 <div class="relative group">
@@ -91,4 +91,47 @@
             </div>
         </form>
     </div>
+
+    <!-- Confirmation Modal -->
+    @if($showConfirmationModal)
+    <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
+        <div class="fixed inset-0" wire:click="$set('showConfirmationModal', false)"></div>
+        <div class="bg-white dark:bg-gray-800 rounded-[2rem] w-full max-w-sm overflow-hidden shadow-2xl relative z-10 animate-scale-up border border-gray-100 dark:border-gray-700">
+            <div class="p-8 text-center space-y-6">
+                <div class="w-20 h-20 bg-amber-50 dark:bg-amber-900/30 rounded-full flex items-center justify-center mx-auto mb-4 animate-bounce-slow">
+                    <span class="material-symbols-outlined text-4xl text-amber-500">warning_amber</span>
+                </div>
+                
+                <div>
+                    <h3 class="text-xl font-black text-text-light dark:text-text-dark uppercase italic tracking-tight mb-2">Konfirmasi Penarikan</h3>
+                    <p class="text-sm text-muted-light font-medium leading-relaxed">
+                        Anda akan melakukan penarikan sebesar <span class="text-text-light dark:text-text-dark font-black">Rp {{ number_format($amount, 0, ',', '.') }}</span> ke rekening:
+                    </p>
+                    <div class="mt-4 bg-gray-50 dark:bg-gray-900 p-4 rounded-xl border border-gray-100 dark:border-gray-800 text-left">
+                        <p class="text-[10px] font-bold text-muted-light uppercase tracking-widest mb-1">Detail Rekening</p>
+                        <p class="text-sm font-bold text-text-light dark:text-text-dark">{{ $bankName }}</p>
+                        <p class="text-lg font-black text-text-light dark:text-text-dark font-mono tracking-tight">{{ $bankAccountNumber }}</p>
+                        <p class="text-xs font-medium text-text-light dark:text-text-dark uppercase mt-1">{{ $bankAccountName }}</p>
+                    </div>
+                </div>
+
+                <div class="bg-rose-50 dark:bg-rose-900/20 p-4 rounded-xl flex gap-3 text-left border border-rose-100 dark:border-rose-800/30">
+                     <span class="material-symbols-outlined text-rose-500 shrink-0">priority_high</span>
+                     <p class="text-xs text-rose-600 dark:text-rose-400 font-bold leading-relaxed">
+                        Pastikan nomor rekening yang Anda masukkan sudah benar. Kesalahan input data dapat menyebabkan kegagalan transfer atau dana hilang.
+                     </p>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 pt-2">
+                    <button wire:click="$set('showConfirmationModal', false)" class="px-6 py-3 rounded-xl border-2 border-gray-200 dark:border-gray-700 text-text-light dark:text-text-dark font-black text-xs uppercase tracking-widest hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                        Batal
+                    </button>
+                    <button wire:click="processWithdraw" class="px-6 py-3 rounded-xl bg-primary text-white font-black text-xs uppercase tracking-widest hover:bg-primary-dark shadow-lg hover:shadow-primary/30 transition-all transform active:scale-95">
+                        Ya, Ajukan
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
 </div>

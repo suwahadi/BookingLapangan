@@ -301,19 +301,27 @@
                     <h4 class="text-lg font-black font-display uppercase tracking-tight italic">Timeline</h4>
                 </div>
                 
-                <div class="space-y-6 relative before:absolute before:left-2 before:top-2 before:bottom-2 before:w-0.5 before:bg-white/10">
-                    <div class="relative pl-8">
-                        <div class="absolute left-0 top-1.5 w-4 h-4 rounded-full bg-emerald-500 ring-4 ring-gray-900"></div>
-                        <p class="text-[10px] font-black uppercase tracking-widest text-emerald-400">Created</p>
-                        <p class="text-xs font-bold">{{ $booking->created_at->format('d M Y, H:i') }}</p>
+                <div class="space-y-8 relative before:absolute before:left-2 before:top-2 before:bottom-2 before:w-0.5 before:bg-white/10 pl-2">
+                    @foreach($this->timeline as $event)
+                    <div class="relative pl-8 group">
+                        <div class="absolute left-0 top-1.5 w-4 h-4 rounded-full bg-{{ $event['color'] }}-500 ring-4 ring-gray-900 group-hover:ring-{{ $event['color'] }}-500/50 transition-all shadow-[0_0_10px_rgba(var(--color-{{ $event['color'] }}-500),0.5)]"></div>
+                        
+                        <div class="flex flex-col gap-1">
+                            <div class="flex items-center gap-2">
+                                <p class="text-[10px] font-black uppercase tracking-widest text-{{ $event['color'] }}-400">{{ $event['label'] }}</p>
+                                <span class="text-[9px] font-mono text-gray-500">{{ $event['timestamp']->format('H:i') }}</span>
+                            </div>
+                            
+                            <p class="text-xs font-bold text-white">{{ $event['timestamp']->translatedFormat('d M Y') }}</p>
+                            
+                            @if(!empty($event['description']))
+                            <p class="text-[10px] text-gray-400 font-medium leading-relaxed mt-1 border-l-2 border-gray-800 pl-2">
+                                {{ $event['description'] }}
+                            </p>
+                            @endif
+                        </div>
                     </div>
-                    @if($booking->paid_amount > 0)
-                    <div class="relative pl-8">
-                        <div class="absolute left-0 top-1.5 w-4 h-4 rounded-full bg-indigo-500 ring-4 ring-gray-900"></div>
-                        <p class="text-[10px] font-black uppercase tracking-widest text-indigo-400">Payment Processed</p>
-                        <p class="text-xs font-bold">{{ $booking->updated_at->format('d M Y, H:i') }}</p>
-                    </div>
-                    @endif
+                    @endforeach
                 </div>
             </div>
         </div>

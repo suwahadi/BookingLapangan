@@ -197,4 +197,36 @@ class NotificationService
             $booking
         );
     }
+
+    /**
+     * Penarikan Saldo Disetujui
+     */
+    public function notifyWithdrawApproved($withdrawRequest): void
+    {
+        $formattedAmount = 'Rp ' . number_format($withdrawRequest->amount, 0, ',', '.');
+        $this->send(
+            $withdrawRequest->user,
+            'withdraw.approved',
+            'Penarikan Saldo Disetujui',
+            "Permintaan penarikan saldo sebesar {$formattedAmount} telah disetujui. Dana akan segera dikirim ke rekening Anda.",
+            '/member/wallet',
+            $withdrawRequest
+        );
+    }
+
+    /**
+     * Penarikan Saldo Ditolak
+     */
+    public function notifyWithdrawRejected($withdrawRequest, string $reason): void
+    {
+        $formattedAmount = 'Rp ' . number_format($withdrawRequest->amount, 0, ',', '.');
+        $this->send(
+            $withdrawRequest->user,
+            'withdraw.rejected',
+            'Penarikan Saldo Ditolak',
+            "Permintaan penarikan saldo sebesar {$formattedAmount} ditolak. Alasan: {$reason}",
+            '/member/wallet',
+            $withdrawRequest
+        );
+    }
 }
