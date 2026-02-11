@@ -3,7 +3,11 @@
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
             <div class="flex items-center gap-2 mb-1">
-                <a href="{{ route('admin.venues.index') }}" wire:navigate class="text-[10px] font-black text-indigo-500 uppercase tracking-[0.2em] hover:text-indigo-700 transition-colors">Daftar Lapangan</a>
+                <a href="{{ route('admin.venues.index') }}" wire:navigate class="text-[10px] font-black text-indigo-500 uppercase tracking-[0.2em] hover:text-indigo-700 transition-colors">Daftar Venue</a>
+                <span class="text-gray-300">/</span>
+                <a href="{{ route('admin.venues.hub', $court->venue->slug) }}" wire:navigate class="text-[10px] font-black text-indigo-500 uppercase tracking-[0.2em] hover:text-indigo-700 transition-colors">{{ $court->venue->name }}</a>
+                <span class="text-gray-300">/</span>
+                <a href="{{ route('admin.venues.courts', $court->venue->slug) }}" wire:navigate class="text-[10px] font-black text-indigo-500 uppercase tracking-[0.2em] hover:text-indigo-700 transition-colors">Lapangan</a>
                 <span class="text-gray-300">/</span>
                 <span class="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">{{ $court->name }}</span>
             </div>
@@ -12,7 +16,7 @@
         </div>
         
         <div class="flex items-center gap-3">
-             <div x-data="{ open: false }" class="relative">
+             <div x-data="{ open: false, selectedDays: [] }" class="relative">
                 <button @click="open = !open" class="bg-white border-2 border-gray-900 px-6 py-3 rounded-2xl font-black text-xs tracking-widest hover:bg-gray-100 transition-all flex items-center gap-2">
                     SALIN KE HARI LAIN
                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" /></svg>
@@ -109,10 +113,4 @@
     </div>
 </div>
 
-<script>
-    document.addEventListener('alpine:init', () => {
-        Alpine.data('pricingManager', () => ({
-            selectedDays: []
-        }))
-    })
-</script>
+

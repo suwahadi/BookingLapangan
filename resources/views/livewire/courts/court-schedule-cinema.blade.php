@@ -151,21 +151,15 @@
                                     Rp{{ number_format($amount, 0, ',', '.') }}
                                 </div>
                             </button>
-                        @elseif($slot['is_available'] && $amount <= 0)
-                             <div class="p-4 rounded-2xl border-2 border-gray-100 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/50 text-center cursor-not-allowed">
-                                <div class="text-[10px] tracking-wider mb-1.5 text-gray-300">60 Menit</div>
-                                <div class="text-sm font-bold mb-2 text-gray-300">
-                                    {{ $slot['start'] }} - {{ $slot['end'] }}
-                                </div>
-                                <div class="text-xs font-medium text-gray-300">Booked</div>
-                            </div>
                         @else
-                            <div class="p-4 rounded-2xl border-2 border-gray-100 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/50 text-center cursor-not-allowed">
+                             <div class="p-4 rounded-2xl border-2 border-gray-100 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/50 text-center cursor-not-allowed">
                                 <div class="text-[10px] tracking-wider mb-1.5 text-gray-300">60 Menit</div>
                                 <div class="text-sm font-bold mb-2 text-gray-400">
                                     {{ $slot['start'] }} - {{ $slot['end'] }}
                                 </div>
-                                <div class="text-xs font-medium text-gray-300">Booked</div>
+                                <div class="text-xs font-medium text-gray-300">
+                                    {{ ($slot['status'] ?? '') === 'booked' ? 'Booked' : 'Tidak Tersedia' }}
+                                </div>
                             </div>
                         @endif
                     @endforeach

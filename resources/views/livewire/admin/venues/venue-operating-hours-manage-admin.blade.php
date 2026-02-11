@@ -5,7 +5,9 @@
             <div class="flex items-center gap-2 mb-1">
                 <a href="{{ route('admin.venues.index') }}" wire:navigate class="text-[10px] font-black text-indigo-500 uppercase tracking-[0.2em] hover:text-indigo-700 transition-colors">Daftar Venue</a>
                 <span class="text-gray-300">/</span>
-                <span class="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">{{ $venue->name }}</span>
+                <a href="{{ route('admin.venues.hub', $venue->slug) }}" wire:navigate class="text-[10px] font-black text-indigo-500 uppercase tracking-[0.2em] hover:text-indigo-700 transition-colors">{{ $venue->name }}</a>
+                <span class="text-gray-300">/</span>
+                <span class="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Jam Operasional</span>
             </div>
             <h1 class="text-4xl font-black text-gray-900 tracking-tight font-display italic uppercase">Jam <span class="text-indigo-600">Operasional</span></h1>
             <p class="text-gray-500 mt-1 tracking-tight">Atur jadwal buka dan tutup venue setiap harinya</p>
@@ -44,13 +46,13 @@
                 <div class="flex-1 grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
                     <!-- Status Toggle -->
                     <div class="flex items-center gap-4">
-                        <label class="relative inline-flex items-center cursor-pointer">
-                            <input type="checkbox" wire:model.live="hours.{{ $day }}.is_closed" class="sr-only peer">
-                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-rose-500"></div>
-                            <span class="ml-3 text-[10px] font-black uppercase tracking-widest {{ $hours[$day]['is_closed'] ? 'text-rose-600' : 'text-gray-400' }}">
-                                {{ $hours[$day]['is_closed'] ? 'TUTUP / LIBUR' : 'BUKA' }}
-                            </span>
-                        </label>
+                        <div wire:click="$toggle('hours.{{ $day }}.is_closed')" class="relative inline-flex items-center cursor-pointer select-none group transition-opacity hover:opacity-90">
+                            <div class="w-11 h-6 rounded-full transition-colors duration-200 {{ !$hours[$day]['is_closed'] ? 'bg-emerald-500' : 'bg-rose-500' }}"></div>
+                            <div class="absolute left-1 top-1 bg-white w-4 h-4 rounded-full shadow-sm transition-transform duration-200 {{ !$hours[$day]['is_closed'] ? 'translate-x-5' : 'translate-x-0' }}"></div>
+                        </div>
+                        <span class="text-[10px] font-black uppercase tracking-widest {{ !$hours[$day]['is_closed'] ? 'text-emerald-600' : 'text-rose-600' }}">
+                            {{ !$hours[$day]['is_closed'] ? 'BUKA' : 'TUTUP / LIBUR' }}
+                        </span>
                     </div>
 
                     <!-- Time Inputs -->

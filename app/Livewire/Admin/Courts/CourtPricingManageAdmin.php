@@ -45,8 +45,9 @@ class CourtPricingManageAdmin extends Component
     {
         $items = VenuePricing::where('venue_court_id', $this->court->id)
             ->where('day_of_week', $this->dayOfWeek)
-            ->orderBy('start_time')
-            ->get();
+            ->get()
+            ->sortBy('start_time')
+            ->values();
 
         $this->rows = $items->map(fn($p) => [
             'start_time' => substr($p->start_time, 0, 5),

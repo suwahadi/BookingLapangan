@@ -5,7 +5,9 @@
             <div class="flex items-center gap-2 mb-1">
                 <a href="{{ route('admin.venues.index') }}" wire:navigate class="text-[10px] font-black text-indigo-500 uppercase tracking-[0.2em] hover:text-indigo-700 transition-colors">Daftar Venue</a>
                 <span class="text-gray-300">/</span>
-                <span class="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">{{ $venue->name }}</span>
+                <a href="{{ route('admin.venues.hub', $venue->slug) }}" wire:navigate class="text-[10px] font-black text-indigo-500 uppercase tracking-[0.2em] hover:text-indigo-700 transition-colors">{{ $venue->name }}</a>
+                <span class="text-gray-300">/</span>
+                <span class="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Media</span>
             </div>
             <h1 class="text-4xl font-black text-gray-900 tracking-tight font-display italic uppercase">Galeri <span class="text-indigo-600">Media</span></h1>
             <p class="text-gray-500 mt-1 tracking-tight">Unggah foto-foto terbaik untuk menarik minat pelanggan</p>

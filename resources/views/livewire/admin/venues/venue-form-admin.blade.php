@@ -2,6 +2,17 @@
     <!-- Header -->
     <div class="flex items-center justify-between">
         <div>
+            <div class="flex items-center gap-2 mb-1">
+                <a href="{{ route('admin.venues.index') }}" wire:navigate class="text-[10px] font-black text-indigo-500 uppercase tracking-[0.2em] hover:text-indigo-700 transition-colors">Daftar Venue</a>
+                <span class="text-gray-300">/</span>
+                @if($isEdit)
+                    <a href="{{ route('admin.venues.hub', $venue->slug) }}" wire:navigate class="text-[10px] font-black text-indigo-500 uppercase tracking-[0.2em] hover:text-indigo-700 transition-colors">{{ $venue->name }}</a>
+                    <span class="text-gray-300">/</span>
+                    <span class="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Sunting</span>
+                @else
+                    <span class="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Tambah Baru</span>
+                @endif
+            </div>
             <h1 class="text-4xl font-black text-gray-900 tracking-tight font-display italic uppercase">
                 {{ $isEdit ? 'Edit' : 'Tambah' }} <span class="text-indigo-600">Venue</span>
             </h1>

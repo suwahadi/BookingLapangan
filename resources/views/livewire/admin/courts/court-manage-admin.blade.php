@@ -5,7 +5,9 @@
             <div class="flex items-center gap-2 mb-1">
                 <a href="{{ route('admin.venues.index') }}" wire:navigate class="text-[10px] font-black text-indigo-500 uppercase tracking-[0.2em] hover:text-indigo-700 transition-colors">Daftar Venue</a>
                 <span class="text-gray-300">/</span>
-                <span class="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">{{ $venue->name }}</span>
+                <a href="{{ route('admin.venues.hub', $venue->slug) }}" wire:navigate class="text-[10px] font-black text-indigo-500 uppercase tracking-[0.2em] hover:text-indigo-700 transition-colors">{{ $venue->name }}</a>
+                <span class="text-gray-300">/</span>
+                <span class="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Lapangan</span>
             </div>
             <h1 class="text-4xl font-black text-gray-900 tracking-tight font-display italic uppercase">Kelola <span class="text-indigo-600">Lapangan</span></h1>
             <p class="text-gray-500 mt-1 tracking-tight">Manajemen unit lapangan untuk {{ $venue->name }}</p>
@@ -34,16 +36,16 @@
                     </div>
                 </div>
 
-                <h3 class="text-xl font-black text-gray-900 tracking-tight mb-1">{{ $court->name }}</h3>
-                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] mb-6">{{ $court->sport }} • {{ $court->floor_type ?? 'Standard' }}</p>
+                <h3 class="text-xl font-black text-gray-900 mb-1">{{ $court->name }}</h3>
+                <p class="text-[10px] font-bold text-gray-400 mb-6">{{ $court->sport }} • {{ $court->floor_type ?? 'Standard' }}</p>
 
                 <div class="flex items-center justify-between pt-6 border-t border-gray-50">
                     <div class="flex items-center gap-2">
-                        <div @click="$wire.toggleStatus({{ $court->id }})" class="relative inline-flex items-center cursor-pointer">
-                            <div class="w-10 h-5 bg-gray-200 rounded-full transition-colors {{ $court->is_active ? 'bg-emerald-500' : '' }}"></div>
-                            <div class="absolute left-1 top-1 bg-white w-3 h-3 rounded-full transition-transform {{ $court->is_active ? 'translate-x-5' : '' }}"></div>
+                        <div @click="$wire.toggleStatus({{ $court->id }})" class="relative inline-flex items-center cursor-pointer select-none transition-opacity hover:opacity-80">
+                            <div class="w-10 h-5 rounded-full transition-colors duration-200 {{ $court->is_active ? 'bg-emerald-500' : 'bg-gray-200' }}"></div>
+                            <div class="absolute left-1 top-1 bg-white w-3 h-3 rounded-full shadow-sm transition-transform duration-200 {{ $court->is_active ? 'translate-x-5' : 'translate-x-0' }}"></div>
                         </div>
-                        <span class="text-[10px] font-black uppercase tracking-widest {{ $court->is_active ? 'text-emerald-600' : 'text-gray-400' }}">
+                        <span class="text-[10px] font-black uppercase tracking-widest {{ $court->is_active ? 'text-emerald-600' : 'text-rose-500' }}">
                             {{ $court->is_active ? 'HIDUP' : 'MATI' }}
                         </span>
                     </div>
@@ -53,7 +55,7 @@
                             BLACKOUT
                         </a>
                         <a href="{{ route('admin.courts.pricing', $court->id) }}" wire:navigate class="text-[10px] font-black text-indigo-500 uppercase tracking-widest hover:text-gray-900 transition-colors">
-                            ATUR HARGA &rarr;
+                            ATUR HARGA
                         </a>
                     </div>
                 </div>

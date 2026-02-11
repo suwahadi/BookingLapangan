@@ -1,17 +1,20 @@
 <div class="space-y-10">
     <!-- Header -->
-    <div class="flex items-center justify-between">
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
-            <a href="{{ route('admin.venues.hub', $venue) }}" class="text-xs font-black text-gray-400 uppercase tracking-widest hover:text-indigo-600 transition-colors flex items-center gap-2 mb-2">
-                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
-                Kembali ke Hub
-            </a>
-            <h1 class="text-4xl font-black text-gray-900 tracking-tight italic uppercase">Fasilitas <span class="text-indigo-600">{{ $venue->name }}</span></h1>
-            <p class="text-gray-500 mt-1 uppercase text-[10px] tracking-[0.2em]">Pilih fasilitas yang tersedia di venue ini</p>
+            <div class="flex items-center gap-2 mb-1">
+                <a href="{{ route('admin.venues.index') }}" wire:navigate class="text-[10px] font-black text-indigo-500 uppercase tracking-[0.2em] hover:text-indigo-700 transition-colors">Daftar Venue</a>
+                <span class="text-gray-300">/</span>
+                <a href="{{ route('admin.venues.hub', $venue->slug) }}" wire:navigate class="text-[10px] font-black text-indigo-500 uppercase tracking-[0.2em] hover:text-indigo-700 transition-colors">{{ $venue->name }}</a>
+                <span class="text-gray-300">/</span>
+                <span class="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Fasilitas</span>
+            </div>
+            <h1 class="text-4xl font-black text-gray-900 tracking-tight font-display italic uppercase">Fasilitas <span class="text-indigo-600">Venue</span></h1>
+            <p class="text-gray-500 mt-1 tracking-tight">Pilih fasilitas yang tersedia di venue ini</p>
         </div>
-        <button wire:click="save" class="px-6 py-3 bg-indigo-600 text-white text-xs font-black uppercase tracking-widest rounded-2xl hover:bg-indigo-700 transition-colors flex items-center gap-2">
-            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
-            Simpan
+        <button wire:click="save" class="bg-indigo-600 text-white px-8 py-4 rounded-[1.5rem] font-black text-sm tracking-widest hover:bg-indigo-700 transition-all shadow-xl shadow-indigo-100 flex items-center gap-2">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" /></svg>
+            SIMPAN
         </button>
     </div>
 

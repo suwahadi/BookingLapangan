@@ -71,8 +71,15 @@ class CourtScheduleCinema extends Component
         $currentTimeHi = $now->format('H:i');
 
         foreach ($this->timeSlots as &$slot) {
+            // Determine initial status based on DB availability
+            $slot['status'] = $slot['is_available'] ? 'available' : 'booked';
+
             if ($isPastDate) {
                 $slot['is_available'] = false;
+                // Only change status if it wasn't already booked
+                if ($slot['status'] === 'available') {
+                    $slot['status'] = 'unavailable';
+                }
                 continue;
             }
 
@@ -80,6 +87,9 @@ class CourtScheduleCinema extends Component
                 // If the slot starts before current time, disable it
                 if ($slot['start'] < $currentTimeHi) {
                     $slot['is_available'] = false;
+                    if ($slot['status'] === 'available') {
+                        $slot['status'] = 'unavailable';
+                    }
                 }
             }
         }
