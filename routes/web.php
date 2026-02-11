@@ -53,6 +53,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/venues/{venue}/operating-hours', \App\Livewire\Admin\Venues\VenueOperatingHoursManageAdmin::class)->name('venues.operating-hours');
     Route::get('/venues/{venue}/blackouts', \App\Livewire\Admin\Venues\VenueBlackoutManageAdmin::class)->name('venues.blackouts');
     Route::get('/venues/{venue}/amenities', \App\Livewire\Admin\Venues\VenueAmenitiesManage::class)->name('venues.amenities');
+    Route::get('/venues/{venue}/policies', \App\Livewire\Admin\Venues\VenuePolicyManageAdmin::class)->name('venues.policies');
     Route::get('/venues/{venue}/courts', \App\Livewire\Admin\Courts\CourtManageAdmin::class)->name('venues.courts');
     Route::get('/courts/{court}/pricing', \App\Livewire\Admin\Courts\CourtPricingManageAdmin::class)->name('courts.pricing');
     Route::get('/courts/{court}/blackouts', \App\Livewire\Admin\Courts\CourtBlackoutManageAdmin::class)->name('courts.blackouts');

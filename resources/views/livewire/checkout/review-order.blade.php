@@ -115,14 +115,51 @@
                         </div>
                         
                         <div class="space-y-3">
-                            <label class="flex items-center gap-3 p-3 rounded-xl border border-[#8B1538] bg-[#8B1538]/5 cursor-pointer">
-                                <input type="radio" name="payment_type" value="full" checked class="w-4 h-4 text-[#8B1538] border-gray-300 focus:ring-[#8B1538]">
-                                <div>
+                            <!-- Bayar Lunas -->
+                            <label class="flex items-center gap-3 p-3 rounded-xl border-2 cursor-pointer transition-all
+                                {{ $payPlan === 'FULL' ? 'border-[#8B1538] bg-[#8B1538]/5' : 'border-gray-100 hover:border-gray-200' }}">
+                                <input type="radio" wire:model.live="payPlan" name="pay_plan" value="FULL" class="w-4 h-4 text-[#8B1538] border-gray-300 focus:ring-[#8B1538]">
+                                <div class="flex-1">
                                     <span class="font-bold text-gray-800">Bayar Lunas</span>
                                     <div class="text-[#8B1538] font-bold">Rp{{ number_format($totalAmount, 0, ',', '.') }}</div>
                                 </div>
+                                @if($payPlan === 'FULL')
+                                    <span class="material-symbols-outlined text-[#8B1538] text-xl">check_circle</span>
+                                @endif
                             </label>
+
+                            <!-- DP Option (only if policy allows) -->
+                            @if($this->isDpAllowed())
+                            <label class="flex items-center gap-3 p-3 rounded-xl border-2 cursor-pointer transition-all
+                                {{ $payPlan === 'DP' ? 'border-[#8B1538] bg-[#8B1538]/5' : 'border-gray-100 hover:border-gray-200' }}">
+                                <input type="radio" wire:model.live="payPlan" name="pay_plan" value="DP" class="w-4 h-4 text-[#8B1538] border-gray-300 focus:ring-[#8B1538]">
+                                <div class="flex-1">
+                                    <div class="flex items-center gap-2">
+                                        <span class="font-bold text-gray-800">Bayar DP</span>
+                                        <span class="text-[10px] font-black text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full uppercase tracking-widest border border-amber-100">Min {{ $venuePolicy->dp_min_percent }}%</span>
+                                    </div>
+                                    <div class="text-[#8B1538] font-bold">Rp{{ number_format($dpAmount, 0, ',', '.') }}</div>
+                                    <div class="text-[10px] text-gray-400 font-medium mt-0.5">
+                                        Sisa Rp{{ number_format($totalAmount - $dpAmount, 0, ',', '.') }} dilunasi nanti
+                                    </div>
+                                </div>
+                                @if($payPlan === 'DP')
+                                    <span class="material-symbols-outlined text-[#8B1538] text-xl">check_circle</span>
+                                @endif
+                            </label>
+                            @endif
                         </div>
+
+                        <!-- Payable summary -->
+                        @if($payPlan === 'DP' && $this->isDpAllowed())
+                        <div class="mt-4 p-3 bg-amber-50 rounded-xl border border-amber-100">
+                            <div class="flex justify-between items-center text-sm">
+                                <span class="font-bold text-amber-700">Yang Harus Dibayar Sekarang</span>
+                                <span class="font-black text-lg text-amber-700">Rp{{ number_format($dpAmount, 0, ',', '.') }}</span>
+                            </div>
+                            <p class="text-[10px] text-amber-600 mt-1">Pelunasan sisa tagihan wajib dilakukan sebelum jadwal bermain</p>
+                        </div>
+                        @endif
                     </div>
 
                     <!-- Policy -->
@@ -238,17 +275,85 @@
                 </button>
             </div>
             
-            <div class="p-6 space-y-4 text-sm text-gray-600 leading-relaxed">
-                <p>
-                    Proses reschedule atau pembatalan booking hanya dapat dilakukan melalui aplikasi ini.
-                </p>
-                <p>
-                    Pengajuan reschedule maksimal dilakukan 24 jam sebelum jadwal main. Jika kurang dari itu, maka reschedule tidak dapat dilakukan.
-                </p>
-                <p>
-                    Pembatalan booking akan dikenakan biaya administrasi sebesar 10% dari total biaya sewa. Dana akan dikembalikan ke saldo dompet akun Anda dalam waktu 1x24 jam.
-                </p>
+            <div class="p-6 space-y-5">
+                @if($venuePolicy)
+                    <!-- Reschedule -->
+                    <div class="flex items-start gap-4">
+                        <div class="w-10 h-10 rounded-xl shrink-0 flex items-center justify-center {{ $venuePolicy->reschedule_allowed ? 'bg-emerald-100 text-emerald-600' : 'bg-gray-100 text-gray-400' }}">
+                            <span class="material-symbols-outlined text-xl">event_repeat</span>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-bold text-gray-900">Reschedule</h4>
+                            @if($venuePolicy->reschedule_allowed)
+                                <p class="text-sm text-gray-600 mt-1">
+                                    Pengajuan reschedule dapat dilakukan maksimal <strong>{{ $venuePolicy->reschedule_deadline_hours }} jam</strong> sebelum jadwal main.
+                                </p>
+                            @else
+                                <p class="text-sm text-gray-500 mt-1">Venue ini tidak mengizinkan reschedule.</p>
+                            @endif
+                        </div>
+                    </div>
+
+                    <!-- Refund -->
+                    <div class="flex items-start gap-4">
+                        <div class="w-10 h-10 rounded-xl shrink-0 flex items-center justify-center {{ $venuePolicy->refund_allowed ? 'bg-emerald-100 text-emerald-600' : 'bg-gray-100 text-gray-400' }}">
+                            <span class="material-symbols-outlined text-xl">currency_exchange</span>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-bold text-gray-900">Pembatalan & Refund</h4>
+                            @if($venuePolicy->refund_allowed)
+                                <p class="text-sm text-gray-600 mt-1">Pembatalan booking dikenakan kebijakan refund sebagai berikut:</p>
+                                @php $rules = $venuePolicy->refund_rules ?? []; @endphp
+                                <div class="mt-3 space-y-2">
+                                    @if(isset($rules['h_minus_72']))
+                                    <div class="flex items-center justify-between p-2 bg-emerald-50 rounded-lg text-xs">
+                                        <span class="text-gray-600">> 72 jam sebelumnya</span>
+                                        <span class="font-bold text-emerald-600">Refund {{ $rules['h_minus_72'] }}%</span>
+                                    </div>
+                                    @endif
+                                    @if(isset($rules['h_minus_24']))
+                                    <div class="flex items-center justify-between p-2 bg-amber-50 rounded-lg text-xs">
+                                        <span class="text-gray-600">24 - 72 jam sebelumnya</span>
+                                        <span class="font-bold text-amber-600">Refund {{ $rules['h_minus_24'] }}%</span>
+                                    </div>
+                                    @endif
+                                    @if(isset($rules['below_24']))
+                                    <div class="flex items-center justify-between p-2 bg-rose-50 rounded-lg text-xs">
+                                        <span class="text-gray-600">< 24 jam sebelumnya</span>
+                                        <span class="font-bold text-rose-600">Refund {{ $rules['below_24'] }}%</span>
+                                    </div>
+                                    @endif
+                                </div>
+                            @else
+                                <p class="text-sm text-gray-500 mt-1">Venue ini tidak mengizinkan refund. Pembayaran bersifat final.</p>
+                            @endif
+                        </div>
+                    </div>
+
+                    <!-- DP -->
+                    <div class="flex items-start gap-4">
+                        <div class="w-10 h-10 rounded-xl shrink-0 flex items-center justify-center {{ $venuePolicy->allow_dp ? 'bg-emerald-100 text-emerald-600' : 'bg-gray-100 text-gray-400' }}">
+                            <span class="material-symbols-outlined text-xl">account_balance_wallet</span>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-bold text-gray-900">Down Payment (DP)</h4>
+                            @if($venuePolicy->allow_dp)
+                                <p class="text-sm text-gray-600 mt-1">
+                                    Tersedia opsi DP minimal <strong>{{ $venuePolicy->dp_min_percent }}%</strong> dari total biaya sewa. Sisa pembayaran harus dilunasi sebelum jadwal bermain.
+                                </p>
+                            @else
+                                <p class="text-sm text-gray-500 mt-1">Venue ini tidak menyediakan opsi DP. Pembayaran harus dilakukan secara lunas.</p>
+                            @endif
+                        </div>
+                    </div>
+                @else
+                    <div class="text-center py-6">
+                        <span class="material-symbols-outlined text-5xl text-gray-300 mb-3">info</span>
+                        <p class="text-sm text-gray-500">Kebijakan venue belum ditentukan. Hubungi pengelola venue untuk informasi lebih lanjut.</p>
+                    </div>
+                @endif
             </div>
         </div>
     </div>
+
 </div>

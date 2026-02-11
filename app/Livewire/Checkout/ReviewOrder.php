@@ -3,6 +3,7 @@
 namespace App\Livewire\Checkout;
 
 use App\Models\VenueCourt;
+use App\Models\VenuePolicy;
 use App\Services\Booking\BookingService;
 use App\Services\Booking\Exceptions\InvalidBookingTimeException;
 use App\Services\Booking\Exceptions\SlotNotAvailableException;
@@ -20,6 +21,11 @@ class ReviewOrder extends Component
     public int $totalAmount = 0;
     public ?string $errorMessage = null;
 
+    // Payment plan
+    public string $payPlan = 'FULL'; // FULL or DP
+    public ?VenuePolicy $venuePolicy = null;
+    public int $dpAmount = 0;
+
     public function mount(): void
     {
         // Get cart data from session
@@ -30,7 +36,7 @@ class ReviewOrder extends Component
             return;
         }
 
-        $this->venueCourt = VenueCourt::with('venue')->find($cart['venue_court_id']);
+        $this->venueCourt = VenueCourt::with('venue.policy')->find($cart['venue_court_id']);
         
         if (!$this->venueCourt) {
             Session::forget('booking_cart');
@@ -41,6 +47,12 @@ class ReviewOrder extends Component
         $this->date = $cart['date'];
         $this->selectedSlots = $cart['slots'] ?? [];
         $this->totalAmount = $cart['total_amount'] ?? 0;
+
+        // Load venue policy
+        $this->venuePolicy = $this->venueCourt->venue->policy;
+
+        // Calculate DP amount based on policy
+        $this->calculateDpAmount();
     }
 
     public bool $showVoucherModal = false;
@@ -61,18 +73,17 @@ class ReviewOrder extends Component
             $cart['total_amount'] = $this->totalAmount;
             Session::put('booking_cart', $cart);
 
-            // Removing the redirect when empty as per user request
+            // Recalculate DP
+            $this->calculateDpAmount();
+
             if (empty($this->selectedSlots)) {
                 Session::forget('booking_cart');
-                // $this->redirectRoute('courts.schedule', ['venueCourt' => $this->venueCourt->id], navigate: true);
             }
         }
     }
 
     public function goBack(): void
     {
-        // This is now handled by javascript history.back() in the view
-        // But we keep this as a fallback or if wire:click is used
         $this->redirectRoute('courts.schedule', ['venueCourt' => $this->venueCourt->id], navigate: true);
     }
 
@@ -99,7 +110,6 @@ class ReviewOrder extends Component
 
         // If valid logic would go here
         $this->showVoucherModal = false;
-        // logic to apply discount...
     }
 
     public function proceedToPayment(BookingService $service)
@@ -110,8 +120,6 @@ class ReviewOrder extends Component
         }
 
         if (empty($this->selectedSlots)) {
-            // If empty, redirect to schedule or show error
-            // As per new requirement, maybe we just redirect to schedule
             $this->redirectRoute('courts.schedule', ['venueCourt' => $this->venueCourt->id], navigate: true);
             return;
         }
@@ -135,6 +143,28 @@ class ReviewOrder extends Component
         } catch (\Exception $e) {
             $this->errorMessage = $e->getMessage();
         }
+    }
+
+    public function isDpAllowed(): bool
+    {
+        return $this->venuePolicy && $this->venuePolicy->allow_dp;
+    }
+
+    private function calculateDpAmount(): void
+    {
+        if ($this->venuePolicy && $this->venuePolicy->allow_dp && $this->venuePolicy->dp_min_percent > 0) {
+            $this->dpAmount = (int) ceil($this->totalAmount * $this->venuePolicy->dp_min_percent / 100);
+        } else {
+            $this->dpAmount = 0;
+        }
+    }
+
+    public function getPayableAmountProperty(): int
+    {
+        if ($this->payPlan === 'DP' && $this->isDpAllowed()) {
+            return $this->dpAmount;
+        }
+        return $this->totalAmount;
     }
 
     public function render()

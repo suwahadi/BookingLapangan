@@ -206,7 +206,7 @@ class SystemTestSeeder extends Seeder
                 'cancellation_policy' => "Pembatalan H-7 refund 100%, H-3 refund 50%.",
                 'reschedule_policy' => "Reschedule diperbolehkan maksimal H-1.",
                 'allow_dp' => true,
-                'dp_percentage' => 50,
+                'dp_min_percent' => 50,
                 'reschedule_allowed' => true,
                 'reschedule_deadline_hours' => 24,
             ]);

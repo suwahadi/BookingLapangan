@@ -182,4 +182,19 @@ class NotificationService
             $booking
         );
     }
+    
+    /**
+     * Permintaan Refund Diajukan
+     */
+    public function notifyRefundRequestSubmitted($booking): void
+    {
+        $this->send(
+            $booking->user,
+            'refund.submitted',
+            'Permintaan Refund Diajukan',
+            "Permintaan refund untuk booking #{$booking->booking_code} berhasil diajukan dan menunggu persetujuan admin.",
+            route('bookings.show', $booking->id),
+            $booking
+        );
+    }
 }

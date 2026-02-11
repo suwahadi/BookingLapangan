@@ -93,8 +93,8 @@ class BookingService
         // Kebijakan DP
         $policy = $court->venue->policy;
         $dpRequired = 0;
-        if ($policy && $policy->allow_dp && (int)$policy->dp_percentage > 0) {
-            $dpRequired = (int) floor($totalAmount * ((int)$policy->dp_percentage / 100));
+        if ($policy && $policy->allow_dp && (int)$policy->dp_min_percent > 0) {
+            $dpRequired = (int) floor($totalAmount * ((int)$policy->dp_min_percent / 100));
         }
 
         $expiresAt = CarbonImmutable::now()->addMinutes($holdDuration);

@@ -171,6 +171,17 @@
                     </div>
                 </a>
 
+                <!-- Kebijakan Venue -->
+                <a href="{{ route('admin.venues.policies', $venue->slug) }}" wire:navigate class="bg-white p-8 rounded-[2.5rem] shadow-xl border border-gray-50 flex items-start gap-6 group hover:shadow-2xl transition-all duration-500">
+                    <div class="w-16 h-16 bg-cyan-50 text-cyan-600 rounded-[1.5rem] flex items-center justify-center group-hover:bg-cyan-600 group-hover:text-white transition-all duration-500 shadow-sm">
+                        <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
+                    </div>
+                    <div>
+                        <h4 class="text-xl font-black text-gray-900 italic uppercase tracking-tight mb-1">Kebijakan Venue</h4>
+                        <p class="text-gray-400 text-xs font-bold tracking-tight">Atur aturan DP, reschedule, dan refund untuk venue ini.</p>
+                    </div>
+                </a>
+
                 <!-- Reports (Placeholder) -->
                 <a href="#" class="bg-gray-50 p-8 rounded-[2.5rem] border border-gray-100 flex items-start gap-6 opacity-60">
                     <div class="w-16 h-16 bg-gray-200 text-gray-400 rounded-[1.5rem] flex items-center justify-center">

@@ -63,9 +63,29 @@
                         </div>
                     </div>
                     <div class="space-y-1">
-                        <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Total Bayar</p>
-                        <p class="text-lg font-black text-gray-900 tracking-tighter italic">Rp {{ number_format($booking->total_amount, 0, ',', '.') }}</p>
-                        <p class="text-[10px] font-bold text-emerald-500 uppercase tracking-widest">Terbayar: Rp {{ number_format($booking->paid_amount, 0, ',', '.') }}</p>
+                        <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Pembayaran</p>
+                        
+                        <div class="flex justify-between items-center text-xs font-bold text-gray-500 mb-1">
+                            <span>Total</span>
+                            <span>Rp {{ number_format($booking->total_amount, 0, ',', '.') }}</span>
+                        </div>
+                        @if($booking->dp_required_amount > 0)
+                        <div class="flex justify-between items-center text-[10px] font-bold text-gray-400 mb-1">
+                            <span>Min. DP</span>
+                            <span>Rp {{ number_format($booking->dp_required_amount, 0, ',', '.') }}</span>
+                        </div>
+                        @endif
+                        <div class="flex justify-between items-center text-xs font-bold text-emerald-600 mb-1">
+                            <span>Terbayar</span>
+                            <span>- Rp {{ number_format($booking->paid_amount, 0, ',', '.') }}</span>
+                        </div>
+                        
+                        <div class="pt-2 mt-2 border-t border-gray-100 flex justify-between items-end">
+                            <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Sisa Tagihan</span>
+                            <span class="text-xl font-black {{ $booking->paid_amount >= $booking->total_amount ? 'text-emerald-500' : 'text-rose-500' }} font-display italic tracking-tighter">
+                                Rp {{ number_format(max(0, $booking->total_amount - $booking->paid_amount), 0, ',', '.') }}
+                            </span>
+                        </div>
                     </div>
 
                 </div>

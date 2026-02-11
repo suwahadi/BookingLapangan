@@ -28,6 +28,16 @@ class BookingCheckout extends Component
         $this->booking = $booking->load(['venue.policy', 'court']);
         $policy = $this->booking->venue->policy;
 
+        // self-healing: jika dp_required_amount 0 tapi policy allow DP, hitung ulang
+        if ($this->booking->status === \App\Enums\BookingStatus::HOLD && 
+            $this->booking->dp_required_amount === 0 && 
+            $policy?->allow_dp && 
+            $policy->dp_min_percent > 0
+        ) {
+            $this->booking->dp_required_amount = (int) ceil($this->booking->total_amount * $policy->dp_min_percent / 100);
+            $this->booking->saveQuietly(); // save without triggering events if possible, or just save
+        }
+
         if ($this->booking->status->value === 'CONFIRMED') {
             $this->isRemaining = true;
             $this->payPlan = 'REMAINING';

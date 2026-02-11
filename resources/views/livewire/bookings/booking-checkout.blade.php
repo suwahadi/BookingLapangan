@@ -37,10 +37,15 @@
                     </div>
                 </div>
                 <div class="md:text-right flex flex-col md:items-end justify-center border-t md:border-t-0 md:border-l border-gray-200 dark:border-gray-700 pt-4 md:pt-0 md:pl-6 mt-4 md:mt-0">
-                    <div class="text-[10px] font-black text-muted-light uppercase tracking-widest mb-1">Total Tagihan</div>
+                    <div class="text-[10px] font-black text-muted-light uppercase tracking-widest mb-1">Total Bayar Sekarang</div>
                     <div class="text-3xl md:text-4xl font-black text-primary font-display italic">
-                        Rp {{ number_format($booking->total_amount, 0, ',', '.') }}
+                        Rp {{ number_format($payPlan === 'DP' ? $booking->dp_required_amount : ($isRemaining ? max(0, $booking->total_amount - $booking->paid_amount) : $booking->total_amount), 0, ',', '.') }}
                     </div>
+                    @if($payPlan === 'DP')
+                        <div class="text-[10px] font-bold text-muted-light mt-1">Total Nilai Booking: Rp {{ number_format($booking->total_amount, 0, ',', '.') }}</div>
+                    @elseif($isRemaining)
+                         <div class="text-[10px] font-bold text-emerald-600 mt-1">Sudah Dibayar: Rp {{ number_format($booking->paid_amount, 0, ',', '.') }}</div>
+                    @endif
                     @if($booking->expires_at)
                     <div class="text-[10px] font-bold text-amber-600 bg-amber-50 px-2 py-1 rounded mt-2 inline-block">
                         Bayar sebelum {{ $booking->expires_at->format('H:i') }}

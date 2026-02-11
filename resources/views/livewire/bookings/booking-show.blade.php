@@ -116,14 +116,236 @@
                             <span>Harga Sewa</span>
                             <span>Rp {{ number_format($booking->total_amount, 0, ',', '.') }}</span>
                         </div>
-                        <div class="h-px bg-gray-100 dark:bg-gray-700 dashed"></div>
-                        <div class="flex justify-between items-center">
-                            <span class="text-sm font-black text-text-light dark:text-text-dark uppercase tracking-widest">Total</span>
-                            <span class="text-2xl font-black text-primary font-display italic">Rp {{ number_format($booking->total_amount, 0, ',', '.') }}</span>
+                        
+                        @if($booking->paid_amount > 0 && $booking->paid_amount < $booking->total_amount)
+                            <div class="flex justify-between items-center text-sm font-bold text-emerald-600">
+                                <span>Down Payment (Terbayar)</span>
+                                <span>- Rp {{ number_format($booking->paid_amount, 0, ',', '.') }}</span>
+                            </div>
+                            
+                            <div class="h-px bg-gray-100 dark:bg-gray-700 dashed"></div>
+                            
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs font-black text-text-light dark:text-text-dark uppercase tracking-widest">
+                                    Sisa Pelunasan
+                                </span>
+                                <span class="text-2xl font-black text-primary font-display italic">
+                                    Rp {{ number_format($booking->total_amount - $booking->paid_amount, 0, ',', '.') }}
+                                </span>
+                            </div>
+                        @elseif($booking->paid_amount >= $booking->total_amount)
+                            <div class="flex justify-between items-center text-sm font-bold text-emerald-600">
+                                <span>Total Bayar</span>
+                                <span>- Rp {{ number_format($booking->paid_amount, 0, ',', '.') }}</span>
+                            </div>
+
+                            <div class="h-px bg-gray-100 dark:bg-gray-700 dashed"></div>
+                            
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs font-black text-text-light dark:text-text-dark uppercase tracking-widest">
+                                    Status
+                                </span>
+                                <span class="text-2xl font-black text-emerald-500 font-display italic">
+                                    LUNAS
+                                </span>
+                            </div>
+                        @else
+                            <div class="h-px bg-gray-100 dark:bg-gray-700 dashed"></div>
+                            
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs font-black text-text-light dark:text-text-dark uppercase tracking-widest">
+                                    Total Tagihan
+                                </span>
+                                <span class="text-2xl font-black text-primary font-display italic">
+                                    Rp {{ number_format($booking->total_amount, 0, ',', '.') }}
+                                </span>
+                            </div>
+                        @endif
+                    </div>
+                </div>
+
+                <!-- Venue Policy Info -->
+                @if($venuePolicy)
+                <div class="bg-surface-light dark:bg-surface-dark rounded-[2.5rem] p-8 shadow-card border border-gray-100 dark:border-gray-700">
+                    <h3 class="text-lg font-black text-text-light dark:text-text-dark uppercase italic tracking-tight mb-6">Kebijakan <span class="text-primary">Venue</span></h3>
+                    
+                    <div class="space-y-5">
+                        <!-- Reschedule -->
+                        <div class="flex items-start gap-3">
+                            <div class="w-9 h-9 rounded-xl shrink-0 flex items-center justify-center {{ $venuePolicy->reschedule_allowed ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400' : 'bg-gray-100 dark:bg-gray-800 text-muted-light' }}">
+                                <span class="material-symbols-outlined text-lg">event_repeat</span>
+                            </div>
+                            <div>
+                                <p class="text-xs font-black text-text-light dark:text-text-dark uppercase tracking-wider">Reschedule</p>
+                                @if($venuePolicy->reschedule_allowed)
+                                    <p class="text-xs text-muted-light mt-0.5">Bisa diubah maks <strong>H-{{ $venuePolicy->reschedule_deadline_hours }}j</strong> sebelum main</p>
+                                @else
+                                    <p class="text-xs text-muted-light mt-0.5">Tidak tersedia</p>
+                                @endif
+                            </div>
+                        </div>
+
+                        <!-- Refund -->
+                        <div class="flex items-start gap-3">
+                            <div class="w-9 h-9 rounded-xl shrink-0 flex items-center justify-center {{ $venuePolicy->refund_allowed ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400' : 'bg-gray-100 dark:bg-gray-800 text-muted-light' }}">
+                                <span class="material-symbols-outlined text-lg">currency_exchange</span>
+                            </div>
+                            <div>
+                                <p class="text-xs font-black text-text-light dark:text-text-dark uppercase tracking-wider">Refund</p>
+                                @if($venuePolicy->refund_allowed)
+                                    @php $rules = $venuePolicy->refund_rules ?? []; @endphp
+                                    <div class="mt-1 space-y-1">
+                                        @if(isset($rules['h_minus_72']))
+                                        <p class="text-[10px] text-muted-light">> 72j: <strong class="text-emerald-600">{{ $rules['h_minus_72'] }}%</strong></p>
+                                        @endif
+                                        @if(isset($rules['h_minus_24']))
+                                        <p class="text-[10px] text-muted-light">24-72j: <strong class="text-amber-600">{{ $rules['h_minus_24'] }}%</strong></p>
+                                        @endif
+                                        @if(isset($rules['below_24']))
+                                        <p class="text-[10px] text-muted-light">< 24j: <strong class="text-rose-600">{{ $rules['below_24'] }}%</strong></p>
+                                        @endif
+                                    </div>
+                                @else
+                                    <p class="text-xs text-muted-light mt-0.5">Tidak tersedia</p>
+                                @endif
+                            </div>
+                        </div>
+
+                        <!-- DP -->
+                        <div class="flex items-start gap-3">
+                            <div class="w-9 h-9 rounded-xl shrink-0 flex items-center justify-center {{ $venuePolicy->allow_dp ? 'bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400' : 'bg-gray-100 dark:bg-gray-800 text-muted-light' }}">
+                                <span class="material-symbols-outlined text-lg">account_balance_wallet</span>
+                            </div>
+                            <div>
+                                <p class="text-xs font-black text-text-light dark:text-text-dark uppercase tracking-wider">Down Payment</p>
+                                @if($venuePolicy->allow_dp)
+                                    <p class="text-xs text-muted-light mt-0.5">Minimal {{ $venuePolicy->dp_min_percent }}% dari total</p>
+                                @else
+                                    <p class="text-xs text-muted-light mt-0.5">Wajib bayar lunas</p>
+                                @endif
+                            </div>
                         </div>
                     </div>
                 </div>
+                @endif
+                <!-- Booking Actions -->
+                @if(!$booking->status->isFinal())
+                <div class="bg-surface-light dark:bg-surface-dark rounded-[2.5rem] p-8 shadow-card border border-gray-100 dark:border-gray-700">
+                    <h3 class="text-lg font-black text-text-light dark:text-text-dark uppercase italic tracking-tight mb-6">Aksi <span class="text-primary">Booking</span></h3>
+                    
+                    <div class="space-y-3">
+                        <!-- Reschedule -->
+                        @if($venuePolicy && $venuePolicy->reschedule_allowed)
+                        <button wire:click="$set('showRescheduleModal', true)" class="w-full flex items-center justify-between p-4 rounded-2xl border border-gray-200 hover:border-primary hover:bg-primary/5 transition-all group">
+                            <span class="text-sm font-bold text-gray-700 group-hover:text-primary">Reschedule Booking</span>
+                            <span class="material-symbols-outlined text-gray-400 group-hover:text-primary">event_repeat</span>
+                        </button>
+                        @endif
+
+                        <!-- Refund -->
+                        @if($venuePolicy && $venuePolicy->refund_allowed && $booking->paid_amount > 0)
+                        <button wire:click="$set('showRefundModal', true)" class="w-full flex items-center justify-between p-4 rounded-2xl border border-gray-200 hover:border-amber-500 hover:bg-amber-50 transition-all group">
+                            <span class="text-sm font-bold text-gray-700 group-hover:text-amber-600">Ajukan Refund</span>
+                            <span class="material-symbols-outlined text-gray-400 group-hover:text-amber-600">currency_exchange</span>
+                        </button>
+                        @endif
+
+                        <!-- Cancel -->
+                        <button wire:click="$set('showCancelModal', true)" class="w-full flex items-center justify-between p-4 rounded-2xl border border-rose-100 hover:border-rose-500 hover:bg-rose-50 transition-all group">
+                            <span class="text-sm font-bold text-rose-600">Batalkan Booking</span>
+                            <span class="material-symbols-outlined text-rose-300 group-hover:text-rose-600">cancel</span>
+                        </button>
+                    </div>
+                </div>
+                @endif
             </div>
         </div>
     </div>
+
+    <!-- Refund Modal -->
+    @if($showRefundModal)
+    <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm px-4" style="z-index: 9999;">
+        <div class="fixed inset-0" wire:click="$set('showRefundModal', false)"></div>
+        <div class="bg-white rounded-3xl w-full max-w-sm overflow-hidden shadow-2xl relative z-10 p-6 animate-fade-in-up">
+            <div class="mb-4">
+                <span class="w-12 h-12 rounded-full bg-amber-100 flex items-center justify-center mb-4">
+                    <span class="material-symbols-outlined text-amber-600 text-2xl">currency_exchange</span>
+                </span>
+                <h3 class="text-xl font-black text-gray-900 mb-2">Ajukan Refund?</h3>
+                <p class="text-sm text-gray-600 leading-relaxed">
+                    Permintaan refund akan dikirim ke admin venue. Proses persetujuan mengikuti kebijakan yang berlaku.
+                </p>
+                @if($venuePolicy && $venuePolicy->refund_allowed)
+                    <div class="mt-4 p-3 bg-gray-50 rounded-xl text-xs text-gray-500 border border-gray-100">
+                        Pastikan Anda telah membaca kebijakan refund venue ini.
+                    </div>
+                @endif
+            </div>
+            
+            <div class="grid grid-cols-2 gap-3">
+                <button wire:click="$set('showRefundModal', false)" 
+                        class="py-3 px-4 rounded-xl border border-gray-200 text-gray-700 font-bold text-sm hover:bg-gray-50 transition-colors">
+                    Batal
+                </button>
+                <button wire:click="requestRefund" 
+                        class="py-3 px-4 rounded-xl bg-amber-500 text-white font-bold text-sm hover:bg-amber-600 shadow-lg shadow-amber-500/20 transition-all active:scale-95">
+                    Ya, Ajukan
+                </button>
+            </div>
+        </div>
+    </div>
+    @endif
+
+    <!-- Cancel Modal -->
+    @if($showCancelModal)
+    <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm px-4" style="z-index: 9999;">
+        <div class="fixed inset-0" wire:click="$set('showCancelModal', false)"></div>
+        <div class="bg-white rounded-3xl w-full max-w-sm overflow-hidden shadow-2xl relative z-10 p-6 animate-fade-in-up">
+            <div class="mb-4">
+                <span class="w-12 h-12 rounded-full bg-rose-100 flex items-center justify-center mb-4">
+                    <span class="material-symbols-outlined text-rose-600 text-2xl">cancel</span>
+                </span>
+                <h3 class="text-xl font-black text-gray-900 mb-2">Batalkan Booking</h3>
+                <p class="text-sm text-gray-600 leading-relaxed">
+                    Mohon maaf, saat ini pembatalan booking tidak bisa dilakukan secara otomatis melalui aplikasi.
+                </p>
+                <div class="mt-4 p-3 bg-gray-50 rounded-xl text-xs text-gray-500 border border-gray-100">
+                    Silakan hubungi admin venue untuk bantuan lebih lanjut.
+                </div>
+            </div>
+            
+            <button wire:click="$set('showCancelModal', false)" 
+                    class="w-full py-3 px-4 rounded-xl bg-gray-900 text-white font-bold text-sm hover:bg-black transition-colors">
+                Tutup
+            </button>
+        </div>
+    </div>
+    @endif
+
+    <!-- Reschedule Modal -->
+    @if($showRescheduleModal)
+    <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm px-4" style="z-index: 9999;">
+        <div class="fixed inset-0" wire:click="$set('showRescheduleModal', false)"></div>
+        <div class="bg-white rounded-3xl w-full max-w-sm overflow-hidden shadow-2xl relative z-10 p-6 animate-fade-in-up">
+            <div class="mb-4">
+                <span class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center mb-4">
+                    <span class="material-symbols-outlined text-blue-600 text-2xl">event_repeat</span>
+                </span>
+                <h3 class="text-xl font-black text-gray-900 mb-2">Reschedule Booking</h3>
+                <p class="text-sm text-gray-600 leading-relaxed">
+                    Fitur reschedule otomatis belum tersedia saat ini.
+                </p>
+                 <div class="mt-4 p-3 bg-gray-50 rounded-xl text-xs text-gray-500 border border-gray-100">
+                     Mohon hubungi admin venue secara langsung untuk mengajukan perubahan jadwal.
+                </div>
+            </div>
+            
+            <button wire:click="$set('showRescheduleModal', false)" 
+                    class="w-full py-3 px-4 rounded-xl bg-gray-900 text-white font-bold text-sm hover:bg-black transition-colors">
+                Mengerti
+            </button>
+        </div>
+    </div>
+    @endif
+
 </div>
