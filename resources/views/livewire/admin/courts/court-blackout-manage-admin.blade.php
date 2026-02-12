@@ -5,7 +5,9 @@
             <div class="flex items-center gap-2 mb-1">
                 <a href="{{ route('admin.venues.index') }}" wire:navigate class="text-[10px] font-black text-indigo-500 uppercase tracking-[0.2em] hover:text-indigo-700 transition-colors">Daftar Venue</a>
                 <span class="text-gray-300">/</span>
-                <a href="{{ route('admin.venues.courts', $court->venue_id) }}" wire:navigate class="text-[10px] font-black text-indigo-500 uppercase tracking-[0.2em] hover:text-indigo-700 transition-colors">{{ $court->venue->name }}</a>
+                <a href="{{ route('admin.venues.hub', $court->venue->slug) }}" wire:navigate class="text-[10px] font-black text-indigo-500 uppercase tracking-[0.2em] hover:text-indigo-700 transition-colors">{{ $court->venue->name }}</a>
+                <span class="text-gray-300">/</span>
+                <a href="{{ route('admin.venues.courts', $court->venue->slug) }}" wire:navigate class="text-[10px] font-black text-indigo-500 uppercase tracking-[0.2em] hover:text-indigo-700 transition-colors">Lapangan</a>
                 <span class="text-gray-300">/</span>
                 <span class="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">{{ $court->name }}</span>
             </div>
