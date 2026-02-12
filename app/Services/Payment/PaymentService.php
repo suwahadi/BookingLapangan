@@ -104,15 +104,16 @@ class PaymentService
         });
     }
 
-    /**
-     * Resolve payment amount based on type
-     */
     private function resolveAmount(Booking $booking, PaymentType $type): int
     {
+        $payableAmount = max(0, (int) $booking->total_amount - (int) $booking->discount_amount);
+
         return match ($type) {
-            PaymentType::FULL => (int) $booking->total_amount,
-            PaymentType::DP => (int) $booking->dp_required_amount,
-            PaymentType::REMAINING => max(0, (int)$booking->total_amount - (int)$booking->paid_amount),
+            PaymentType::FULL => $payableAmount,
+            PaymentType::DP => (int) $booking->dp_required_amount > 0
+                ? min((int) $booking->dp_required_amount, $payableAmount)
+                : $payableAmount,
+            PaymentType::REMAINING => max(0, $payableAmount - (int) $booking->paid_amount),
         };
     }
 

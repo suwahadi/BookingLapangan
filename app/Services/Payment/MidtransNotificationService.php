@@ -20,7 +20,8 @@ class MidtransNotificationService
     public function __construct(
         private readonly SlotLifecycleService $slotLifecycle,
         private readonly \App\Services\Observability\DomainLogger $log,
-        private readonly NotificationService $notificationService
+        private readonly NotificationService $notificationService,
+        private readonly \App\Services\Voucher\VoucherRedemptionService $voucherRedemptionService
     ) {}
 
     /**
@@ -100,6 +101,8 @@ class MidtransNotificationService
                     
                     // Release slots logic
                     $this->slotLifecycle->snapshotAndRelease($booking);
+
+                    $this->voucherRedemptionService->releaseOnBookingExpiredOrCancelled($booking->id, 'payment_expired');
 
                     // Notify User (email + in-app)
                     if ($booking->user) {
@@ -201,6 +204,8 @@ class MidtransNotificationService
         // Ensure slot snapshot is taken when confirmed (optional, can be done via model observer or here)
         
         $booking->save();
+
+        $this->voucherRedemptionService->finalizeOnBookingPaid($booking->id);
 
         // Notify user (email + in-app)
         if ($booking->user) {

@@ -4,6 +4,7 @@
 Yomabar is a sports venue booking platform built with Laravel 12, Livewire 4, and Tailwind CSS 4. It allows users to search and book sports courts (badminton, futsal, etc.) at various venues in Jakarta. Features include online payments via Midtrans, booking management, admin dashboard, and wallet system.
 
 ## Recent Changes
+- **2026-02-12**: Added voucher/discount system - migrations, models, enums, services (VoucherCalculator, VoucherEligibilityService, VoucherRedemptionService), Livewire BookingVoucherBox component, integration with PaymentService/MidtransNotificationService/BookingExpiryService/CancelBookingService, VoucherSeeder, and tests
 - **2026-02-12**: Initial Replit setup - configured PostgreSQL, Vite, trust proxies, workflow
 
 ## Project Architecture
@@ -16,7 +17,7 @@ Yomabar is a sports venue booking platform built with Laravel 12, Livewire 4, an
 ### Directory Structure
 - `app/` - Application code (Models, Livewire components, Services, etc.)
 - `resources/views/` - Blade templates and Livewire views
-- `database/migrations/` - Database migrations (36 total)
+- `database/migrations/` - Database migrations (39 total, including voucher system)
 - `database/seeders/` - Database seeders with sample venue data
 - `routes/web.php` - Web routes
 - `config/` - Laravel configuration files

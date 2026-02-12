@@ -34,6 +34,9 @@ class Booking extends Model
         'notes',
         'slot_snapshot',
         'idempotency_key',
+        'voucher_id',
+        'voucher_code',
+        'discount_amount',
     ];
 
     protected $casts = [
@@ -43,6 +46,7 @@ class Booking extends Model
         'paid_amount' => 'integer',
         'dp_required_amount' => 'integer',
         'dp_paid_amount' => 'integer',
+        'discount_amount' => 'integer',
         'slot_snapshot' => 'array',
         'status' => BookingStatus::class,
     ];
@@ -109,6 +113,21 @@ class Booking extends Model
     public function refundRequests(): HasMany
     {
         return $this->hasMany(RefundRequest::class);
+    }
+
+    public function voucher(): BelongsTo
+    {
+        return $this->belongsTo(Voucher::class);
+    }
+
+    public function voucherRedemption(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(VoucherRedemption::class);
+    }
+
+    public function getPayableAmountAttribute(): int
+    {
+        return max(0, (int) $this->total_amount - (int) $this->discount_amount);
     }
 
     /**

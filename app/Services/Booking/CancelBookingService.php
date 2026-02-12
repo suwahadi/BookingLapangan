@@ -13,7 +13,8 @@ class CancelBookingService
 {
     public function __construct(
         private readonly RefundService $refundService,
-        private readonly SlotLifecycleService $slotLifecycle
+        private readonly SlotLifecycleService $slotLifecycle,
+        private readonly \App\Services\Voucher\VoucherRedemptionService $voucherRedemptionService
     ) {}
 
     /**
@@ -43,6 +44,7 @@ class CancelBookingService
                 $booking->save();
 
                 $this->slotLifecycle->snapshotAndRelease($booking);
+                $this->voucherRedemptionService->releaseOnBookingExpiredOrCancelled($booking->id, 'cancelled');
 
                 return $booking;
             }
@@ -52,6 +54,7 @@ class CancelBookingService
                 $booking->save();
 
                 $this->slotLifecycle->snapshotAndRelease($booking);
+                $this->voucherRedemptionService->releaseOnBookingExpiredOrCancelled($booking->id, 'cancelled');
 
                 $refundAmount = $this->refundService->calculateRefundAmount($booking);
 

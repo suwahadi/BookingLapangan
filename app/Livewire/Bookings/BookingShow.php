@@ -89,6 +89,10 @@ class BookingShow extends Component
                 'status' => BookingStatus::CANCELLED,
             ]);
 
+            // Release voucher
+            app(\App\Services\Voucher\VoucherRedemptionService::class)
+                ->releaseOnBookingExpiredOrCancelled($this->booking->id, 'cancelled');
+
             // 3. Refund to Wallet if paid
             if ($this->booking->paid_amount > 0) {
                 $walletService = app(WalletService::class);

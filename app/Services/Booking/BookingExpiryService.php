@@ -19,7 +19,8 @@ class BookingExpiryService
         private readonly DomainLogger $log,
         private readonly OccupiedSlotsRepository $occupiedRepo,
         private readonly SlotLifecycleService $slotLifecycle,
-        private readonly NotificationService $notificationService
+        private readonly NotificationService $notificationService,
+        private readonly \App\Services\Voucher\VoucherRedemptionService $voucherRedemptionService
     ) {}
 
     /**
@@ -117,6 +118,8 @@ class BookingExpiryService
                 // Lepas slot via Lifecycle (snapshots & deletes & invalidates cache)
                 $this->slotLifecycle->snapshotAndRelease($booking);
 
+                $this->voucherRedemptionService->releaseOnBookingExpiredOrCancelled($booking->id, 'booking_expired');
+
                 if ($actorUserId) {
                     $this->audit->record(
                         actorUserId: $actorUserId,
@@ -177,6 +180,8 @@ class BookingExpiryService
                     $booking->save();
 
                     $this->slotLifecycle->snapshotAndRelease($booking);
+
+                    $this->voucherRedemptionService->releaseOnBookingExpiredOrCancelled($booking->id, 'payment_pending_expired');
 
                     // Kirim notifikasi in-app ke member
                     if ($booking->user) {

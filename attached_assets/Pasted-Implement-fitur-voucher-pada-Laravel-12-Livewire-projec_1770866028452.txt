@@ -1,0 +1,50 @@
+Implement fitur voucher pada Laravel 12 + Livewire project Sewa Lapangan.
+
+Kriteria utama:
+- service-first, logic voucher hanya di service layer
+- transactional + lockForUpdate untuk anti race condition
+- idempotent (no double apply, no oversell kuota)
+- semua pesan UI Bahasa Indonesia, mata uang IDR
+- voucher dipakai pada booking status HOLD, mempengaruhi amount yang dikirim ke Midtrans Core
+- saat booking paid/settled => redemption status applied
+- saat booking expired/cancelled sebelum paid => redemption released, kuota voucher kembali
+- 1 booking hanya boleh 1 voucher
+
+Kerjakan:
+1) Buat migrations:
+   - vouchers
+   - voucher_redemptions
+   - add voucher fields on bookings (voucher_id, voucher_code, discount_amount)
+   Tambahkan indexes & constraints: unique vouchers.code, unique voucher_redemptions.booking_id.
+
+2) Buat models: Voucher, VoucherRedemption. Enum: VoucherDiscountType, VoucherRedemptionStatus.
+
+3) Buat services:
+   - VoucherCalculator: hitung diskon amount/percentage dengan max_discount_amount
+   - VoucherEligibilityService: validasi aktif, periode, min_order_amount, scope (all/venue/court)
+   - VoucherRedemptionService:
+     - applyToHoldBooking(userId, bookingId, voucherCode): lock booking+voucher, cek limits total & per user, buat redemption reserved, increment usage_count_total, update booking discount
+     - removeFromHoldBooking(userId, bookingId): release reserved + decrement quota + reset booking discount
+     - finalizeOnBookingPaid(bookingId): reserved -> applied
+     - releaseOnBookingExpiredOrCancelled(bookingId, reason): reserved -> released + decrement quota + reset booking discount
+
+4) Integrasi:
+   - Ubah pembuatan Payment Midtrans amount memakai booking.total_amount - booking.discount_amount
+   - Di MidtransNotificationService finalize booking settled => panggil finalizeOnBookingPaid
+   - Di flow booking expire (transaction_status=expire) dan scheduler expire => panggil releaseOnBookingExpiredOrCancelled
+   - Di admin cancel booking HOLD/pending => panggil releaseOnBookingExpiredOrCancelled(reason=cancelled)
+
+5) Buat Livewire component BookingVoucherBox untuk input kode voucher pada halaman booking HOLD:
+   - applyVoucher: panggil applyToHoldBooking
+   - removeVoucher: panggil removeFromHoldBooking
+   - tampilkan subtotal, diskon, total bayar dengan format IDR
+   - tampilkan pesan error Bahasa Indonesia
+
+6) Pastikan aman race condition dan idempotent.
+7) Tambahkan minimal test (Feature/Unit) untuk:
+   - apply sukses
+   - quota habis (2 user apply bersamaan simulasi dengan transaction/locking jika memungkinkan)
+   - release saat expired
+   - finalize saat paid
+
+Outputkan patch perubahan file lengkap.

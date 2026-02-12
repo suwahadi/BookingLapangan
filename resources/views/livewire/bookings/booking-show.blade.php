@@ -107,8 +107,13 @@
 
             <!-- Sidebar -->
             <div class="space-y-8">
+                <!-- Voucher Box -->
+                @if($booking->status === \App\Enums\BookingStatus::HOLD)
+                    <livewire:bookings.booking-voucher-box :booking="$booking" :key="'voucher-'.$booking->id" />
+                @endif
+
                 <!-- Cost Summary -->
-                <div class="bg-surface-light dark:bg-surface-dark rounded-[2.5rem] p-8 shadow-card border border-gray-100 dark:border-gray-700">
+                <div class="bg-surface-light dark:bg-surface-dark rounded-[2.5rem] p-8 shadow-card border border-gray-100 dark:border-gray-700" wire:poll.5s>
                     <h3 class="text-lg font-black text-text-light dark:text-text-dark uppercase italic tracking-tight mb-6">Rincian <span class="text-primary">Biaya</span></h3>
                     
                     <div class="space-y-4">
@@ -116,8 +121,15 @@
                             <span>Harga Sewa</span>
                             <span>Rp {{ number_format($booking->total_amount, 0, ',', '.') }}</span>
                         </div>
+
+                        @if($booking->discount_amount > 0)
+                            <div class="flex justify-between items-center text-sm font-bold text-emerald-600">
+                                <span>Diskon Voucher</span>
+                                <span>- Rp {{ number_format($booking->discount_amount, 0, ',', '.') }}</span>
+                            </div>
+                        @endif
                         
-                        @if($booking->paid_amount > 0 && $booking->paid_amount < $booking->total_amount)
+                        @if($booking->paid_amount > 0 && $booking->paid_amount < $booking->payable_amount)
                             <div class="flex justify-between items-center text-sm font-bold text-emerald-600">
                                 <span>Down Payment (Terbayar)</span>
                                 <span>- Rp {{ number_format($booking->paid_amount, 0, ',', '.') }}</span>
@@ -130,10 +142,10 @@
                                     Sisa Pelunasan
                                 </span>
                                 <span class="text-2xl font-black text-primary font-display italic">
-                                    Rp {{ number_format($booking->total_amount - $booking->paid_amount, 0, ',', '.') }}
+                                    Rp {{ number_format($booking->payable_amount - $booking->paid_amount, 0, ',', '.') }}
                                 </span>
                             </div>
-                        @elseif($booking->paid_amount >= $booking->total_amount)
+                        @elseif($booking->paid_amount >= $booking->payable_amount && $booking->paid_amount > 0)
                             <div class="flex justify-between items-center text-sm font-bold text-emerald-600">
                                 <span>Total Bayar</span>
                                 <span>- Rp {{ number_format($booking->paid_amount, 0, ',', '.') }}</span>
@@ -157,7 +169,7 @@
                                     Total Tagihan
                                 </span>
                                 <span class="text-2xl font-black text-primary font-display italic">
-                                    Rp {{ number_format($booking->total_amount, 0, ',', '.') }}
+                                    Rp {{ number_format($booking->payable_amount, 0, ',', '.') }}
                                 </span>
                             </div>
                         @endif
