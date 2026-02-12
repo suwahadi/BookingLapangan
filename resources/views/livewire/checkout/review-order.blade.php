@@ -123,15 +123,32 @@
                     
                     <!-- Voucher -->
                     <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
-                        <button type="button" wire:click="toggleVoucherModal" class="w-full flex items-center justify-between text-left">
-                            <div class="flex items-center gap-3">
-                                <span class="w-10 h-10 rounded-xl bg-[#8B1538]/10 flex items-center justify-center">
-                                    <span class="material-symbols-outlined text-[#8B1538]">confirmation_number</span>
-                                </span>
-                                <span class="font-bold text-gray-800">Gunakan Voucher</span>
+                        @if($appliedVoucherCode)
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                    <span class="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center">
+                                        <span class="material-symbols-outlined text-emerald-600">confirmation_number</span>
+                                    </span>
+                                    <div>
+                                        <p class="text-xs font-black text-emerald-700 uppercase tracking-widest">{{ $appliedVoucherCode }}</p>
+                                        <p class="text-[11px] font-bold text-emerald-600 mt-0.5">Hemat Rp{{ number_format($discountAmount, 0, ',', '.') }}</p>
+                                    </div>
+                                </div>
+                                <button type="button" wire:click="removeVoucher" class="p-2 text-rose-500 hover:text-rose-700 hover:bg-rose-50 rounded-lg transition-colors">
+                                    <span class="material-symbols-outlined text-lg">close</span>
+                                </button>
                             </div>
-                            <span class="material-symbols-outlined text-gray-400">chevron_right</span>
-                        </button>
+                        @else
+                            <button type="button" wire:click="toggleVoucherModal" class="w-full flex items-center justify-between text-left">
+                                <div class="flex items-center gap-3">
+                                    <span class="w-10 h-10 rounded-xl bg-[#8B1538]/10 flex items-center justify-center">
+                                        <span class="material-symbols-outlined text-[#8B1538]">confirmation_number</span>
+                                    </span>
+                                    <span class="font-bold text-gray-800">Gunakan Voucher</span>
+                                </div>
+                                <span class="material-symbols-outlined text-gray-400">chevron_right</span>
+                            </button>
+                        @endif
                     </div>
 
                     <!-- Cost Breakdown -->
@@ -152,10 +169,19 @@
                                 <span class="text-gray-500">Biaya Produk Tambahan</span>
                                 <span class="font-bold text-gray-800">Rp0</span>
                             </div>
+                            @if($discountAmount > 0)
+                            <div class="flex justify-between">
+                                <span class="text-emerald-600 flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-sm">confirmation_number</span>
+                                    Diskon ({{ $appliedVoucherCode }})
+                                </span>
+                                <span class="font-bold text-emerald-600">-Rp{{ number_format($discountAmount, 0, ',', '.') }}</span>
+                            </div>
+                            @endif
                             <div class="border-t border-dashed border-gray-200 pt-3 mt-3">
                                 <div class="flex justify-between">
                                     <span class="font-bold text-gray-700">Total Bayar</span>
-                                    <span class="font-black text-lg text-gray-900">Rp{{ number_format($totalAmount, 0, ',', '.') }}</span>
+                                    <span class="font-black text-lg text-gray-900">Rp{{ number_format($this->netAmount, 0, ',', '.') }}</span>
                                 </div>
                             </div>
                         </div>
@@ -177,7 +203,7 @@
                                 <input type="radio" wire:model.live="payPlan" name="pay_plan" value="FULL" class="w-4 h-4 text-[#8B1538] border-gray-300 focus:ring-[#8B1538]">
                                 <div class="flex-1">
                                     <span class="font-bold text-gray-800">Bayar Lunas</span>
-                                    <div class="text-[#8B1538] font-bold">Rp{{ number_format($totalAmount, 0, ',', '.') }}</div>
+                                    <div class="text-[#8B1538] font-bold">Rp{{ number_format($this->netAmount, 0, ',', '.') }}</div>
                                 </div>
                                 @if($payPlan === 'FULL')
                                     <span class="material-symbols-outlined text-[#8B1538] text-xl">check_circle</span>
@@ -196,7 +222,7 @@
                                     </div>
                                     <div class="text-[#8B1538] font-bold">Rp{{ number_format($dpAmount, 0, ',', '.') }}</div>
                                     <div class="text-[10px] text-gray-400 font-medium mt-0.5">
-                                        Sisa Rp{{ number_format($totalAmount - $dpAmount, 0, ',', '.') }} dilunasi nanti
+                                        Sisa Rp{{ number_format($this->netAmount - $dpAmount, 0, ',', '.') }} dilunasi nanti
                                     </div>
                                 </div>
                                 @if($payPlan === 'DP')
@@ -288,37 +314,71 @@
                         <span class="material-symbols-outlined text-gray-500">close</span>
                     </button>
                 </div>
-                
+
                 <div class="p-5">
-                    <div class="flex flex-col sm:flex-row gap-3">
-                        <input type="text" 
-                               wire:model.live="voucherCode" 
+                    <div class="flex gap-2">
+                        <input type="text"
+                               wire:model="voucherCode"
                                wire:keydown.enter="applyVoucher"
-                               placeholder="Masukkan kode promo" 
-                               class="w-full sm:flex-1 h-11 rounded-xl border-gray-300 focus:border-[#8B1538] focus:ring-[#8B1538] placeholder-gray-400 text-sm transition-all">
-                        <button wire:click="applyVoucher" 
-                                @if(strlen($voucherCode) < 3) disabled @endif
-                                class="h-11 px-6 font-bold rounded-xl transition-all text-sm w-full sm:w-auto
-                                    {{ strlen($voucherCode) < 3 
-                                        ? 'bg-gray-100 text-gray-400 cursor-not-allowed border border-gray-200' 
-                                        : 'bg-[#8B1538] text-white hover:bg-[#6d1029] shadow-lg shadow-[#8B1538]/20' }}">
+                               placeholder="Masukkan kode voucher"
+                               class="flex-1 h-11 px-4 rounded-xl border-gray-300 focus:border-[#8B1538] focus:ring-[#8B1538] placeholder-gray-400 text-sm uppercase tracking-wider transition-all">
+                        <button wire:click="applyVoucher"
+                                class="h-11 px-5 bg-[#8B1538] hover:bg-[#6d1029] text-white font-bold rounded-xl text-sm transition-all active:scale-95 shrink-0">
                             Terapkan
                         </button>
                     </div>
 
                     @if($voucherError)
-                        <div class="mt-3 flex items-start gap-2 text-rose-600 text-sm font-semibold bg-rose-50 p-3 rounded-lg border border-rose-100">
-                            <span class="material-symbols-outlined text-base mt-0.5">error</span>
-                            <span class="text-sm mt-1">{{ $voucherError }}</span>
+                        <div class="mt-3 flex items-start gap-2 text-rose-600 text-sm font-semibold bg-rose-50 p-3 rounded-xl border border-rose-100">
+                            <span class="material-symbols-outlined text-base mt-0.5 shrink-0">error</span>
+                            <span class="text-sm">{{ $voucherError }}</span>
                         </div>
                     @endif
 
-                    <div class="mt-6 h-40 bg-gray-50 rounded-xl border border-gray-100 flex items-center justify-center text-gray-400">
-                        <!-- Placeholder for voucher list -->
-                        <div class="text-center">
-                            <span class="material-symbols-outlined text-3xl mb-2 opacity-50">confirmation_number</span>
-                            <p class="text-sm">Belum ada voucher tersedia</p>
-                        </div>
+                    @php $availableVouchers = $this->availableVouchers; @endphp
+                    <div class="mt-5">
+                        <p class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-3">Voucher Tersedia</p>
+                        @if($availableVouchers->count() > 0)
+                            <div class="space-y-2 max-h-60 overflow-y-auto">
+                                @foreach($availableVouchers as $v)
+                                    @php
+                                        $calculator = app(\App\Services\Voucher\VoucherCalculator::class);
+                                        $potentialDiscount = $calculator->calculate($v, $totalAmount);
+                                        $meetsMinOrder = $v->min_order_amount <= 0 || $totalAmount >= $v->min_order_amount;
+                                    @endphp
+                                    <button type="button"
+                                            wire:click="selectVoucher('{{ $v->code }}')"
+                                            @if(!$meetsMinOrder) disabled @endif
+                                            class="w-full text-left p-3 rounded-xl border transition-all
+                                                {{ $meetsMinOrder
+                                                    ? 'border-gray-200 hover:border-[#8B1538] hover:bg-[#8B1538]/5 cursor-pointer'
+                                                    : 'border-gray-100 bg-gray-50 opacity-60 cursor-not-allowed' }}">
+                                        <div class="flex items-center justify-between">
+                                            <div class="flex items-center gap-3">
+                                                <span class="w-9 h-9 rounded-lg bg-[#8B1538]/10 flex items-center justify-center shrink-0">
+                                                    <span class="material-symbols-outlined text-[#8B1538] text-lg">confirmation_number</span>
+                                                </span>
+                                                <div>
+                                                    <p class="text-xs font-black text-gray-800 uppercase tracking-wider">{{ $v->code }}</p>
+                                                    <p class="text-[11px] text-gray-500 mt-0.5">{{ $v->description }}</p>
+                                                </div>
+                                            </div>
+                                            @if($meetsMinOrder && $potentialDiscount > 0)
+                                                <span class="text-xs font-bold text-emerald-600 whitespace-nowrap ml-2">-Rp{{ number_format($potentialDiscount, 0, ',', '.') }}</span>
+                                            @endif
+                                        </div>
+                                        @if(!$meetsMinOrder)
+                                            <p class="text-[10px] text-rose-500 font-semibold mt-1 ml-12">Min. order Rp{{ number_format($v->min_order_amount, 0, ',', '.') }}</p>
+                                        @endif
+                                    </button>
+                                @endforeach
+                            </div>
+                        @else
+                            <div class="py-8 text-center text-gray-400">
+                                <span class="material-symbols-outlined text-3xl mb-2 opacity-50">confirmation_number</span>
+                                <p class="text-sm">Belum ada voucher tersedia</p>
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>

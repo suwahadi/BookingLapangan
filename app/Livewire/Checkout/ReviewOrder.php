@@ -2,11 +2,13 @@
 
 namespace App\Livewire\Checkout;
 
+use App\Models\Voucher;
 use App\Models\VenueCourt;
 use App\Models\VenuePolicy;
 use App\Services\Booking\BookingService;
-use App\Services\Booking\Exceptions\InvalidBookingTimeException;
-use App\Services\Booking\Exceptions\SlotNotAvailableException;
+use App\Services\Voucher\VoucherCalculator;
+use App\Services\Voucher\VoucherRedemptionService;
+use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Livewire\Attributes\Layout;
@@ -21,28 +23,34 @@ class ReviewOrder extends Component
     public int $totalAmount = 0;
     public ?string $errorMessage = null;
 
-    // Payment plan
-    public string $payPlan = 'FULL'; // FULL or DP
+    public string $payPlan = 'FULL';
     public ?VenuePolicy $venuePolicy = null;
     public int $dpAmount = 0;
 
-    // Guest Data
     public string $guestName = '';
     public string $guestPhone = '';
     public string $guestEmail = '';
 
+    public bool $showVoucherModal = false;
+    public string $voucherCode = '';
+    public ?string $voucherError = null;
+
+    public ?int $appliedVoucherId = null;
+    public ?string $appliedVoucherCode = null;
+    public ?string $appliedVoucherName = null;
+    public int $discountAmount = 0;
+
     public function mount(): void
     {
-        // Get cart data from session
         $cart = Session::get('booking_cart', []);
-        
+
         if (empty($cart)) {
             $this->redirectRoute('home', navigate: true);
             return;
         }
 
         $this->venueCourt = VenueCourt::with('venue.policy')->find($cart['venue_court_id']);
-        
+
         if (!$this->venueCourt) {
             Session::forget('booking_cart');
             $this->redirectRoute('home', navigate: true);
@@ -53,24 +61,39 @@ class ReviewOrder extends Component
         $this->selectedSlots = $cart['slots'] ?? [];
         $this->totalAmount = $cart['total_amount'] ?? 0;
 
-        // Load venue policy
         $this->venuePolicy = $this->venueCourt->venue->policy;
-
-        // Calculate DP amount based on policy
         $this->calculateDpAmount();
 
-        // Prefill if logged in
         if (Auth::check()) {
             $user = Auth::user();
             $this->guestName = $user->name;
             $this->guestPhone = $user->phone ?? '';
             $this->guestEmail = $user->email;
         }
+
+        $savedVoucher = Session::get('applied_voucher');
+        if ($savedVoucher) {
+            $this->restoreVoucherFromSession($savedVoucher);
+        }
     }
 
-    public bool $showVoucherModal = false;
-    public string $voucherCode = '';
-    public ?string $voucherError = null;
+    private function restoreVoucherFromSession(array $saved): void
+    {
+        $voucher = Voucher::find($saved['id']);
+        if (!$voucher || !$this->isVoucherStillValid($voucher)) {
+            Session::forget('applied_voucher');
+            return;
+        }
+
+        $calculator = app(VoucherCalculator::class);
+        $discount = $calculator->calculate($voucher, $this->totalAmount);
+
+        $this->appliedVoucherId = $voucher->id;
+        $this->appliedVoucherCode = $voucher->code;
+        $this->appliedVoucherName = $voucher->name;
+        $this->discountAmount = $discount;
+        $this->calculateDpAmount();
+    }
 
     public function removeSlot(int $index): void
     {
@@ -80,17 +103,20 @@ class ReviewOrder extends Component
             $this->selectedSlots = array_values($this->selectedSlots);
             $this->totalAmount -= $amount;
 
-            // Update session
             $cart = Session::get('booking_cart', []);
             $cart['slots'] = $this->selectedSlots;
             $cart['total_amount'] = $this->totalAmount;
             Session::put('booking_cart', $cart);
 
-            // Recalculate DP
+            if ($this->appliedVoucherId) {
+                $this->recalculateDiscount();
+            }
+
             $this->calculateDpAmount();
 
             if (empty($this->selectedSlots)) {
                 Session::forget('booking_cart');
+                Session::forget('applied_voucher');
             }
         }
     }
@@ -102,30 +128,146 @@ class ReviewOrder extends Component
 
     public function toggleVoucherModal(): void
     {
-        $this->showVoucherModal = ! $this->showVoucherModal;
+        $this->showVoucherModal = !$this->showVoucherModal;
         $this->voucherError = null;
+        $this->voucherCode = '';
     }
 
     public function applyVoucher(): void
     {
         $this->voucherError = null;
-        
-        if (empty($this->voucherCode)) {
-            $this->voucherError = 'Kode voucher tidak boleh kosong';
+
+        $code = strtoupper(trim($this->voucherCode));
+        if ($code === '') {
+            $this->voucherError = 'Masukkan kode voucher terlebih dahulu.';
             return;
         }
 
-        // Logic dummy validation
-        if (strtoupper($this->voucherCode) !== 'PROMO10') {
-            $this->voucherError = 'Voucher tidak valid atau kadaluarsa';
+        $voucher = Voucher::where('code', $code)->first();
+
+        if (!$voucher) {
+            $this->voucherError = 'Kode voucher tidak ditemukan.';
             return;
         }
 
-        // If valid logic would go here
+        $validationError = $this->validateVoucherPreBooking($voucher);
+        if ($validationError) {
+            $this->voucherError = $validationError;
+            return;
+        }
+
+        $calculator = app(VoucherCalculator::class);
+        $discount = $calculator->calculate($voucher, $this->totalAmount);
+
+        if ($discount <= 0) {
+            $this->voucherError = 'Voucher tidak memberikan diskon untuk pesanan ini.';
+            return;
+        }
+
+        $this->appliedVoucherId = $voucher->id;
+        $this->appliedVoucherCode = $voucher->code;
+        $this->appliedVoucherName = $voucher->name;
+        $this->discountAmount = $discount;
+
+        Session::put('applied_voucher', [
+            'id' => $voucher->id,
+            'code' => $voucher->code,
+        ]);
+
+        $this->calculateDpAmount();
         $this->showVoucherModal = false;
+        $this->voucherCode = '';
     }
 
-    // Guest Data block removed from here (it is defined above)
+    public function removeVoucher(): void
+    {
+        $this->appliedVoucherId = null;
+        $this->appliedVoucherCode = null;
+        $this->appliedVoucherName = null;
+        $this->discountAmount = 0;
+
+        Session::forget('applied_voucher');
+        $this->calculateDpAmount();
+    }
+
+    private function validateVoucherPreBooking(Voucher $voucher): ?string
+    {
+        if (!$voucher->is_active) {
+            return 'Voucher tidak aktif.';
+        }
+
+        $now = CarbonImmutable::now();
+
+        if ($voucher->valid_from && $now->lt($voucher->valid_from)) {
+            return 'Voucher belum berlaku.';
+        }
+
+        if ($voucher->valid_until && $now->gt($voucher->valid_until)) {
+            return 'Voucher sudah kedaluwarsa.';
+        }
+
+        if ($voucher->min_order_amount > 0 && $this->totalAmount < $voucher->min_order_amount) {
+            return 'Minimum pembelian Rp ' . number_format($voucher->min_order_amount, 0, ',', '.') . ' untuk menggunakan voucher ini.';
+        }
+
+        if ($voucher->scope === 'venue' && $voucher->venue_id !== null) {
+            if ((int) $this->venueCourt->venue_id !== (int) $voucher->venue_id) {
+                return 'Voucher hanya berlaku untuk venue tertentu.';
+            }
+        }
+
+        if ($voucher->scope === 'court' && $voucher->venue_court_id !== null) {
+            if ((int) $this->venueCourt->id !== (int) $voucher->venue_court_id) {
+                return 'Voucher hanya berlaku untuk lapangan tertentu.';
+            }
+        }
+
+        if ($voucher->max_usage_total !== null && $voucher->usage_count_total >= $voucher->max_usage_total) {
+            return 'Kuota voucher sudah habis.';
+        }
+
+        if (Auth::check()) {
+            $userUsageCount = \App\Models\VoucherRedemption::where('voucher_id', $voucher->id)
+                ->where('user_id', Auth::id())
+                ->whereIn('status', [
+                    \App\Enums\VoucherRedemptionStatus::RESERVED->value,
+                    \App\Enums\VoucherRedemptionStatus::APPLIED->value,
+                ])
+                ->count();
+
+            if ($userUsageCount >= $voucher->max_usage_per_user) {
+                return 'Anda sudah mencapai batas penggunaan voucher ini.';
+            }
+        }
+
+        return null;
+    }
+
+    private function isVoucherStillValid(Voucher $voucher): bool
+    {
+        return $this->validateVoucherPreBooking($voucher) === null;
+    }
+
+    private function recalculateDiscount(): void
+    {
+        if (!$this->appliedVoucherId) {
+            return;
+        }
+
+        $voucher = Voucher::find($this->appliedVoucherId);
+
+        if (!$voucher || !$this->isVoucherStillValid($voucher)) {
+            $this->removeVoucher();
+            return;
+        }
+
+        $calculator = app(VoucherCalculator::class);
+        $this->discountAmount = $calculator->calculate($voucher, $this->totalAmount);
+
+        if ($this->discountAmount <= 0) {
+            $this->removeVoucher();
+        }
+    }
 
     public function proceedToPayment(BookingService $service)
     {
@@ -136,7 +278,6 @@ class ReviewOrder extends Component
 
         $userId = Auth::id();
 
-        // Handle Guest
         if (!$userId) {
             $this->validate([
                 'guestName' => 'required|string|max:255',
@@ -149,17 +290,32 @@ class ReviewOrder extends Component
                 'guestEmail.unique' => 'Email sudah terdaftar, silakan login',
             ]);
 
-            // Create User implicitly
             $user = \App\Models\User::create([
                 'name' => $this->guestName,
                 'email' => $this->guestEmail,
                 'phone' => $this->guestPhone,
-                'password' => \Illuminate\Support\Facades\Hash::make('password'), // TODO: Generate random password & email
-                // 'role' => 'member', // Role is handled by event/observer or default
+                'password' => \Illuminate\Support\Facades\Hash::make('password'),
             ]);
-            
+
             Auth::login($user);
             $userId = $user->id;
+
+            if ($this->appliedVoucherId) {
+                $voucher = Voucher::find($this->appliedVoucherId);
+                if ($voucher) {
+                    $userUsageCount = \App\Models\VoucherRedemption::where('voucher_id', $voucher->id)
+                        ->where('user_id', $userId)
+                        ->whereIn('status', [
+                            \App\Enums\VoucherRedemptionStatus::RESERVED->value,
+                            \App\Enums\VoucherRedemptionStatus::APPLIED->value,
+                        ])
+                        ->count();
+
+                    if ($userUsageCount >= $voucher->max_usage_per_user) {
+                        $this->removeVoucher();
+                    }
+                }
+            }
         }
 
         try {
@@ -175,13 +331,25 @@ class ReviewOrder extends Component
                 idempotencyKey: (string) \Illuminate\Support\Str::uuid()
             );
 
-            // Clear cart
-            Session::forget('booking_cart');
+            if ($this->appliedVoucherId) {
+                try {
+                    $redemptionService = app(VoucherRedemptionService::class);
+                    $booking = $redemptionService->applyToHoldBooking(
+                        $userId,
+                        $booking->id,
+                        $this->appliedVoucherCode
+                    );
+                } catch (\Throwable $e) {
+                    $this->removeVoucher();
+                }
+            }
 
-            // Redirect to friendly URL with plan
+            Session::forget('booking_cart');
+            Session::forget('applied_voucher');
+
             return redirect()->route('checkout.payment', [
                 'booking' => $booking->id,
-                'plan' => $this->payPlan
+                'plan' => $this->payPlan,
             ]);
 
         } catch (\Exception $e) {
@@ -196,19 +364,63 @@ class ReviewOrder extends Component
 
     private function calculateDpAmount(): void
     {
+        $netAmount = $this->getNetAmountProperty();
         if ($this->venuePolicy && $this->venuePolicy->allow_dp && $this->venuePolicy->dp_min_percent > 0) {
-            $this->dpAmount = (int) ceil($this->totalAmount * $this->venuePolicy->dp_min_percent / 100);
+            $this->dpAmount = (int) ceil($netAmount * $this->venuePolicy->dp_min_percent / 100);
         } else {
             $this->dpAmount = 0;
         }
     }
 
+    public function getNetAmountProperty(): int
+    {
+        return max(0, $this->totalAmount - $this->discountAmount);
+    }
+
     public function getPayableAmountProperty(): int
     {
+        $net = $this->getNetAmountProperty();
         if ($this->payPlan === 'DP' && $this->isDpAllowed()) {
             return $this->dpAmount;
         }
-        return $this->totalAmount;
+        return $net;
+    }
+
+    public function getAvailableVouchersProperty(): \Illuminate\Support\Collection
+    {
+        $now = CarbonImmutable::now();
+
+        return Voucher::where('is_active', true)
+            ->where(function ($q) use ($now) {
+                $q->whereNull('valid_from')->orWhere('valid_from', '<=', $now);
+            })
+            ->where(function ($q) use ($now) {
+                $q->whereNull('valid_until')->orWhere('valid_until', '>=', $now);
+            })
+            ->where(function ($q) {
+                $q->whereNull('max_usage_total')
+                  ->orWhereColumn('usage_count_total', '<', 'max_usage_total');
+            })
+            ->where(function ($q) {
+                $q->where('scope', 'all')
+                  ->orWhere(function ($q2) {
+                      $q2->where('scope', 'venue')
+                         ->where('venue_id', $this->venueCourt->venue_id);
+                  })
+                  ->orWhere(function ($q2) {
+                      $q2->where('scope', 'court')
+                         ->where('venue_court_id', $this->venueCourt->id);
+                  });
+            })
+            ->orderBy('discount_value', 'desc')
+            ->limit(10)
+            ->get();
+    }
+
+    public function selectVoucher(string $code): void
+    {
+        $this->voucherCode = $code;
+        $this->applyVoucher();
     }
 
     public function render()

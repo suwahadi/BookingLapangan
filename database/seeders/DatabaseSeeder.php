@@ -399,5 +399,7 @@ class DatabaseSeeder extends Seeder
                 VenuePricing::insert($prices);
             }
         }
+
+        $this->call(VoucherSeeder::class);
     }
 }

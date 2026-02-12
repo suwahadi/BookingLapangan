@@ -4,8 +4,15 @@
 Yomabar is a sports venue booking platform built with Laravel 12, Livewire 4, and Tailwind CSS 4. It allows users to search and book sports courts (badminton, futsal, etc.) at various venues in Jakarta. Features include online payments via Midtrans, booking management, admin dashboard, and wallet system.
 
 ## Recent Changes
+- **2026-02-12**: Integrated voucher system into checkout/review-order page - replaced dummy validation with real Voucher model lookup, VoucherCalculator for discount, session-based storage, VoucherRedemptionService applied after booking creation, available vouchers list in modal, discount shown in cost breakdown
 - **2026-02-12**: Added voucher/discount system - migrations, models, enums, services (VoucherCalculator, VoucherEligibilityService, VoucherRedemptionService), Livewire BookingVoucherBox component, integration with PaymentService/MidtransNotificationService/BookingExpiryService/CancelBookingService, VoucherSeeder, and tests
 - **2026-02-12**: Initial Replit setup - configured PostgreSQL, Vite, trust proxies, workflow
+
+### Sample Voucher Codes
+- DISKON10 - 10% off (max Rp 50,000, min order Rp 100,000)
+- HEMAT25K - Rp 25,000 off (min order Rp 75,000)
+- GRATIS50K - Rp 50,000 off (min order Rp 200,000)
+- VENUE20 - 20% off for Elite Kuningan Arena venue
 
 ## Project Architecture
 - **Framework**: Laravel 12 (PHP 8.2)
