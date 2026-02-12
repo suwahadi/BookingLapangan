@@ -271,7 +271,7 @@ class VoucherIndexAdmin extends Component
                     $query->where('is_active', false);
                 }
             })
-            ->latest();
+            ->orderBy('created_at', 'desc');
 
         return view('livewire.admin.vouchers.voucher-index-admin', [
             'vouchers' => $query->paginate(15),

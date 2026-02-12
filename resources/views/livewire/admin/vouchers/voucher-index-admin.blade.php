@@ -109,17 +109,22 @@
                             </div>
                         </td>
                         <td class="px-6 py-8 text-center">
-                            @if($voucher->is_active)
-                                <span class="inline-flex px-4 py-2 bg-emerald-100 text-emerald-600 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-sm">Aktif</span>
-                            @else
-                                <span class="inline-flex px-4 py-2 bg-gray-100 text-gray-500 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-sm">Nonaktif</span>
-                            @endif
+                            <button wire:click="toggleActive({{ $voucher->id }})" class="inline-flex items-center gap-2 cursor-pointer group">
+                                @if($voucher->is_active)
+                                <span class="relative inline-flex h-7 w-12 items-center rounded-full bg-emerald-500 transition-colors">
+                                    <span class="inline-block h-5 w-5 translate-x-6 rounded-full bg-white shadow-md transition-transform"></span>
+                                </span>
+                                <span class="text-[11px] font-black text-emerald-600 uppercase tracking-widest">Hidup</span>
+                                @else
+                                <span class="relative inline-flex h-7 w-12 items-center rounded-full bg-gray-300 transition-colors">
+                                    <span class="inline-block h-5 w-5 translate-x-1 rounded-full bg-white shadow-md transition-transform"></span>
+                                </span>
+                                <span class="text-[11px] font-black text-rose-500 uppercase tracking-widest">Mati</span>
+                                @endif
+                            </button>
                         </td>
                         <td class="px-10 py-8 text-right">
                             <div class="flex items-center justify-end gap-3">
-                                <button wire:click="toggleActive({{ $voucher->id }})" class="text-[10px] font-black uppercase tracking-widest {{ $voucher->is_active ? 'text-amber-500 hover:text-amber-700' : 'text-emerald-500 hover:text-emerald-700' }} transition-colors">
-                                    {{ $voucher->is_active ? 'OFF' : 'ON' }}
-                                </button>
                                 <button wire:click="openEdit({{ $voucher->id }})" class="text-[10px] font-black text-indigo-500 uppercase tracking-widest hover:text-gray-900 transition-colors">
                                     EDIT
                                 </button>
