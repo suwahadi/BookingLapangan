@@ -1,0 +1,48 @@
+modules = ["php-8.2", "web", "nodejs-20"]
+[agent]
+expertMode = true
+
+[nix]
+channel = "stable-25_05"
+
+[userenv]
+
+[userenv.shared]
+APP_NAME = "Yomabar"
+APP_ENV = "local"
+APP_DEBUG = "true"
+APP_URL = "https://f4eb48b9-f374-4486-a202-b254ed862f7b-00-2x3l6i0evbxc3.pike.replit.dev"
+APP_LOCALE = "en"
+APP_FALLBACK_LOCALE = "en"
+APP_FAKER_LOCALE = "en_US"
+APP_MAINTENANCE_DRIVER = "file"
+PHP_CLI_SERVER_WORKERS = "4"
+BCRYPT_ROUNDS = "12"
+LOG_CHANNEL = "stack"
+LOG_STACK = "single"
+LOG_LEVEL = "debug"
+DB_CONNECTION = "pgsql"
+DB_HOST = "helium"
+DB_PORT = "5432"
+DB_DATABASE = "heliumdb"
+DB_USERNAME = "postgres"
+DB_PASSWORD = "password"
+SESSION_DRIVER = "database"
+SESSION_LIFETIME = "120"
+SESSION_ENCRYPT = "false"
+SESSION_PATH = "/"
+BROADCAST_CONNECTION = "log"
+FILESYSTEM_DISK = "local"
+QUEUE_CONNECTION = "database"
+CACHE_STORE = "database"
+MAIL_MAILER = "log"
+MAIL_FROM_ADDRESS = "hello@example.com"
+MAIL_FROM_NAME = "Yomabar"
+VITE_APP_NAME = "Yomabar"
+MIDTRANS_IS_PRODUCTION = "false"
+MIDTRANS_SERVER_KEY = "SB-Mid-server-xxx"
+MIDTRANS_CLIENT_KEY = "SB-Mid-server-xxx"
+MIDTRANS_SANITIZE = "true"
+MIDTRANS_3DS = "true"
+MIDTRANS_API_URL = "https://api.sandbox.midtrans.com"
+APP_KEY = "base64:LlLpBJmmVriC+1PORTiEeZvm52qwt6yd38QJ068MoJs="
