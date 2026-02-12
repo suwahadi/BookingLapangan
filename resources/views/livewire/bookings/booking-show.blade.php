@@ -107,11 +107,6 @@
 
             <!-- Sidebar -->
             <div class="space-y-8">
-                <!-- Voucher Box -->
-                @if($booking->status === \App\Enums\BookingStatus::HOLD)
-                    <livewire:bookings.booking-voucher-box :booking="$booking" :key="'voucher-'.$booking->id" />
-                @endif
-
                 <!-- Cost Summary -->
                 <div class="bg-surface-light dark:bg-surface-dark rounded-[2.5rem] p-8 shadow-card border border-gray-100 dark:border-gray-700" wire:poll.5s>
                     <h3 class="text-lg font-black text-text-light dark:text-text-dark uppercase italic tracking-tight mb-6">Rincian <span class="text-primary">Biaya</span></h3>

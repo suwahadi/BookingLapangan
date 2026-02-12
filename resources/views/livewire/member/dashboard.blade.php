@@ -142,7 +142,7 @@
                                 </p>
                             </div>
                             <p class="text-sm font-black text-primary font-display italic">
-                                Rp {{ number_format($booking->total_amount, 0, ',', '.') }}
+                                Rp {{ number_format($booking->payable_amount, 0, ',', '.') }}
                             </p>
                         </div>
                     </a>
