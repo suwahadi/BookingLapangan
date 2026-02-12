@@ -247,7 +247,7 @@
                                 <span class="px-3 py-1 bg-{{ $req->status->color() }}-100 text-{{ $req->status->color() }}-600 rounded-lg text-[9px] font-black uppercase tracking-widest">
                                     {{ $req->status->label() }}
                                 </span>
-                                <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest italic">Order #{{ $req->payment->provider_order_id }}</span>
+                                <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest italic">Order #{{ $req->payment?->provider_order_id ?? '-' }}</span>
                             </div>
 
                             <div>
