@@ -58,6 +58,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/courts/{court}/pricing', \App\Livewire\Admin\Courts\CourtPricingManageAdmin::class)->name('courts.pricing');
     Route::get('/courts/{court}/blackouts', \App\Livewire\Admin\Courts\CourtBlackoutManageAdmin::class)->name('courts.blackouts');
 
+    // Vouchers
+    Route::get('/vouchers', \App\Livewire\Admin\Vouchers\VoucherIndexAdmin::class)->name('vouchers.index');
+
     // Bookings
     Route::get('/bookings', \App\Livewire\Admin\Bookings\BookingIndexAdmin::class)->name('bookings.index');
     Route::get('/bookings/{booking}', \App\Livewire\Admin\Bookings\BookingDetailAdmin::class)->name('bookings.show');

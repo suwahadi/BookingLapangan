@@ -63,12 +63,18 @@
                         </div>
                     </div>
                     <div class="space-y-1">
-                        <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Pembayaran</p>
+                        <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Rincian Biaya</p>
                         
                         <div class="flex justify-between items-center text-xs font-bold text-gray-500 mb-1">
-                            <span>Total</span>
+                            <span>Harga Sewa</span>
                             <span>Rp {{ number_format($booking->total_amount, 0, ',', '.') }}</span>
                         </div>
+                        @if($booking->discount_amount > 0)
+                        <div class="flex justify-between items-center text-xs font-bold text-emerald-600 mb-1">
+                            <span>Diskon Voucher</span>
+                            <span>- Rp {{ number_format($booking->discount_amount, 0, ',', '.') }}</span>
+                        </div>
+                        @endif
                         @if($booking->dp_required_amount > 0)
                         <div class="flex justify-between items-center text-[10px] font-bold text-gray-400 mb-1">
                             <span>Min. DP</span>
@@ -81,11 +87,19 @@
                         </div>
                         
                         <div class="pt-2 mt-2 border-t border-gray-100 flex justify-between items-end">
-                            <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Sisa Tagihan</span>
-                            <span class="text-xl font-black {{ $booking->paid_amount >= $booking->total_amount ? 'text-emerald-500' : 'text-rose-500' }} font-display italic tracking-tighter">
-                                Rp {{ number_format(max(0, $booking->total_amount - $booking->paid_amount), 0, ',', '.') }}
+                            <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Total Tagihan</span>
+                            <span class="text-xl font-black {{ $booking->paid_amount >= $booking->payable_amount ? 'text-emerald-500' : 'text-rose-500' }} font-display italic tracking-tighter">
+                                Rp {{ number_format($booking->payable_amount, 0, ',', '.') }}
                             </span>
                         </div>
+                        @if($booking->paid_amount > 0 && $booking->paid_amount < $booking->payable_amount)
+                        <div class="pt-1 flex justify-between items-end">
+                            <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Sisa Tagihan</span>
+                            <span class="text-sm font-black text-rose-500 font-display italic tracking-tighter">
+                                Rp {{ number_format(max(0, $booking->payable_amount - $booking->paid_amount), 0, ',', '.') }}
+                            </span>
+                        </div>
+                        @endif
                     </div>
 
                 </div>

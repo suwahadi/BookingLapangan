@@ -82,7 +82,7 @@
 
                         <!-- Amount -->
                         <div class="text-right flex flex-row md:flex-col justify-between items-center md:items-end gap-x-4">
-                            <p class="text-lg md:text-xl font-black text-primary font-display italic">Rp {{ number_format($booking->total_amount, 0, ',', '.') }}</p>
+                            <p class="text-lg md:text-xl font-black text-primary font-display italic">Rp {{ number_format($booking->payable_amount, 0, ',', '.') }}</p>
                             <p class="text-[10px] font-bold text-muted-light uppercase tracking-widest">{{ $booking->created_at->diffForHumans() }}</p>
                         </div>
 

@@ -95,7 +95,7 @@
                             </span>
                         </td>
                         <td class="px-10 py-8 text-right">
-                            <span class="text-sm font-black text-gray-900 tracking-tighter">{{ number_format($booking->total_amount, 0, ',', '.') }}</span>
+                            <span class="text-sm font-black text-gray-900 tracking-tighter">{{ number_format($booking->payable_amount, 0, ',', '.') }}</span>
                         </td>
                         <td class="px-10 py-8 text-right">
                             <a href="{{ route('admin.bookings.show', $booking->id) }}" wire:navigate class="inline-flex items-center gap-2 text-[10px] font-black text-indigo-500 uppercase tracking-widest hover:text-gray-900 transition-colors">
