@@ -46,7 +46,10 @@
                     <div class="space-y-1">
                         <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Venue / Arena</p>
                         <p class="text-sm font-black text-gray-900">{{ $booking->venue->name }}</p>
-                        <p class="text-[10px] font-bold text-indigo-500 uppercase italic">{{ $booking->court->name }}</p>
+                        <p class="text-[10px] font-bold text-indigo-500 uppercase italic">
+                            {!! \App\Models\Venue::getSportSvg($booking->court->sport ?? $booking->venue->sport_type, 'w-5 h-5 align-middle mr-1 inline-block') !!}
+                            {{ $booking->court->name }}
+                        </p>
                     </div>
                     <div class="space-y-1">
                         <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Tanggal / Jam Main</p>

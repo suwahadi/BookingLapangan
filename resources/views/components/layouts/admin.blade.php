@@ -105,6 +105,11 @@
                         <span>Settlement</span>
                     </a>
 
+                    <a href="{{ route('admin.reviews.index') }}" wire:navigate class="flex items-center gap-3 px-4 py-3 {{ request()->routeIs('admin.reviews.*') ? 'bg-gray-800 text-white border border-gray-700' : 'text-gray-400 hover:text-white hover:bg-gray-800' }} rounded-2xl font-bold transition-all group">
+                        <svg class="w-5 h-5 group-hover:text-yellow-400 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" /></svg>
+                        <span>Reviews</span>
+                    </a>
+
                     <a href="{{ route('admin.system.users') }}" wire:navigate class="flex items-center gap-3 px-4 py-3 {{ request()->routeIs('admin.system.users') ? 'bg-gray-800 text-white border border-gray-700' : 'text-gray-400 hover:text-white hover:bg-gray-800' }} rounded-2xl font-bold transition-all group">
                         <svg class="w-5 h-5 group-hover:text-indigo-400 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
                         <span>Member</span>
@@ -200,6 +205,10 @@
                         <a href="{{ route('admin.settlements.index') }}" wire:navigate class="flex items-center gap-3 px-4 py-3 {{ request()->routeIs('admin.settlements.*') ? 'bg-gray-800 text-white border border-gray-700' : 'text-gray-400 hover:text-white hover:bg-gray-800' }} rounded-2xl font-bold transition-all group">
                             <svg class="w-5 h-5 group-hover:text-emerald-400 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
                             <span>Settlement</span>
+                        </a>
+                        <a href="{{ route('admin.reviews.index') }}" wire:navigate class="flex items-center gap-3 px-4 py-3 {{ request()->routeIs('admin.reviews.*') ? 'bg-gray-800 text-white border border-gray-700' : 'text-gray-400 hover:text-white hover:bg-gray-800' }} rounded-2xl font-bold transition-all group">
+                            <svg class="w-5 h-5 group-hover:text-yellow-400 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" /></svg>
+                            <span>Reviews</span>
                         </a>
                         <a href="{{ route('admin.system.users') }}" wire:navigate class="flex items-center gap-3 px-4 py-3 {{ request()->routeIs('admin.system.users') ? 'bg-gray-800 text-white border border-gray-700' : 'text-gray-400 hover:text-white hover:bg-gray-800' }} rounded-2xl font-bold transition-all group">
                             <svg class="w-5 h-5 group-hover:text-indigo-400 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>

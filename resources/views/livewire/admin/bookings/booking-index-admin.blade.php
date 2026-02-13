@@ -71,7 +71,10 @@
                         <td class="px-10 py-8">
                             <div class="flex flex-col">
                                 <span class="text-sm font-black text-gray-900 truncate max-w-[200px]">{{ $booking->venue->name }}</span>
-                                <span class="text-[10px] font-bold text-indigo-500 uppercase tracking-widest mt-1 italic">{{ $booking->court->name }}</span>
+                                <span class="text-[10px] font-bold text-indigo-500 uppercase tracking-widest mt-1 italic">
+                                    {!! \App\Models\Venue::getSportSvg($booking->court->sport ?? $booking->venue->sport_type, 'w-4 h-4 align-middle mr-1 inline-block') !!}
+                                    {{ $booking->court->name }}
+                                </span>
                             </div>
                         </td>
                         <td class="px-10 py-8">

@@ -184,7 +184,7 @@
                     <div class="flex items-center gap-3">
                         <div class="flex items-center gap-1 text-amber-500">
                             <span class="material-symbols-outlined text-lg fill-current">star</span>
-                            <span class="font-black text-lg text-text-light dark:text-text-dark">4.9</span>
+                            <span class="font-black text-lg text-text-light dark:text-text-dark">{{ number_format($venue->rating_avg, 1) }}</span>
                         </div>
                         <span class="text-gray-300">|</span>
                         <div class="flex items-center gap-1 text-muted-light text-sm">
@@ -336,39 +336,8 @@
                              <span class="material-symbols-outlined text-primary text-2xl animate-pulse">star</span>
                              <h2 class="text-2xl font-black text-text-light dark:text-text-dark uppercase italic">Ulasan</h2>
                      </div>
-                     <div class="flex items-center gap-4 mb-8">
-                         <span class="text-5xl font-black text-text-light dark:text-text-dark">4.9</span>
-                         <div class="flex flex-col">
-                             <div class="flex text-amber-500 text-sm">
-                                 <span class="material-symbols-outlined fill-current">star</span>
-                                 <span class="material-symbols-outlined fill-current">star</span>
-                                 <span class="material-symbols-outlined fill-current">star</span>
-                                 <span class="material-symbols-outlined fill-current">star</span>
-                                 <span class="material-symbols-outlined fill-current">star</span>
-                             </div>
-                             <span class="text-xs text-muted-light tracking-wide">Berdasarkan 127 ulasan</span>
-                         </div>
-                         <div class="ml-auto">
-                              <button class="text-[10px] font-black text-rose-500 hover:underline uppercase tracking-widest">Semua Ulasan</button>
-                         </div>
-                     </div>
-
-                     <!-- Review Cards (Mock) -->
-                     <div class="space-y-4">
-                         <div class="p-6 bg-surface-light dark:bg-surface-dark rounded-[2rem] border border-gray-100 dark:border-gray-700">
-                             <div class="flex items-center gap-4 mb-4">
-                                 <div class="w-10 h-10 rounded-full bg-gray-200"></div>
-                                 <div>
-                                     <h5 class="font-bold text-sm">Indra Putra</h5>
-                                     <p class="text-[10px] text-muted-light">Diulas 7 Februari 2026</p>
-                                 </div>
-                                 <div class="ml-auto px-2 py-1 bg-amber-100 text-amber-600 rounded-lg text-[10px] font-black flex items-center gap-1">
-                                     <span class="material-symbols-outlined text-xs">star</span> 4.9
-                                 </div>
-                             </div>
-                             <p class="text-xs text-muted-light leading-relaxed">"Mantaps, lapangannya enak dan AC nya dingin. Tempat parkir juga luas. Ayo semangat cari keringat hehehe..."</p>
-                         </div>
-                     </div>
+                     
+                     <livewire:venue.reviews-section :venue-id="$venue->id" />
                 </div>
 
             </div>

@@ -221,4 +221,12 @@ class Booking extends Model
 
         return $grouped;
     }
+
+    /**
+     * Get the review associated with the booking
+     */
+    public function review(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(VenueReview::class);
+    }
 }

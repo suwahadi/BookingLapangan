@@ -73,6 +73,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     // Reports
     Route::get('/reports/financial', \App\Livewire\Admin\Reports\FinancialReport::class)->name('reports.financial');
 
+    // Reviews
+    Route::get('/reviews', \App\Livewire\Admin\Reviews\ReviewIndexAdmin::class)->name('reviews.index');
+
     // System
     Route::get('/system/users', \App\Livewire\Admin\System\UserIndexAdmin::class)->name('system.users');
     Route::get('/system/audit-logs', \App\Livewire\Admin\System\AuditLogIndex::class)->name('system.audit-logs');

@@ -91,4 +91,12 @@ class User extends Authenticatable
     {
         return $this->hasOne(Wallet::class);
     }
+
+    /**
+     * Get the user's reviews
+     */
+    public function reviews(): HasMany
+    {
+        return $this->hasMany(VenueReview::class);
+    }
 }

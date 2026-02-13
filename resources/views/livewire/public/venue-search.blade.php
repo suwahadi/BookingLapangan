@@ -273,7 +273,7 @@
                                 
                                 <div class="flex items-center gap-2 text-sm text-gray-500 mb-4">
                                     <span class="material-symbols-outlined text-yellow-500 text-base">star</span>
-                                    <span class="font-bold text-gray-900">5.0</span>
+                                    <span class="font-bold text-gray-900">{{ number_format($venue->rating_avg, 1) }}</span>
                                     <span class="text-gray-300">•</span>
                                     <span class="material-symbols-outlined text-sm">location_on</span>
                                     <span class="truncate">{{ $venue->city }}</span>
