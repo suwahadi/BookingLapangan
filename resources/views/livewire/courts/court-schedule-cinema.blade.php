@@ -75,7 +75,7 @@
             </div>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8 lg:gap-12 items-start">
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8 lg:gap-12">
             
             <!-- Left Column: Info & Slots -->
             <div class="lg:col-span-3 space-y-6 sm:space-y-8">
@@ -169,7 +169,7 @@
             <!-- Right Column: Sticky Summary (Desktop) -->
             <div class="hidden lg:block lg:col-span-1">
                 @if(!empty($selectedIndexes))
-                    <div class="lg:sticky lg:top-8 bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-xl border border-gray-100 dark:border-gray-700">
+                    <div class="lg:sticky lg:top-28 bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-xl border border-gray-100 dark:border-gray-700">
                         <h3 class="font-black text-lg text-gray-600 dark:text-gray-300 mb-6">Ringkasan</h3>
                         
                         <div class="space-y-4 mb-6">

@@ -44,4 +44,11 @@ class RescheduleRequest extends Model
     {
         return $this->belongsTo(User::class, 'approved_by');
     }
+    /**
+     * Check if request is pending
+     */
+    public function isPending(): bool
+    {
+        return $this->status->isPending();
+    }
 }

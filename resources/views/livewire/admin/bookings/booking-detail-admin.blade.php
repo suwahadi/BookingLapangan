@@ -64,35 +64,40 @@
                         
                         <div class="flex justify-between items-center text-xs font-bold text-gray-500 mb-1">
                             <span>Harga Sewa</span>
-                            <span>Rp {{ number_format($booking->total_amount, 0, ',', '.') }}</span>
+                            <span class="text-right">Rp {{ number_format($booking->total_amount, 0, ',', '.') }}</span>
                         </div>
                         @if($booking->discount_amount > 0)
-                        <div class="flex justify-between items-center text-xs font-bold text-emerald-600 mb-1">
+                        <div class="flex justify-between items-center text-xs font-bold text-rose-600 mb-1">
                             <span>Diskon Voucher</span>
-                            <span>- Rp {{ number_format($booking->discount_amount, 0, ',', '.') }}</span>
+                            <span class="text-right">- Rp {{ number_format($booking->discount_amount, 0, ',', '.') }}</span>
                         </div>
                         @endif
-                        @if($booking->dp_required_amount > 0)
+                        @php
+                            // Hide Min DP if user paid full or has a pending full payment
+                            $hasFullPayment = $booking->paid_amount >= $booking->payable_amount || 
+                                             $booking->payments->contains(fn($p) => $p->amount >= $booking->payable_amount);
+                        @endphp
+                        @if($booking->dp_required_amount > 0 && !$hasFullPayment)
                         <div class="flex justify-between items-center text-[10px] font-bold text-gray-400 mb-1">
                             <span>Min. DP</span>
-                            <span>Rp {{ number_format($booking->dp_required_amount, 0, ',', '.') }}</span>
+                            <span class="text-right">Rp {{ number_format($booking->dp_required_amount, 0, ',', '.') }}</span>
                         </div>
                         @endif
-                        <div class="flex justify-between items-center text-xs font-bold text-emerald-600 mb-1">
+                        <div class="flex justify-between items-center text-xs font-bold text-rose-600 mb-1">
                             <span>Terbayar</span>
-                            <span>- Rp {{ number_format($booking->paid_amount, 0, ',', '.') }}</span>
+                            <span class="text-right">- Rp {{ number_format($booking->paid_amount, 0, ',', '.') }}</span>
                         </div>
                         
                         <div class="pt-2 mt-2 border-t border-gray-100 flex justify-between items-end">
                             <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Total Tagihan</span>
-                            <span class="text-lg md:text-xl font-black {{ $booking->paid_amount >= $booking->payable_amount ? 'text-emerald-500' : 'text-rose-500' }} font-display italic tracking-tighter">
+                            <span class="text-lg md:text-xl font-black {{ $booking->paid_amount >= $booking->payable_amount ? 'text-emerald-500' : 'text-rose-500' }} font-display italic tracking-tighter text-right">
                                 Rp {{ number_format($booking->payable_amount, 0, ',', '.') }}
                             </span>
                         </div>
                         @if($booking->paid_amount > 0 && $booking->paid_amount < $booking->payable_amount)
                         <div class="pt-1 flex justify-between items-end">
                             <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Sisa Tagihan</span>
-                            <span class="text-sm font-black text-rose-500 font-display italic tracking-tighter">
+                            <span class="text-sm font-black text-rose-500 font-display italic tracking-tighter text-right">
                                 Rp {{ number_format(max(0, $booking->payable_amount - $booking->paid_amount), 0, ',', '.') }}
                             </span>
                         </div>

@@ -62,7 +62,7 @@
                     <tr class="hover:bg-gray-50/30 transition-colors group">
                         <td class="px-10 py-8">
                             <span class="text-sm font-black text-indigo-600 tracking-tighter">{{ $voucher->code }}</span>
-                            @if($voucher->scope !== 'global')
+                            @if($voucher->scope !== 'all')
                                 <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1">
                                     {{ $voucher->scope === 'venue' ? 'Venue' : 'Lapangan' }}
                                     @if($voucher->venue) &middot; {{ $voucher->venue->name }} @endif
@@ -158,14 +158,15 @@
     </div>
 
     @if($showModal)
-    <div class="fixed inset-0 z-[70] flex items-center justify-center p-4" x-data x-init="document.body.classList.add('overflow-hidden')" x-on:remove="document.body.classList.remove('overflow-hidden')">
+    <div class="fixed inset-0 z-[9999] flex items-center justify-center p-4" x-data x-init="document.body.classList.add('overflow-hidden')" x-on:remove="document.body.classList.remove('overflow-hidden')">
         <div class="absolute inset-0 bg-gray-900/60 backdrop-blur-sm" wire:click="$set('showModal', false)"></div>
-        <div class="relative bg-white rounded-[2rem] shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto">
-            <div class="px-10 py-8 border-b border-gray-100">
+        <div class="relative bg-white rounded-[2rem] shadow-2xl w-full max-w-3xl max-h-[90vh] flex flex-col overflow-hidden">
+            <div class="px-10 py-6 border-b border-gray-100 shrink-0 bg-white">
                 <h2 class="text-2xl font-black text-gray-900 font-display italic uppercase">{{ $editingId ? 'Edit' : 'Tambah' }} <span class="text-indigo-600">Voucher</span></h2>
             </div>
 
-            <form wire:submit="save" class="px-10 py-8 space-y-6">
+            <div class="flex-1 overflow-y-auto custom-scrollbar">
+                <form wire:submit="save" id="voucherForm" class="px-10 py-8 space-y-6">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Kode Voucher</label>
@@ -215,7 +216,7 @@
                     <div>
                         <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Cakupan</label>
                         <select wire:model.live="scope" class="w-full px-5 py-4 bg-gray-50 border-none rounded-2xl text-sm font-black focus:ring-2 focus:ring-indigo-600 appearance-none cursor-pointer">
-                            <option value="global">Global (Semua Venue)</option>
+                            <option value="all">Global (Semua Venue)</option>
                             <option value="venue">Venue Tertentu</option>
                             <option value="court">Lapangan Tertentu</option>
                         </select>
@@ -276,15 +277,16 @@
                     </div>
                 </div>
 
-                <div class="flex items-center justify-end gap-4 pt-6 border-t border-gray-100">
-                    <button type="button" wire:click="$set('showModal', false)" class="px-8 py-4 text-sm font-black text-gray-500 uppercase tracking-widest hover:text-gray-900 transition-colors">
-                        Batal
-                    </button>
-                    <button type="submit" class="px-10 py-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl text-sm font-black uppercase tracking-widest transition-all shadow-lg shadow-indigo-500/30">
-                        {{ $editingId ? 'Simpan Perubahan' : 'Buat Voucher' }}
-                    </button>
-                </div>
-            </form>
+                </form>
+            </div>
+            <div class="px-10 py-6 border-t border-gray-100 bg-gray-50 flex items-center justify-end gap-4 shrink-0">
+                <button type="button" wire:click="$set('showModal', false)" class="px-8 py-4 text-sm font-black text-gray-500 uppercase tracking-widest hover:text-gray-900 transition-colors">
+                    Batal
+                </button>
+                <button type="submit" form="voucherForm" class="px-10 py-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl text-sm font-black uppercase tracking-widest transition-all shadow-lg shadow-indigo-500/30">
+                    {{ $editingId ? 'Simpan Perubahan' : 'Buat Voucher' }}
+                </button>
+            </div>
         </div>
     </div>
     @endif

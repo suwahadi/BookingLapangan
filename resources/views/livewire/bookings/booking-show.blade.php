@@ -199,19 +199,16 @@
 
     <!-- Refund Modal -->
     @if($showRefundModal)
-    <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm px-4" style="z-index: 9999;">
-        <div class="fixed inset-0" wire:click="$set('showRefundModal', false)"></div>
-        <div class="bg-white rounded-3xl w-full max-w-sm overflow-hidden shadow-2xl relative z-10 p-6 animate-fade-in-up">
-            <div class="mb-4">
-                <span class="w-12 h-12 rounded-full bg-amber-100 flex items-center justify-center mb-4">
-                    <span class="material-symbols-outlined text-amber-600 text-2xl">currency_exchange</span>
-                </span>
-                <h3 class="text-xl font-black text-gray-900 mb-2">Ajukan Refund?</h3>
-                <p class="text-sm text-gray-600 leading-relaxed">
+    <div class="fixed inset-0 z-[9999] flex items-center justify-center p-4">
+        <div class="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity" wire:click="$set('showRefundModal', false)"></div>
+        <div class="bg-white rounded-[2rem] w-full max-w-sm overflow-hidden shadow-2xl relative z-10 p-8 animate-fade-in-up transform transition-all">
+            <div class="mb-6 text-center">
+                <h3 class="text-xl font-black text-gray-900 mb-2 font-display italic uppercase">Ajukan Refund?</h3>
+                <p class="text-sm text-gray-500 font-medium leading-relaxed">
                     Permintaan refund akan dikirim ke admin venue. Proses persetujuan mengikuti kebijakan yang berlaku.
                 </p>
                 @if($venuePolicy && $venuePolicy->refund_allowed)
-                    <div class="mt-4 p-3 bg-gray-50 rounded-xl text-xs text-gray-500 border border-gray-100">
+                    <div class="mt-4 p-3 bg-amber-50/50 rounded-xl text-xs font-bold text-amber-600 border border-amber-100/50">
                         Pastikan Anda telah membaca kebijakan refund venue ini.
                     </div>
                 @endif
@@ -219,11 +216,11 @@
             
             <div class="grid grid-cols-2 gap-3">
                 <button wire:click="$set('showRefundModal', false)" 
-                        class="py-3 px-4 rounded-xl border border-gray-200 text-gray-700 font-bold text-sm hover:bg-gray-50 transition-colors">
+                        class="py-3.5 px-4 rounded-xl border-2 border-gray-100 text-gray-600 font-black text-xs uppercase tracking-wider hover:bg-gray-50 hover:border-gray-200 transition-all">
                     Batal
                 </button>
                 <button wire:click="requestRefund" 
-                        class="py-3 px-4 rounded-xl bg-amber-500 text-white font-bold text-sm hover:bg-amber-600 shadow-lg shadow-amber-500/20 transition-all active:scale-95">
+                        class="py-3.5 px-4 rounded-xl bg-amber-500 text-white font-black text-xs uppercase tracking-wider hover:bg-amber-600 shadow-lg shadow-amber-500/20 transition-all active:scale-95">
                     Ya, Ajukan
                 </button>
             </div>
@@ -233,89 +230,96 @@
 
     <!-- Cancel Modal -->
     @if($showCancelModal)
-    <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm px-4" style="z-index: 9999;">
-        <div class="fixed inset-0" wire:click="$set('showCancelModal', false)"></div>
-        <div class="bg-white rounded-3xl w-full max-w-sm overflow-hidden shadow-2xl relative z-10 p-6 animate-fade-in-up">
-            <div class="mb-4">
-                <span class="w-12 h-12 rounded-full bg-rose-100 flex items-center justify-center mb-4">
-                    <span class="material-symbols-outlined text-rose-600 text-2xl">cancel</span>
-                </span>
-                <h3 class="text-xl font-black text-gray-900 mb-2">Batalkan Booking?</h3>
-                <p class="text-sm text-gray-600 leading-relaxed">
-                    Apakah Anda yakin ingin membatalkan booking ini?
-                </p>
-                
-                @if($venuePolicy)
-                <div class="mt-4 space-y-3 bg-gray-50 rounded-xl p-4 border border-gray-100">
-                    <p class="text-xs font-bold text-gray-800 uppercase tracking-wider mb-2">Kebijakan Venue</p>
+    <div class="fixed inset-0 z-[9999] flex items-center justify-center p-4">
+        <div class="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity" wire:click="$set('showCancelModal', false)"></div>
+        <div class="bg-white rounded-[2rem] w-full max-w-sm overflow-hidden shadow-2xl relative z-10 p-8 animate-fade-in-up transform transition-all">
+            @if($venuePolicy && !$venuePolicy->refund_allowed)
+                <!-- Non-Refundable Logic -->
+                <div class="text-center">
+                    <h3 class="text-xl font-black text-gray-900 mb-2 font-display italic uppercase">Tidak Dapat Dibatalkan</h3>
+                    <p class="text-sm text-gray-500 font-medium leading-relaxed mb-6">
+                        Mohon maaf, booking ini tidak dapat dibatalkan (tidak ada refund) sesuai dengan kebijakan venue.
+                    </p>
+                    <button wire:click="$set('showCancelModal', false)" 
+                            class="w-full py-3.5 px-4 rounded-xl bg-gray-900 text-white font-black text-xs uppercase tracking-wider hover:bg-black shadow-lg shadow-gray-900/20 transition-all active:scale-95">
+                        Mengerti
+                    </button>
+                </div>
+            @else
+                <!-- Normal Cancellation Logic -->
+                <div class="mb-6 text-center">
+                    <h3 class="text-xl font-black text-gray-900 mb-2 font-display italic uppercase">Batalkan Booking?</h3>
+                    <p class="text-sm text-gray-500 font-medium leading-relaxed">
+                        Yakin ingin membatalkan booking ini?
+                    </p>
                     
-                    <!-- Reschedule -->
-                    <div class="flex items-start gap-2">
-                        <span class="material-symbols-outlined text-gray-400 text-sm mt-0.5">event_repeat</span>
-                        <div>
-                            <p class="text-[10px] font-bold text-gray-700">Reschedule</p>
-                            @if($venuePolicy->reschedule_allowed)
-                                <p class="text-[10px] text-gray-500">Maksimal H-{{ $venuePolicy->reschedule_deadline_hours }}j sebelum main</p>
-                            @else
-                                <p class="text-[10px] text-gray-500">Tidak tersedia</p>
-                            @endif
+                    @if($venuePolicy)
+                    <div class="mt-6 flex flex-col gap-3 bg-gray-50 rounded-2xl p-5 border border-gray-100 text-left">
+                        <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Kebijakan Venue</p>
+                        
+                        <!-- Reschedule -->
+                        <div class="flex items-start gap-3">
+                            <div>
+                                <p class="text-[11px] font-bold text-gray-700">Reschedule</p>
+                                @if($venuePolicy->reschedule_allowed)
+                                    <p class="text-[10px] text-gray-500 font-medium">Maksimal H-{{ $venuePolicy->reschedule_deadline_hours }}j sebelum main</p>
+                                @else
+                                    <p class="text-[10px] text-gray-500 font-medium">Tidak tersedia</p>
+                                @endif
+                            </div>
                         </div>
-                    </div>
 
-                    <!-- Refund -->
-                    <div class="flex items-start gap-2">
-                        <span class="material-symbols-outlined text-gray-400 text-sm mt-0.5">currency_exchange</span>
-                        <div>
-                            <p class="text-[10px] font-bold text-gray-700">Refund</p>
-                            @if($venuePolicy->refund_allowed)
-                                <p class="text-[10px] text-gray-500">Sesuai ketentuan waktu pembatalan.</p>
-                            @else
-                                <p class="text-[10px] text-gray-500">Tidak tersedia</p>
-                            @endif
+                        <!-- Refund -->
+                        <div class="flex items-start gap-3">
+                            <div>
+                                <p class="text-[11px] font-bold text-gray-700">Refund</p>
+                                @if($venuePolicy->refund_allowed)
+                                    <p class="text-[10px] text-gray-500 font-medium">Sesuai ketentuan waktu.</p>
+                                @else
+                                    <p class="text-[10px] text-gray-500 font-medium">Tidak tersedia</p>
+                                @endif
+                            </div>
                         </div>
                     </div>
+                    @endif
+                    
+                    <div class="mt-4 p-3 bg-rose-50 rounded-xl text-center border border-rose-100">
+                        <p class="text-[10px] font-bold text-rose-600 uppercase tracking-wide">Tindakan ini tidak dapat diurungkan</p>
+                    </div>
                 </div>
-                @endif
                 
-                <div class="mt-4 p-3 bg-rose-50 rounded-xl text-xs text-rose-600 border border-rose-100">
-                    Tindakan ini tidak dapat dibatalkan.
+                <div class="grid grid-cols-2 gap-3">
+                    <button wire:click="$set('showCancelModal', false)" 
+                            class="py-3.5 px-4 rounded-xl border-2 border-gray-100 text-gray-600 font-black text-xs uppercase tracking-wider hover:bg-gray-50 hover:border-gray-200 transition-all">
+                        Batal
+                    </button>
+                    <button wire:click="cancelBooking" 
+                            class="py-3.5 px-4 rounded-xl bg-rose-600 text-white font-black text-xs uppercase tracking-wider hover:bg-rose-700 shadow-lg shadow-rose-500/20 transition-all active:scale-95">
+                        Ya, Batalkan
+                    </button>
                 </div>
-            </div>
-            
-            <div class="grid grid-cols-2 gap-3">
-                <button wire:click="$set('showCancelModal', false)" 
-                        class="py-3 px-4 rounded-xl border border-gray-200 text-gray-700 font-bold text-sm hover:bg-gray-50 transition-colors">
-                    Batal
-                </button>
-                <button wire:click="cancelBooking" 
-                        class="py-3 px-4 rounded-xl bg-rose-600 text-white font-bold text-sm hover:bg-rose-700 shadow-lg shadow-rose-500/20 transition-all active:scale-95">
-                    Ya, Batalkan
-                </button>
-            </div>
+            @endif
         </div>
     </div>
     @endif
 
     <!-- Reschedule Modal -->
     @if($showRescheduleModal)
-    <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm px-4" style="z-index: 9999;">
-        <div class="fixed inset-0" wire:click="$set('showRescheduleModal', false)"></div>
-        <div class="bg-white rounded-3xl w-full max-w-sm overflow-hidden shadow-2xl relative z-10 p-6 animate-fade-in-up">
-            <div class="mb-4">
-                <span class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center mb-4">
-                    <span class="material-symbols-outlined text-blue-600 text-2xl">event_repeat</span>
-                </span>
-                <h3 class="text-xl font-black text-gray-900 mb-2">Reschedule Booking</h3>
-                <p class="text-sm text-gray-600 leading-relaxed">
+    <div class="fixed inset-0 z-[9999] flex items-center justify-center p-4">
+        <div class="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity" wire:click="$set('showRescheduleModal', false)"></div>
+        <div class="bg-white rounded-[2rem] w-full max-w-sm overflow-hidden shadow-2xl relative z-10 p-8 animate-fade-in-up transform transition-all">
+            <div class="mb-6 text-center">
+                <h3 class="text-xl font-black text-gray-900 mb-2 font-display italic uppercase">Reschedule Booking</h3>
+                <p class="text-sm text-gray-500 font-medium leading-relaxed">
                     Fitur reschedule belum tersedia saat ini.
                 </p>
-                 <div class="mt-4 p-3 bg-gray-50 rounded-xl text-xs text-gray-500 border border-gray-100">
+                 <div class="mt-4 p-3 bg-blue-50/50 rounded-xl text-xs font-bold text-blue-600 border border-blue-100/50">
                      Mohon hubungi admin venue secara langsung untuk mengajukan perubahan jadwal.
                 </div>
             </div>
             
             <button wire:click="$set('showRescheduleModal', false)" 
-                    class="w-full py-3 px-4 rounded-xl bg-gray-900 text-white font-bold text-sm hover:bg-black transition-colors">
+                    class="w-full py-3.5 px-4 rounded-xl bg-gray-900 text-white font-black text-xs uppercase tracking-wider hover:bg-black transition-colors shadow-lg shadow-gray-900/20">
                 Mengerti
             </button>
         </div>

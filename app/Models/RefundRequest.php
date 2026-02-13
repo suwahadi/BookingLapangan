@@ -53,4 +53,11 @@ class RefundRequest extends Model
     {
         return $this->belongsTo(User::class, 'processed_by');
     }
+    /**
+     * Check if request is pending
+     */
+    public function isPending(): bool
+    {
+        return $this->status->isPending();
+    }
 }

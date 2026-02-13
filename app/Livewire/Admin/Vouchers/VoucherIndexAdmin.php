@@ -36,7 +36,7 @@ class VoucherIndexAdmin extends Component
     public string $discount_value = '';
     public string $max_discount_amount = '';
     public string $min_order_amount = '';
-    public string $scope = 'global';
+    public string $scope = 'all';
     public string $venue_id = '';
     public string $venue_court_id = '';
     public string $max_usage_total = '';
@@ -56,7 +56,7 @@ class VoucherIndexAdmin extends Component
 
     public function updatedScope()
     {
-        if ($this->scope === 'global') {
+        if ($this->scope === 'all') {
             $this->venue_id = '';
             $this->venue_court_id = '';
         }
@@ -121,7 +121,7 @@ class VoucherIndexAdmin extends Component
             'discount_value' => ['required', 'numeric', 'min:1'],
             'max_discount_amount' => ['nullable', 'numeric', 'min:0'],
             'min_order_amount' => ['nullable', 'numeric', 'min:0'],
-            'scope' => ['required', 'in:global,venue,court'],
+            'scope' => ['required', 'in:all,venue,court'],
             'venue_id' => ['nullable'],
             'venue_court_id' => ['nullable'],
             'max_usage_total' => ['required', 'numeric', 'min:1'],
@@ -186,7 +186,7 @@ class VoucherIndexAdmin extends Component
             'discount_type' => $validated['discount_type'],
             'discount_value' => $validated['discount_value'],
             'max_discount_amount' => $validated['max_discount_amount'] ?: null,
-            'min_order_amount' => $validated['min_order_amount'] ?: null,
+            'min_order_amount' => $validated['min_order_amount'] ?: 0,
             'scope' => $validated['scope'],
             'venue_id' => in_array($validated['scope'], ['venue', 'court']) ? $validated['venue_id'] : null,
             'venue_court_id' => $validated['scope'] === 'court' ? $validated['venue_court_id'] : null,
@@ -199,12 +199,12 @@ class VoucherIndexAdmin extends Component
         if ($this->editingId) {
             $voucher = Voucher::findOrFail($this->editingId);
             $voucher->update($data);
-            session()->flash('success', 'Voucher berhasil diperbarui.');
+            $this->dispatch('toast', message: 'Voucher berhasil diperbarui.', type: 'success');
         } else {
             $data['is_active'] = true;
             $data['usage_count_total'] = 0;
             Voucher::create($data);
-            session()->flash('success', 'Voucher berhasil dibuat.');
+            $this->dispatch('toast', message: 'Voucher berhasil dibuat.', type: 'success');
         }
 
         $this->showModal = false;
@@ -216,7 +216,7 @@ class VoucherIndexAdmin extends Component
         $voucher = Voucher::findOrFail($id);
         $voucher->update(['is_active' => !$voucher->is_active]);
         $status = $voucher->is_active ? 'diaktifkan' : 'dinonaktifkan';
-        session()->flash('success', "Voucher berhasil {$status}.");
+        $this->dispatch('toast', message: "Voucher berhasil {$status}.", type: 'success');
     }
 
     public function confirmDelete(int $id)
@@ -229,7 +229,7 @@ class VoucherIndexAdmin extends Component
     {
         if ($this->deletingId) {
             Voucher::findOrFail($this->deletingId)->delete();
-            session()->flash('success', 'Voucher berhasil dihapus.');
+            $this->dispatch('toast', message: 'Voucher berhasil dihapus.', type: 'success');
         }
         $this->showDeleteModal = false;
         $this->deletingId = null;
@@ -244,7 +244,7 @@ class VoucherIndexAdmin extends Component
         $this->discount_value = '';
         $this->max_discount_amount = '';
         $this->min_order_amount = '';
-        $this->scope = 'global';
+        $this->scope = 'all';
         $this->venue_id = '';
         $this->venue_court_id = '';
         $this->max_usage_total = '';

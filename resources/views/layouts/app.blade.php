@@ -136,6 +136,8 @@
     <main>
         {{ $slot }}
     </main>
+
+    <livewire:partials.footer />
     
     @livewireScripts
     <script>
