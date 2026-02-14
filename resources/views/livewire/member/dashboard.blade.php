@@ -160,7 +160,7 @@
 
     <!-- Review Prompts Section -->
     @if(isset($eligibleReviews) && $eligibleReviews->isNotEmpty())
-        <div class="mb-10 w-full" x-data="{
+        <div class="mt-12 mb-10 w-full" x-data="{
             activeSlide: 0,
             slidesCount: {{ $eligibleReviews->count() }},
             itemsPerSlide: 1,
@@ -188,7 +188,11 @@
                 }
             }
         }">
-            <div class="flex items-center justify-end mb-6">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-lg font-black text-text-light dark:text-text-dark uppercase italic tracking-tight">
+                    Menunggu Ulasan
+                </h3>
+                
                 <!-- Navigation -->
                 <div class="flex gap-2" x-show="slidesCount > itemsPerSlide">
                     <button @click="prev()" 

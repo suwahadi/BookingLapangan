@@ -1,6 +1,6 @@
-<div>
+<div x-data="{ showConfirm: false }">
     @if($booking && !$submitted)
-        <div class="bg-white dark:bg-surface-dark rounded-xl shadow-sm border border-slate-100 dark:border-gray-700 p-4 h-full flex flex-col">
+        <div class="bg-white dark:bg-surface-dark rounded-xl shadow-sm border border-slate-100 dark:border-gray-700 p-4 h-full flex flex-col relative overflow-hidden">
             <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-1">Menunggu Ulasan</h3>
             <p class="text-sm text-slate-500 dark:text-gray-400 mb-4">Bagikan pengalaman bermainmu</p>
             
@@ -23,7 +23,7 @@
                 </div>
             </div>
             
-            <form wire:submit.prevent="submit" class="flex-1 flex flex-col">
+            <div class="flex-1 flex flex-col">
                 <div class="flex justify-center space-x-2 mb-4">
                     @for($i=1; $i<=5; $i++)
                         <button type="button" wire:click="$set('rating', {{ $i }})" class="focus:outline-none transition-transform hover:scale-110">
@@ -43,11 +43,64 @@
 
                 @error('submit') <span class="text-red-500 text-xs block mb-2">{{ $message }}</span> @enderror
 
-                <button type="submit" class="w-full bg-red-600 text-white rounded-lg py-2 text-sm font-semibold hover:bg-red-700 transition-colors mt-auto">
+                <button type="button" @click="showConfirm = true" class="w-full bg-red-600 text-white rounded-lg py-2 text-sm font-semibold hover:bg-red-700 transition-colors mt-auto">
                     Kirim Ulasan
                 </button>
-            </form>
+            </div>
         </div>
+
+        <!-- Confirmation Modal -->
+        <template x-teleport="body">
+            <div x-show="showConfirm" 
+                 class="fixed inset-0 z-[9999] flex items-center justify-center p-4"
+                 role="dialog" 
+                 aria-modal="true"
+                 style="display: none;">
+                
+                <!-- Backdrop -->
+                <div x-show="showConfirm"
+                     x-transition:enter="ease-out duration-300"
+                     x-transition:enter-start="opacity-0"
+                     x-transition:enter-end="opacity-100"
+                     x-transition:leave="ease-in duration-200"
+                     x-transition:leave-start="opacity-100"
+                     x-transition:leave-end="opacity-0"
+                     class="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity" 
+                     @click="showConfirm = false"></div>
+
+                <!-- Modal Panel -->
+                <div x-show="showConfirm"
+                     x-transition:enter="ease-out duration-300"
+                     x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                     x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+                     x-transition:leave="ease-in duration-200"
+                     x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
+                     x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                     class="relative bg-white dark:bg-gray-800 rounded-3xl shadow-xl max-w-sm w-full p-6 overflow-hidden transform transition-all text-center">
+                    
+                    <div class="w-16 h-16 bg-red-50 dark:bg-red-900/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                        <span class="material-symbols-outlined text-red-600 dark:text-red-400 text-3xl">rate_review</span>
+                    </div>
+
+                    <h3 class="text-lg font-black text-slate-900 dark:text-white uppercase italic tracking-tight mb-2">Kirim Ulasan?</h3>
+                    <p class="text-sm text-slate-500 dark:text-gray-400 font-medium mb-8">
+                        Apakah Anda yakin ingin mengirim ulasan ini?
+                    </p>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <button @click="showConfirm = false" 
+                                class="w-full py-3 px-4 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 rounded-xl text-xs font-black uppercase tracking-widest transition-colors">
+                            Batal
+                        </button>
+                        <button wire:click="submit" @click="showConfirm = false"
+                                class="w-full py-3 px-4 bg-red-600 hover:bg-red-700 text-white rounded-xl text-xs font-black uppercase tracking-widest transition-colors shadow-lg shadow-red-200 dark:shadow-none">
+                            Ya, Kirim
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </template>
+
     @elseif($submitted)
         <div class="bg-white dark:bg-surface-dark rounded-xl shadow-sm border border-slate-100 dark:border-gray-700 p-6 text-center h-full flex flex-col items-center justify-center">
              <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 mb-3">
