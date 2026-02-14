@@ -1,7 +1,7 @@
 <div class="mt-8 space-y-6">
     <div class="flex items-center justify-between">
         <div class="flex items-center gap-4">
-            <h2 class="text-2xl font-black text-text-light dark:text-text-dark uppercase italic">Ulasan</h2>
+            
             <div class="flex items-center gap-2 bg-gray-100 dark:bg-gray-800 px-4 py-1.5 rounded-full border border-gray-200 dark:border-gray-700">
                 <span class="material-symbols-outlined text-amber-500 text-lg fill-current">star</span>
                 <span class="font-black text-lg text-text-light dark:text-text-dark">{{ number_format($ratingAvg ?? 0, 1) }}</span>

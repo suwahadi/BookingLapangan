@@ -42,4 +42,29 @@ class ReviewEligibilityService
 
         return new ReviewEligibilityResult(true, 'Boleh mereview.');
     }
+
+    /**
+     * Get all eligible bookings for review for a specific user
+     *
+     * @param User $user
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function getEligibleBookings(User $user)
+    {
+        return Booking::with(['venue', 'court'])
+            ->where('user_id', $user->id)
+            ->where('status', BookingStatus::CONFIRMED)
+            ->where(function ($query) {
+                // Determine if booking is finished.
+                // booking_date < today OR (booking_date = today AND end_time <= now)
+                $query->where('booking_date', '<', now()->format('Y-m-d'))
+                    ->orWhere(function ($q) {
+                        $q->where('booking_date', '=', now()->format('Y-m-d'))
+                            ->where('end_time', '<=', now()->format('H:i:s'));
+                    });
+            })
+            ->doesntHave('review')
+            ->latest('booking_date')
+            ->get();
+    }
 }

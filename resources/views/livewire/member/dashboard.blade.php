@@ -158,6 +158,68 @@
         </div>
     </div>
 
+    <!-- Review Prompts Section -->
+    @if(isset($eligibleReviews) && $eligibleReviews->isNotEmpty())
+        <div class="mb-10 w-full" x-data="{
+            activeSlide: 0,
+            slidesCount: {{ $eligibleReviews->count() }},
+            itemsPerSlide: 1,
+            init() {
+                this.updateItemsPerSlide();
+                window.addEventListener('resize', () => this.updateItemsPerSlide());
+            },
+            updateItemsPerSlide() {
+                if (window.innerWidth >= 1024) this.itemsPerSlide = 3;
+                else if (window.innerWidth >= 768) this.itemsPerSlide = 2;
+                else this.itemsPerSlide = 1;
+                // Correct activeSlide if it goes out of bounds after resize
+                if (this.activeSlide > this.slidesCount - this.itemsPerSlide) {
+                    this.activeSlide = Math.max(0, this.slidesCount - this.itemsPerSlide);
+                }
+            },
+            next() {
+                if (this.activeSlide < this.slidesCount - this.itemsPerSlide) {
+                    this.activeSlide++;
+                }
+            },
+            prev() {
+                 if (this.activeSlide > 0) {
+                    this.activeSlide--;
+                }
+            }
+        }">
+            <div class="flex items-center justify-end mb-6">
+                <!-- Navigation -->
+                <div class="flex gap-2" x-show="slidesCount > itemsPerSlide">
+                    <button @click="prev()" 
+                        :class="{'opacity-50 cursor-not-allowed': activeSlide === 0, 'hover:border-primary hover:text-primary': activeSlide > 0}"
+                        :disabled="activeSlide === 0"
+                        class="w-8 h-8 rounded-lg bg-surface-light dark:bg-surface-dark border border-gray-200 dark:border-gray-700 text-muted-light flex items-center justify-center transition-colors">
+                        <span class="material-symbols-outlined text-lg">chevron_left</span>
+                    </button>
+                    <button @click="next()" 
+                        :class="{'opacity-50 cursor-not-allowed': activeSlide >= slidesCount - itemsPerSlide, 'hover:border-primary hover:text-primary': activeSlide < slidesCount - itemsPerSlide}"
+                        :disabled="activeSlide >= slidesCount - itemsPerSlide"
+                        class="w-8 h-8 rounded-lg bg-surface-light dark:bg-surface-dark border border-gray-200 dark:border-gray-700 text-muted-light flex items-center justify-center transition-colors">
+                        <span class="material-symbols-outlined text-lg">chevron_right</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="overflow-hidden p-1 -m-1">
+                <div class="flex transition-transform duration-500 ease-out"
+                     :style="`transform: translateX(-${activeSlide * (100 / itemsPerSlide)}%)`">
+                    @foreach($eligibleReviews as $booking)
+                        <div class="shrink-0 px-2 transition-all duration-300"
+                             :style="`width: ${100 / itemsPerSlide}%`">
+                             <livewire:member.review-prompt-card :booking="$booking" :wire:key="'review-'.$booking->id" class="h-full" />
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+    @endif
+
     <!-- Quick Actions -->
     <div class="mt-10 bg-text-light dark:bg-black rounded-[2.5rem] p-8 flex flex-col md:flex-row items-center justify-between gap-6 shadow-2xl relative overflow-hidden group">
         <div class="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>

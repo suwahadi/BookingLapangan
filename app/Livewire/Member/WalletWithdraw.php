@@ -63,6 +63,12 @@ class WalletWithdraw extends Component
 
     public function render()
     {
-        return view('livewire.member.wallet-withdraw');
+        $pendingWithdrawAmount = WithdrawRequest::where('user_id', auth()->id())
+            ->whereIn('status', [WithdrawStatus::PENDING, WithdrawStatus::APPROVED])
+            ->sum('amount');
+
+        return view('livewire.member.wallet-withdraw', [
+            'pendingWithdrawAmount' => $pendingWithdrawAmount
+        ]);
     }
 }

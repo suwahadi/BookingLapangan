@@ -128,10 +128,10 @@
                             </td>
                             <td class="px-8 py-6">
                                 <p class="text-sm font-bold text-gray-900">{{ $booking->venue->name }}</p>
-                                <p class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">
-                                    {!! \App\Models\Venue::getSportSvg($booking->court->sport ?? $booking->venue->sport_type, 'w-3 h-3 align-middle mr-1 inline-block') !!}
-                                    {{ $booking->court->name }}
-                                </p>
+                                <div class="flex items-center gap-1 text-[10px] font-bold text-gray-500 uppercase tracking-widest mt-1">
+                                    {!! \App\Models\Venue::getSportSvg($booking->court->sport ?? $booking->venue->sport_type, 'text-sm') !!}
+                                    <span>{{ $booking->court->name }}</span>
+                                </div>
                             </td>
                             <td class="px-8 py-6">
                                 <p class="text-sm font-black text-gray-900">Rp {{ number_format($booking->total_amount, 0, ',', '.') }}</p>

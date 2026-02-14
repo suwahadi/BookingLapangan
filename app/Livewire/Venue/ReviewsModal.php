@@ -9,10 +9,9 @@ use Livewire\Attributes\On;
 
 class ReviewsModal extends Component
 {
-    use WithPagination;
-
     public $venueId;
     public $showModal = false;
+    public $limit = 5;
 
     public function mount($venueId)
     {
@@ -23,6 +22,7 @@ class ReviewsModal extends Component
     public function openModal()
     {
         $this->showModal = true;
+        $this->limit = 5; // Reset limit when opening
     }
 
     public function closeModal()
@@ -30,16 +30,25 @@ class ReviewsModal extends Component
         $this->showModal = false;
     }
 
+    public function loadMore()
+    {
+        $this->limit += 5;
+    }
+
     public function render()
     {
-        $reviews = VenueReview::where('venue_id', $this->venueId)
+        $query = VenueReview::where('venue_id', $this->venueId)
             ->where('is_approved', true)
             ->with(['user'])
-            ->latest()
-            ->paginate(5);
+            ->latest();
+
+        $total = $query->count();
+        $reviews = $query->take($this->limit)->get();
 
         return view('livewire.venue.reviews-modal', [
             'reviews' => $reviews,
+            'total' => $total,
+            'hasMore' => $total > $this->limit
         ]);
     }
 }

@@ -81,7 +81,7 @@
     <!-- Auth Modal -->
     <livewire:auth.auth-modal />
     
-    <header class="sticky top-0 z-40 bg-primary shadow-lg lg:py-2">
+    <header class="sticky top-0 z-30 bg-primary shadow-lg lg:py-2">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between h-16 lg:h-20">
             <div class="flex items-center gap-8">
                 <a href="/" wire:navigate class="font-black italic text-2xl tracking-tighter text-white">YOMABAR</a>

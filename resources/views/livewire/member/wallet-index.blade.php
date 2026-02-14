@@ -30,8 +30,13 @@
                     <div class="relative z-10">
                         <p class="text-[10px] font-black uppercase tracking-widest text-white/80 mb-2">Total Saldo Aktif</p>
                         <p class="text-4xl lg:text-5xl font-black tracking-tight font-display italic">
-                            Rp {{ number_format($wallet->balance, 0, ',', '.') }}
+                            Rp {{ number_format($wallet->balance - $pendingWithdrawAmount, 0, ',', '.') }}
                         </p>
+                        @if($pendingWithdrawAmount > 0)
+                            <p class="text-[10px] font-bold text-white/60 mt-1 uppercase tracking-wider">
+                                Saldo Ditahan: Rp {{ number_format($pendingWithdrawAmount, 0, ',', '.') }}
+                            </p>
+                        @endif
                         <p class="text-xs font-medium text-white/80 mt-6 leading-relaxed flex items-center gap-2">
                              <span class="material-symbols-outlined text-lg">info</span>
                             Saldo ini dapat digunakan untuk pembayaran booking lapangan secara instan tanpa perlu transfer bank.

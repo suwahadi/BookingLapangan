@@ -10,7 +10,12 @@
         <div class="mb-8 p-6 bg-primary/10 rounded-2xl border border-primary/20 flex items-center justify-between relative overflow-hidden group">
             <div class="relative z-10">
                 <p class="text-[10px] font-black uppercase tracking-widest text-primary mb-1 opacity-80">Saldo Tersedia</p>
-                <p class="text-3xl font-black text-primary font-display italic">Rp {{ number_format($availableBalance, 0, ',', '.') }}</p>
+                <p class="text-3xl font-black text-primary font-display italic">Rp {{ number_format($availableBalance - $pendingWithdrawAmount, 0, ',', '.') }}</p>
+                @if($pendingWithdrawAmount > 0)
+                    <p class="text-[10px] font-bold text-primary/60 mt-1 uppercase tracking-wider">
+                        Saldo Ditahan: Rp {{ number_format($pendingWithdrawAmount, 0, ',', '.') }}
+                    </p>
+                @endif
             </div>
             <div class="w-12 h-12 bg-white dark:bg-gray-800 rounded-xl shadow-sm flex items-center justify-center relative z-10">
                 <span class="material-symbols-outlined text-primary">account_balance_wallet</span>
@@ -98,10 +103,7 @@
         <div class="fixed inset-0" wire:click="$set('showConfirmationModal', false)"></div>
         <div class="bg-white dark:bg-gray-800 rounded-[2rem] w-full max-w-sm overflow-hidden shadow-2xl relative z-10 animate-scale-up border border-gray-100 dark:border-gray-700">
             <div class="p-8 text-center space-y-6">
-                <div class="w-20 h-20 bg-amber-50 dark:bg-amber-900/30 rounded-full flex items-center justify-center mx-auto mb-4 animate-bounce-slow">
-                    <span class="material-symbols-outlined text-4xl text-amber-500">warning_amber</span>
-                </div>
-                
+
                 <div>
                     <h3 class="text-xl font-black text-text-light dark:text-text-dark uppercase italic tracking-tight mb-2">Konfirmasi Penarikan</h3>
                     <p class="text-sm text-muted-light font-medium leading-relaxed">
@@ -110,13 +112,12 @@
                     <div class="mt-4 bg-gray-50 dark:bg-gray-900 p-4 rounded-xl border border-gray-100 dark:border-gray-800 text-left">
                         <p class="text-[10px] font-bold text-muted-light uppercase tracking-widest mb-1">Detail Rekening</p>
                         <p class="text-sm font-bold text-text-light dark:text-text-dark">{{ $bankName }}</p>
-                        <p class="text-lg font-black text-text-light dark:text-text-dark font-mono tracking-tight">{{ $bankAccountNumber }}</p>
-                        <p class="text-xs font-medium text-text-light dark:text-text-dark uppercase mt-1">{{ $bankAccountName }}</p>
+                        <p class="text-sm font-bold text-text-light dark:text-text-dark">{{ $bankAccountNumber }}</p>
+                        <p class="text-sm font-bold text-text-light dark:text-text-dark">{{ $bankAccountName }}</p>
                     </div>
                 </div>
 
-                <div class="bg-rose-50 dark:bg-rose-900/20 p-4 rounded-xl flex gap-3 text-left border border-rose-100 dark:border-rose-800/30">
-                     <span class="material-symbols-outlined text-rose-500 shrink-0">priority_high</span>
+                <div class="bg-rose-50 dark:bg-rose-900/20 p-4 rounded-xl flex gap-3 text-center border border-rose-100 dark:border-rose-800/30">
                      <p class="text-xs text-rose-600 dark:text-rose-400 font-bold leading-relaxed">
                         Pastikan nomor rekening yang Anda masukkan sudah benar. Kesalahan input data dapat menyebabkan kegagalan transfer atau dana hilang.
                      </p>

@@ -11,7 +11,15 @@
                 
                 <div class="grid grid-cols-2 gap-4 mt-4 w-full max-w-[30rem]">
                     <div class="h-full">
-                        <span class="flex items-center justify-center w-full h-full px-3 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest border text-center {{ $booking->status->color() === 'primary' ? 'bg-primary/10 text-primary border-primary/20' : ($booking->status->color() === 'emerald' ? 'bg-emerald-100 text-emerald-600 border-emerald-200' : 'bg-gray-100 text-gray-600 border-gray-200') }}">
+                        @php
+                            $statusClasses = match($booking->status->color()) {
+                                'green' => 'bg-emerald-100 text-emerald-600 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-400 dark:border-emerald-800',
+                                'yellow' => 'bg-amber-100 text-amber-600 border-amber-200 dark:bg-amber-900/30 dark:text-amber-400 dark:border-amber-800',
+                                'red' => 'bg-rose-100 text-rose-600 border-rose-200 dark:bg-rose-900/30 dark:text-rose-400 dark:border-rose-800',
+                                default => 'bg-gray-100 text-gray-600 border-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700',
+                            };
+                        @endphp
+                        <span class="flex items-center justify-center w-full h-full px-3 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest border text-center {{ $statusClasses }}">
                             {{ $booking->status->label() }}
                         </span>
                     </div>
@@ -95,11 +103,22 @@
                             @endif
                         </div>
                         
-                        <a href="{{ route('bookings.checkout', ['booking' => $booking->id]) }}" 
-                           class="w-full md:w-auto md:min-w-[200px] bg-white text-primary px-8 py-5 rounded-3xl font-black text-xs uppercase tracking-[0.2em] hover:bg-gray-50 transition-all transform hover:-translate-y-1 shadow-2xl shadow-black/20 flex flex-shrink-0 items-center justify-center gap-3 group">
-                            Bayar Sekarang 
-                            <span class="material-symbols-outlined text-xl group-hover:translate-x-1 transition-transform">arrow_forward</span>
-                        </a>
+                        @if($booking->payments()->where('status', \App\Enums\PaymentStatus::PENDING)->exists())
+                            @php
+                                $payment = $booking->payments()->where('status', \App\Enums\PaymentStatus::PENDING)->latest()->first();
+                            @endphp
+                            <a href="{{ route('payments.show', ['payment' => $payment->id]) }}" 
+                               class="w-full md:w-auto md:min-w-[200px] bg-white text-primary px-8 py-5 rounded-3xl font-black text-xs uppercase tracking-[0.2em] hover:bg-gray-50 transition-all transform hover:-translate-y-1 shadow-2xl shadow-black/20 flex flex-shrink-0 items-center justify-center gap-3 group">
+                                Lanjut Bayar 
+                                <span class="material-symbols-outlined text-xl group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                            </a>
+                        @else
+                            <a href="{{ route('bookings.checkout', ['booking' => $booking->id]) }}" 
+                               class="w-full md:w-auto md:min-w-[200px] bg-white text-primary px-8 py-5 rounded-3xl font-black text-xs uppercase tracking-[0.2em] hover:bg-gray-50 transition-all transform hover:-translate-y-1 shadow-2xl shadow-black/20 flex flex-shrink-0 items-center justify-center gap-3 group">
+                                Bayar Sekarang 
+                                <span class="material-symbols-outlined text-xl group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                            </a>
+                        @endif
                     </div>
                 </div>
                 @endif
@@ -172,7 +191,7 @@
                 </div>
 
                 <!-- Booking Actions -->
-                @if($booking->status === \App\Enums\BookingStatus::CONFIRMED)
+                @if($booking->status === \App\Enums\BookingStatus::CONFIRMED && $booking->booking_date >= now()->startOfDay())
                 <div class="bg-surface-light dark:bg-surface-dark rounded-[2.5rem] p-8 shadow-card border border-gray-100 dark:border-gray-700">
                     <h3 class="text-lg font-black text-text-light dark:text-text-dark uppercase italic tracking-tight mb-6">Aksi <span class="text-primary">Booking</span></h3>
                     
@@ -291,7 +310,7 @@
                 <div class="grid grid-cols-2 gap-3">
                     <button wire:click="$set('showCancelModal', false)" 
                             class="py-3.5 px-4 rounded-xl border-2 border-gray-100 text-gray-600 font-black text-xs uppercase tracking-wider hover:bg-gray-50 hover:border-gray-200 transition-all">
-                        Batal
+                        Tidak
                     </button>
                     <button wire:click="cancelBooking" 
                             class="py-3.5 px-4 rounded-xl bg-rose-600 text-white font-black text-xs uppercase tracking-wider hover:bg-rose-700 shadow-lg shadow-rose-500/20 transition-all active:scale-95">

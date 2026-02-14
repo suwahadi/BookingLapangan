@@ -197,7 +197,7 @@
                 </div>
 
                 <!-- Submit Button -->
-                <div x-data="{ showConfirm: false }" class="pt-4">
+                <div x-data="{ showConfirm: false }" class="pt-4 pb-12">
                     <button type="button"
                             @click="showConfirm = true"
                             class="w-full bg-gradient-to-r from-[#8B1538] to-[#b91d47] text-white font-black rounded-xl px-8 py-4 text-sm uppercase tracking-widest hover:from-[#6d1029] hover:to-[#8B1538] transition-all transform active:scale-[0.99] shadow-xl shadow-[#8B1538]/30 flex items-center justify-center gap-3 group">
@@ -210,32 +210,45 @@
                         <p class="text-[10px] font-bold text-muted-light">Transaksi Aman & Otomatis</p>
                     </div>
 
-                    <!-- Confirmation Modal (Simplified) -->
+                    <!-- Confirmation Modal -->
                     <div x-show="showConfirm" 
+                         x-transition:enter="transition ease-out duration-300"
+                         x-transition:enter-start="opacity-0"
+                         x-transition:enter-end="opacity-100"
+                         x-transition:leave="transition ease-in duration-200"
+                         x-transition:leave-start="opacity-100"
+                         x-transition:leave-end="opacity-0"
                          class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
                          @click.self="showConfirm = false"
                          style="display: none;">
-                        <div class="bg-white dark:bg-gray-800 rounded-3xl p-8 max-w-sm w-full shadow-2xl text-center space-y-6">
+                        <div class="bg-white dark:bg-gray-800 rounded-3xl p-8 max-w-sm w-full shadow-2xl text-center space-y-6 transform transition-all"
+                             x-transition:enter="transition ease-out duration-300"
+                             x-transition:enter-start="opacity-0 scale-90"
+                             x-transition:enter-end="opacity-100 scale-100"
+                             x-transition:leave="transition ease-in duration-200"
+                             x-transition:leave-start="opacity-100 scale-100"
+                             x-transition:leave-end="opacity-0 scale-90">
+                            
                             <div class="w-16 h-16 rounded-full bg-primary/10 mx-auto flex items-center justify-center">
-                                <span class="material-symbols-outlined text-primary text-3xl">payments</span>
+                                <span class="material-symbols-outlined text-primary text-3xl">fact_check</span>
                             </div>
+                            
                             <div>
-                                <h3 class="text-lg font-black text-gray-900 dark:text-white">Konfirmasi Pembayaran</h3>
-                                @php
-                                    $confirmPayable = max(0, $booking->total_amount - $booking->discount_amount);
-                                    $confirmAmount = match($payPlan) {
-                                        'DP' => min($booking->dp_required_amount, $confirmPayable),
-                                        'REMAINING' => max(0, $confirmPayable - $booking->paid_amount),
-                                        default => $confirmPayable,
-                                    };
-                                @endphp
-                                <p class="text-sm text-gray-500 mt-2">
-                                    Total: <span class="font-black text-primary">Rp {{ number_format($confirmAmount, 0, ',', '.') }}</span>
+                                <h3 class="text-xl font-black text-gray-900 dark:text-white uppercase italic tracking-tight mb-2">Konfirmasi Data</h3>
+                                <p class="text-sm text-gray-500 font-medium">
+                                    Yakin data booking sudah benar?
                                 </p>
                             </div>
+
                             <div class="flex gap-3">
-                                <button @click="showConfirm = false" class="flex-1 py-3 bg-gray-100 hover:bg-gray-200 rounded-xl text-xs font-bold uppercase tracking-wider text-gray-600">Batal</button>
-                                <button x-on:click="showConfirm = false; $wire.createPayment()" class="flex-1 py-3 bg-primary hover:bg-primary-dark rounded-xl text-xs font-bold uppercase tracking-wider text-white">Ya, Bayar</button>
+                                <button @click="showConfirm = false" 
+                                        class="flex-1 py-3.5 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 rounded-xl text-xs font-black uppercase tracking-wider text-gray-600 dark:text-gray-300 transition-colors">
+                                    Cek Lagi
+                                </button>
+                                <button x-on:click="showConfirm = false; $wire.createPayment()" 
+                                        class="flex-1 py-3.5 bg-primary hover:bg-primary-dark rounded-xl text-xs font-black uppercase tracking-wider text-white shadow-lg shadow-primary/30 transition-all transform active:scale-95">
+                                    Ya, Lanjut Bayar
+                                </button>
                             </div>
                         </div>
                     </div>

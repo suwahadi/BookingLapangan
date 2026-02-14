@@ -61,8 +61,13 @@ class WalletIndex extends Component
         $entries = $query->orderByDesc('created_at')
             ->paginate(15);
 
+        $pendingWithdrawAmount = \App\Models\WithdrawRequest::where('user_id', $this->wallet->user_id)
+            ->whereIn('status', [\App\Enums\WithdrawStatus::PENDING, \App\Enums\WithdrawStatus::APPROVED])
+            ->sum('amount');
+
         return view('livewire.member.wallet-index', [
             'entries' => $entries,
+            'pendingWithdrawAmount' => $pendingWithdrawAmount,
         ]);
     }
 }

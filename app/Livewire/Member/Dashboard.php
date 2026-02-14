@@ -22,8 +22,10 @@ class Dashboard extends Component
             ->count();
     }
 
-    public function render()
+    public function render(\App\Services\ReviewEligibilityService $reviewService)
     {
+        $eligibleReviews = $reviewService->getEligibleBookings(auth()->user());
+
         $upcomingBookings = Booking::where('user_id', auth()->id())
             ->whereIn('status', ['HOLD', 'CONFIRMED'])
             ->where('booking_date', '>=', now()->toDateString())
@@ -39,6 +41,7 @@ class Dashboard extends Component
         return view('livewire.member.dashboard', [
             'upcomingBookings' => $upcomingBookings,
             'recentBookings' => $recentBookings,
+            'eligibleReviews' => $eligibleReviews,
         ]);
     }
 }

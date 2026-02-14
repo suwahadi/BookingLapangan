@@ -1,4 +1,4 @@
-<div class="min-h-screen bg-gray-50 py-8" x-data="{ showPolicyModal: false }">
+<div class="min-h-screen bg-gray-50 py-8" x-data="{ showPolicyModal: false, showConfirm: false }">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         
         @if(count($selectedSlots) > 0)
@@ -57,7 +57,7 @@
                         <div class="mt-4 p-3 bg-gray-50 rounded-xl flex items-start gap-3">
                             <span class="material-symbols-outlined text-gray-400 text-lg mt-0.5">info</span>
                             <p class="text-xs text-gray-500 leading-relaxed">
-                                Dengan melakukan booking lapangan, Anda akan otomatis terdaftar sebagai member {{ env('APP_NAME') }}.
+                                Dengan melakukan booking lapangan, Anda akan otomatis terdaftar sebagai member.
                             </p>
                         </div>
                     </div>
@@ -260,7 +260,7 @@
                     <!-- CTA Button -->
                     <div class="fixed bottom-0 left-0 right-0 p-4 bg-white border-t border-gray-200 lg:static lg:bg-transparent lg:border-0 lg:p-0 z-50">
                         <button type="button"
-                                wire:click="proceedToPayment"
+                                @click="showConfirm = true"
                                 wire:loading.attr="disabled"
                                 wire:loading.class="opacity-70 cursor-wait"
                                 class="w-full py-4 bg-[#8B1538] hover:bg-[#6d1029] text-white font-bold text-base rounded-2xl shadow-lg shadow-[#8B1538]/20 transition-all active:scale-[0.98]">
@@ -274,6 +274,48 @@
                             </span>
                         </button>
                     </div>
+
+                    <!-- Confirmation Modal -->
+                    <template x-teleport="body">
+                        <div x-show="showConfirm" 
+                             x-transition:enter="transition ease-out duration-300"
+                             x-transition:enter-start="opacity-0"
+                             x-transition:enter-end="opacity-100"
+                             x-transition:leave="transition ease-in duration-200"
+                             x-transition:leave-start="opacity-100"
+                             x-transition:leave-end="opacity-0"
+                             class="fixed inset-0 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+                             style="z-index: 9999; display: none;"
+                             @click.self="showConfirm = false"
+                             x-cloak>
+                            <div class="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl text-center space-y-6 transform transition-all"
+                                 x-transition:enter="transition ease-out duration-300"
+                                 x-transition:enter-start="opacity-0 scale-90"
+                                 x-transition:enter-end="opacity-100 scale-100"
+                                 x-transition:leave="transition ease-in duration-200"
+                                 x-transition:leave-start="opacity-100 scale-100"
+                                 x-transition:leave-end="opacity-0 scale-90">
+
+                                <div>
+                                    <h3 class="text-xl font-black text-gray-900 uppercase italic tracking-tight mb-2">Konfirmasi Data</h3>
+                                    <p class="text-sm text-gray-500 font-medium">
+                                        Yakin data booking sudah benar?
+                                    </p>
+                                </div>
+
+                                <div class="flex gap-3">
+                                    <button @click="showConfirm = false" 
+                                            class="flex-1 py-3.5 bg-gray-100 hover:bg-gray-200 rounded-xl text-xs font-black uppercase tracking-wider text-gray-600 transition-colors">
+                                        Cek Lagi
+                                    </button>
+                                    <button x-on:click="showConfirm = false; $wire.proceedToPayment()" 
+                                            class="flex-1 py-3.5 bg-[#8B1538] hover:bg-[#6d1029] rounded-xl text-xs font-black uppercase tracking-wider text-white shadow-lg shadow-[#8B1538]/30 transition-all transform active:scale-95">
+                                        Ya, Booking
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
                      <!-- Spacer for fixed bottom button on mobile -->
                     <div class="h-24 lg:hidden"></div>
                 </div>
@@ -321,9 +363,9 @@
                                wire:model="voucherCode"
                                wire:keydown.enter="applyVoucher"
                                placeholder="Masukkan kode voucher"
-                               class="flex-1 h-11 px-4 rounded-xl border-gray-300 focus:border-[#8B1538] focus:ring-[#8B1538] placeholder-gray-400 text-sm uppercase tracking-wider transition-all">
+                               class="w-full flex-1 h-11 px-4 rounded-xl border-gray-300 focus:border-[#8B1538] focus:ring-[#8B1538] placeholder-gray-400 text-sm uppercase tracking-wider transition-all min-w-0">
                         <button wire:click="applyVoucher"
-                                class="h-11 px-5 bg-[#8B1538] hover:bg-[#6d1029] text-white font-bold rounded-xl text-sm transition-all active:scale-95 shrink-0">
+                                class="h-11 px-4 lg:px-5 bg-[#8B1538] hover:bg-[#6d1029] text-white font-bold rounded-xl text-xs lg:text-sm transition-all active:scale-95 shrink-0 whitespace-nowrap">
                             Terapkan
                         </button>
                     </div>

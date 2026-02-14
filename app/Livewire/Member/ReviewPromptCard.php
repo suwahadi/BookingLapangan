@@ -17,7 +17,9 @@ class ReviewPromptCard extends Component
 
     public function mount()
     {
-        $this->loadBooking();
+        if (!$this->booking) {
+            $this->loadBooking();
+        }
     }
 
     public function loadBooking()
