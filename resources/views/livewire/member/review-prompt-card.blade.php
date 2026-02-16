@@ -32,6 +32,11 @@
                         </button>
                     @endfor
                 </div>
+                @error('rating') 
+                    <div class="text-red-500 text-xs text-center mb-4 transition-all animate-shake">
+                        {{ $message }}
+                    </div> 
+                @enderror
 
                 <textarea 
                     wire:model="comment" 

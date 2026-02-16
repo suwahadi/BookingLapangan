@@ -192,8 +192,7 @@
                                         </div>
                                     </div>
                                     <div class="flex items-center gap-3">
-                                        <div class="text-[10px] font-bold text-gray-400 line-through">Rp 2.500</div>
-                                        <div class="text-[10px] font-black text-emerald-600 uppercase">Gratis</div>
+                                        <div class="text-[10px] font-black text-emerald-500 uppercase">Gratis</div>
                                         
                                         <div class="relative w-5 h-5 rounded-full border flex items-center justify-center transition-all
                                             {{ ($paymentType === 'bank_transfer' && $bank === $code) 
@@ -223,8 +222,7 @@
                                 </div>
                             </div>
                             <div class="flex items-center gap-3">
-                                <div class="text-[10px] font-bold text-gray-400 line-through">Rp 1.000</div>
-                                <div class="text-[10px] font-black text-emerald-600 uppercase">Gratis</div>
+                                <div class="text-[10px] font-black text-emerald-500 uppercase">Gratis</div>
                                 
                                 <div class="relative w-5 h-5 rounded-full border flex items-center justify-center transition-all
                                     {{ $paymentType === 'gopay' 

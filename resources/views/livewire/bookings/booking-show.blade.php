@@ -190,6 +190,26 @@
                     </div>
                 </div>
 
+                <!-- Call to Action Button (Duplicate for Visibility) -->
+                @if($booking->status->value === 'HOLD')
+                    @if($booking->payments()->where('status', \App\Enums\PaymentStatus::PENDING)->exists())
+                        @php
+                            $payment = $booking->payments()->where('status', \App\Enums\PaymentStatus::PENDING)->latest()->first();
+                        @endphp
+                        <a href="{{ route('payments.show', ['payment' => $payment->id]) }}" 
+                           class="w-full bg-primary text-white px-8 py-5 rounded-3xl font-black text-sm uppercase tracking-[0.2em] hover:bg-primary-dark transition-all transform hover:-translate-y-1 shadow-xl shadow-primary/30 flex items-center justify-center gap-3 group animate-pulse-subtle">
+                            Lanjut Bayar 
+                            <span class="material-symbols-outlined text-xl group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                        </a>
+                    @else
+                        <a href="{{ route('bookings.checkout', ['booking' => $booking->id]) }}" 
+                           class="w-full bg-primary text-white px-8 py-5 rounded-3xl font-black text-sm uppercase tracking-[0.2em] hover:bg-primary-dark transition-all transform hover:-translate-y-1 shadow-xl shadow-primary/30 flex items-center justify-center gap-3 group animate-pulse-subtle">
+                            Bayar Sekarang 
+                            <span class="material-symbols-outlined text-xl group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                        </a>
+                    @endif
+                @endif
+
                 <!-- Booking Actions -->
                 @php
                     $bookingStart = $booking->booking_date->copy()->setTimeFromTimeString($booking->start_time);
