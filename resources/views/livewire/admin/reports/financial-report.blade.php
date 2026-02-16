@@ -15,16 +15,16 @@
     <!-- Filters & Stats -->
     <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
         <!-- Filters Card -->
-        <div class="lg:col-span-3 bg-white p-8 rounded-[2.5rem] shadow-xl border border-gray-50 flex flex-col md:flex-row gap-6 items-end">
-            <div class="flex-1 space-y-2">
+        <div class="lg:col-span-3 bg-white p-8 rounded-[2.5rem] shadow-xl border border-gray-50 flex flex-col md:flex-row gap-6 md:items-end">
+            <div class="w-full md:flex-1 space-y-2">
                 <label class="block text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-2">Mulai Tanggal</label>
                 <input wire:model.live="startDate" type="date" class="w-full px-6 py-4 bg-gray-50 border-none rounded-2xl text-sm font-bold focus:ring-2 focus:ring-indigo-600">
             </div>
-            <div class="flex-1 space-y-2">
+            <div class="w-full md:flex-1 space-y-2">
                 <label class="block text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-2">Sampai Tanggal</label>
                 <input wire:model.live="endDate" type="date" class="w-full px-6 py-4 bg-gray-50 border-none rounded-2xl text-sm font-bold focus:ring-2 focus:ring-indigo-600">
             </div>
-            <div class="flex-1 space-y-2">
+            <div class="w-full md:flex-1 space-y-2">
                 <label class="block text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-2">Filter Venue</label>
                 <select wire:model.live="venueId" class="w-full px-6 py-4 bg-gray-50 border-none rounded-2xl text-sm font-black text-gray-900 focus:ring-2 focus:ring-indigo-600 appearance-none cursor-pointer">
                     <option value="">SEMUA VENUE</option>

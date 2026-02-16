@@ -75,8 +75,8 @@ class UserIndexAdmin extends Component
             $this->editingUser->update(['is_admin' => false]);
         }
 
-        session()->flash('success', 'User berhasil diperbarui.');
         $this->closeModal();
+        $this->dispatch('toast', message: 'User berhasil diperbarui', type: 'success');
     }
 
     public function closeModal(): void

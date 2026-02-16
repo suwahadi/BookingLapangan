@@ -230,7 +230,12 @@
     @stack('scripts')
     <script>
         document.addEventListener('livewire:navigated', () => {
-             // Handle flashes on navigation
+            @if(session('success'))
+                window.dispatchEvent(new CustomEvent('toast', { detail: { message: "{{ session('success') }}", type: 'success' } }));
+            @endif
+            @if(session('error'))
+                window.dispatchEvent(new CustomEvent('toast', { detail: { message: "{{ session('error') }}", type: 'error' } }));
+            @endif
         });
     </script>
 </body>

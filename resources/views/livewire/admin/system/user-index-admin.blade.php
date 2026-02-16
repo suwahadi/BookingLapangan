@@ -73,8 +73,8 @@
             </table>
         </div>
 
-        <div class="p-8 border-t border-gray-50">
-            {{ $users->links() }}
+        <div class="p-8 border-t border-gray-50 overflow-x-auto">
+            {{ $users->onEachSide(1)->links() }}
         </div>
     </div>
 
