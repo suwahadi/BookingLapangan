@@ -9,14 +9,14 @@
         </div>
         <div class="w-full md:w-auto">
             <select wire:model.live="filterStatus" class="border border-slate-300 rounded-lg px-4 py-2 focus:ring-primary focus:border-primary w-full">
-                <option value="all">Semua Status</option>
+                <option value="all">Status</option>
                 <option value="approved">Disetujui</option>
                 <option value="pending">Pending</option>
             </select>
         </div>
         <div class="w-full md:w-auto">
             <select wire:model.live="filterRating" class="border border-slate-300 rounded-lg px-4 py-2 focus:ring-primary focus:border-primary w-full">
-                <option value="">Semua</option>
+                <option value="">Rating</option>
                 <option value="5">Bintang 5</option>
                 <option value="4">Bintang 4</option>
                 <option value="3">Bintang 3</option>

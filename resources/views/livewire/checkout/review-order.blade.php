@@ -69,7 +69,7 @@
                         <div class="flex items-center gap-2 text-sm text-gray-500">
                             <span class="text-amber-500 font-bold flex items-center gap-1">
                                 <span class="material-symbols-outlined text-sm">star</span>
-                                4.93
+                                {{ number_format($venueCourt->venue->rating_avg ?? 0, 1) }}
                             </span>
                             <span>•</span>
                             <span>{{ $venueCourt->venue->city ?? 'Kota' }}</span>
