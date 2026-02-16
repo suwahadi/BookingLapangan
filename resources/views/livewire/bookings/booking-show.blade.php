@@ -191,7 +191,10 @@
                 </div>
 
                 <!-- Booking Actions -->
-                @if($booking->status === \App\Enums\BookingStatus::CONFIRMED && $booking->booking_date >= now()->startOfDay())
+                @php
+                    $bookingStart = $booking->booking_date->copy()->setTimeFromTimeString($booking->start_time);
+                @endphp
+                @if($booking->status === \App\Enums\BookingStatus::CONFIRMED && $bookingStart->isFuture())
                 <div class="bg-surface-light dark:bg-surface-dark rounded-[2.5rem] p-8 shadow-card border border-gray-100 dark:border-gray-700">
                     <h3 class="text-lg font-black text-text-light dark:text-text-dark uppercase italic tracking-tight mb-6">Aksi <span class="text-primary">Booking</span></h3>
                     

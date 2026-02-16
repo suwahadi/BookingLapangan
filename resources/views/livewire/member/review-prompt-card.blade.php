@@ -1,7 +1,6 @@
 <div x-data="{ showConfirm: false }">
     @if($booking && !$submitted)
         <div class="bg-white dark:bg-surface-dark rounded-xl shadow-sm border border-slate-100 dark:border-gray-700 p-4 h-full flex flex-col relative overflow-hidden">
-            <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-1">Menunggu Ulasan</h3>
             <p class="text-sm text-slate-500 dark:text-gray-400 mb-4">Bagikan pengalaman bermainmu</p>
             
             <div class="flex items-start gap-4 mb-4 pb-4 border-b border-slate-50 dark:border-gray-700">
@@ -38,7 +37,7 @@
                     wire:model="comment" 
                     class="w-full text-sm border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white rounded-lg focus:ring-red-500 focus:border-red-500 mb-3 resize-none" 
                     rows="3" 
-                    placeholder="Tulis pengalaman bermainmu disini... (opsional)"
+                    placeholder="Tulis pengalaman bermainmu disini..."
                 ></textarea>
 
                 @error('submit') <span class="text-red-500 text-xs block mb-2">{{ $message }}</span> @enderror

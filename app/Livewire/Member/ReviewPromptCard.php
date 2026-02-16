@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Auth;
 class ReviewPromptCard extends Component
 {
     public $booking;
-    public $rating = 5;
+    public $rating = 0;
     public $comment = '';
     public $submitted = false;
 
