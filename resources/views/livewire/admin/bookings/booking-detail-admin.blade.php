@@ -304,24 +304,17 @@
                 <div class="space-y-4 md:space-y-6">
                     <div class="flex flex-col">
                         <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Nama Lengkap</span>
-                        <span class="text-sm font-black text-gray-900">{{ $booking->customer_name }}</span>
+                        <span class="text-xs font-bold text-gray-500">{{ $booking->customer_name }}</span>
                     </div>
                     <div class="flex flex-col min-w-0">
                         <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Email</span>
-                        <span class="text-sm font-bold text-gray-600 truncate underline break-all">{{ $booking->customer_email }}</span>
+                        <span class="text-xs font-bold text-gray-500">{{ $booking->customer_email }}</span>
                     </div>
                     <div class="flex flex-col">
                         <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">WhatsApp / HP</span>
-                        <span class="text-sm font-black text-indigo-600 tracking-widest">{{ $booking->customer_phone }}</span>
+                        <span class="text-xs font-black text-indigo-600 tracking-widest">{{ $booking->customer_phone }}</span>
                     </div>
                 </div>
-
-                @if($booking->notes)
-                <div class="pt-4 md:pt-6 border-t border-gray-50">
-                    <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Catatan:</p>
-                    <p class="text-xs font-bold text-gray-500 bg-gray-50 p-3 md:p-4 rounded-2xl italic">"{{ $booking->notes }}"</p>
-                </div>
-                @endif
             </div>
 
             <div class="bg-gray-900 p-5 md:p-10 rounded-2xl md:rounded-[3rem] shadow-2xl text-white space-y-4 md:space-y-6">

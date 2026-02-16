@@ -65,16 +65,6 @@
                 </div>
             </div>
 
-            @if($errorMessage)
-            <div class="bg-rose-50 dark:bg-rose-900/20 border border-rose-100 dark:border-rose-900 p-6 rounded-3xl flex items-start gap-4">
-                <span class="material-symbols-outlined text-rose-600 dark:text-rose-400 text-3xl">error</span>
-                <div>
-                    <h4 class="font-black text-rose-900 dark:text-rose-300 uppercase text-xs tracking-widest mb-1">Gagal Memproses</h4>
-                    <p class="text-sm font-medium text-rose-700 dark:text-rose-400">{{ $errorMessage }}</p>
-                </div>
-            </div>
-            @endif
-
             <div class="space-y-8">
                 <!-- Payment Plan -->
                 @if(!$isRemaining)

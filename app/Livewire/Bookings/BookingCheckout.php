@@ -19,7 +19,6 @@ class BookingCheckout extends Component
     public string $paymentType = 'bank_transfer';
     public string $bank = 'bca';
     public bool $isRemaining = false;
-    public ?string $errorMessage = null;
 
     public function mount(Booking $booking): void
     {
@@ -61,8 +60,6 @@ class BookingCheckout extends Component
 
     public function createPayment()
     {
-        $this->errorMessage = null;
-
         $type = match ($this->payPlan) {
             'DP' => PaymentType::DP,
             'REMAINING' => PaymentType::REMAINING,
@@ -80,13 +77,15 @@ class BookingCheckout extends Component
 
             $payment = $paymentService->createCharge($this->booking, $type, $method);
 
-            session()->flash('success', 'Pembayaran berhasil dibuat! Silakan selesaikan pembayaran.');
+            session()->flash('success', 'Booking berhasil dibuat! Silakan selesaikan pembayaran.');
             
             return redirect()->route('payments.show', ['payment' => $payment->id]);
         } catch (InvalidPaymentRequestException $e) {
-            $this->errorMessage = $e->getMessage();
+            $this->dispatch('toast', message: $e->getMessage(), type: 'error');
         } catch (\Throwable $e) {
-            $this->errorMessage = 'Terjadi kesalahan sistem: ' . $e->getMessage();
+            $this->dispatch('toast', message: 'Gagal memproses pembayaran. Silakan coba lagi nanti.', type: 'error');
+            // Log error internally if needed
+            \Illuminate\Support\Facades\Log::error('Payment Error: ' . $e->getMessage());
         }
     }
 

@@ -3,9 +3,10 @@
     $vaNumbers = $resp['va_numbers'] ?? [];
     $permataVa = $resp['permata_va_number'] ?? null;
     $actions = $resp['actions'] ?? [];
+    $isPaid = $payment->status === \App\Enums\PaymentStatus::SETTLEMENT;
 @endphp
 
-<div class="max-w-3xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
+<div class="max-w-3xl mx-auto px-4 sm:px-6 py-8 sm:py-12" wire:poll.5s>
     <div class="bg-surface-light dark:bg-surface-dark rounded-3xl sm:rounded-[2.5rem] shadow-card overflow-hidden border border-gray-100 dark:border-gray-700">
         {{-- Header --}}
         <div class="bg-primary/5 dark:bg-surface-dark px-6 sm:px-8 py-8 sm:py-10 relative overflow-hidden group">
@@ -16,17 +17,29 @@
             <div class="relative z-10">
                 <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
                     <span class="inline-flex self-start px-4 py-1.5 bg-white dark:bg-gray-800 rounded-full text-[10px] font-black tracking-widest uppercase text-muted-light shadow-sm">
-                        Instruksi Pembayaran
+                        {{ $isPaid ? 'Status Pembayaran' : 'Instruksi Pembayaran' }}
                     </span>
                     <span class="text-[10px] text-muted-light font-mono bg-white dark:bg-gray-800 px-3 py-1 rounded-full border border-gray-100 dark:border-gray-700 self-start sm:self-auto break-all">
                         ID: {{ $payment->provider_order_id }}
                     </span>
                 </div>
-                <h1 class="text-2xl sm:text-3xl md:text-4xl font-black text-text-light dark:text-text-dark tracking-tight uppercase italic mb-2">Penyelesaian <span class="text-primary">Pesanan</span></h1>
-                <p class="text-muted-light text-sm font-medium">Silakan selesaikan pembayaran sesuai rincian berikut ini</p>
+                
+                @if($isPaid)
+                    <div class="flex items-center gap-4 mb-2">
+                        <div class="w-12 h-12 rounded-full bg-emerald-100 dark:bg-emerald-900/50 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
+                            <span class="material-symbols-outlined text-2xl font-bold">check_circle</span>
+                        </div>
+                        <h1 class="text-2xl sm:text-3xl md:text-4xl font-black text-text-light dark:text-text-dark tracking-tight uppercase italic">Pembayaran <span class="text-emerald-600">Berhasil</span></h1>
+                    </div>
+                    <p class="text-muted-light text-sm font-medium">Terima kasih, pembayaran Anda telah kami terima.</p>
+                @else
+                    <h1 class="text-2xl sm:text-3xl md:text-4xl font-black text-text-light dark:text-text-dark tracking-tight uppercase italic mb-2">Penyelesaian <span class="text-primary">Pesanan</span></h1>
+                    <p class="text-muted-light text-sm font-medium">Silakan selesaikan pembayaran sesuai rincian berikut ini</p>
+                @endif
             </div>
         </div>
 
+        @if(!$isPaid)
         <div class="p-6 sm:p-8 space-y-8 sm:space-y-10">
             {{-- Order Summary --}}
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-6 p-5 sm:p-6 bg-gray-50 dark:bg-gray-800 rounded-2xl sm:rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm">
@@ -160,14 +173,47 @@
                 </div>
             </div>
         </div>
+        @else
+        <div class="p-10 text-center">
+             <div class="max-w-md mx-auto space-y-8">
+                 <div class="p-6 bg-emerald-50 dark:bg-emerald-900/10 rounded-3xl border border-emerald-100 dark:border-emerald-900/30">
+                     <p class="text-sm text-emerald-800 dark:text-emerald-200 font-medium leading-relaxed">
+                         Pembayaran sebesar <span class="font-black">Rp {{ number_format($payment->amount, 0, ',', '.') }}</span> telah berhasil kami terima.
+                     </p>
+                 </div>
+
+                 <div class="space-y-4">
+                     <a href="{{ route('bookings.show', ['booking' => $payment->booking_id]) }}" 
+                        class="w-full bg-primary text-white px-8 py-4 rounded-2xl font-black text-sm uppercase tracking-[0.2em] hover:bg-primary-dark transition-all transform hover:-translate-y-1 shadow-xl shadow-primary/30 flex items-center justify-center gap-3 group">
+                         Lihat Detail Booking
+                         <span class="material-symbols-outlined text-xl group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                     </a>
+                     
+                     <a href="{{ route('member.dashboard') }}" 
+                        class="w-full bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 px-8 py-4 rounded-2xl font-black text-sm uppercase tracking-[0.2em] border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all flex items-center justify-center gap-3">
+                         Kembali ke Dashboard
+                     </a>
+                 </div>
+             </div>
+        </div>
+        @endif
 
         <div class="bg-gray-50 dark:bg-gray-800/80 px-6 sm:px-8 py-4 sm:py-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-t border-gray-100 dark:border-gray-700">
             <a href="{{ route('bookings.show', ['booking' => $payment->booking_id]) }}" class="text-xs font-bold text-muted-light hover:text-primary transition-colors flex items-center gap-2 uppercase tracking-wider">
                 <span class="material-symbols-outlined text-sm">arrow_back</span>
                 Kembali ke Booking
             </a>
-            <div class="text-[10px] text-muted-light font-mono bg-white dark:bg-gray-700 px-2 py-1 rounded border border-gray-200 dark:border-gray-600">
-                STATUS: {{ $payment->status->value }}
+
+            @php
+                $statusColor = match($payment->status) {
+                    \App\Enums\PaymentStatus::SETTLEMENT, \App\Enums\PaymentStatus::REFUNDED => 'bg-emerald-100 text-emerald-700 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-400 dark:border-emerald-800',
+                    \App\Enums\PaymentStatus::PENDING => 'bg-amber-100 text-amber-700 border-amber-200 dark:bg-amber-900/30 dark:text-amber-400 dark:border-amber-800', 
+                    \App\Enums\PaymentStatus::FAILED, \App\Enums\PaymentStatus::EXPIRED, \App\Enums\PaymentStatus::CANCELLED => 'bg-rose-100 text-rose-700 border-rose-200 dark:bg-rose-900/30 dark:text-rose-400 dark:border-rose-800',
+                    default => 'bg-gray-100 text-gray-700 border-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700',
+                };
+            @endphp
+            <div class="text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-lg border {{ $statusColor }}">
+                STATUS: {{ $payment->status->label() }}
             </div>
         </div>
     </div>
