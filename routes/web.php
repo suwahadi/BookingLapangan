@@ -79,6 +79,14 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     // System
     Route::get('/system/users', \App\Livewire\Admin\System\UserIndexAdmin::class)->name('system.users');
     Route::get('/system/audit-logs', \App\Livewire\Admin\System\AuditLogIndex::class)->name('system.audit-logs');
+
+    // Pages (CMS)
+    Route::get('/pages', \App\Livewire\Admin\Pages\PageIndex::class)->name('pages.index');
+    Route::get('/pages/create', \App\Livewire\Admin\Pages\PageForm::class)->name('pages.create');
+    Route::get('/pages/{page}/edit', \App\Livewire\Admin\Pages\PageForm::class)->name('pages.edit');
 });
 
 Route::post('/midtrans/notification', \App\Http\Controllers\Midtrans\MidtransNotificationController::class);
+
+// Static Pages (Must be last)
+Route::get('/{page:slug}', \App\Livewire\Public\PageDisplay::class)->name('public.page');

@@ -39,9 +39,9 @@
             <div class="space-y-4">
                 <h3 class="text-sm font-black text-gray-900 uppercase tracking-widest">Perusahaan</h3>
                 <ul class="space-y-3">
-                    <li><a href="#" class="text-sm font-medium text-gray-500 hover:text-red-600 transition-colors">Tentang</a></li>
-                    <li><a href="#" class="text-sm font-medium text-gray-500 hover:text-red-600 transition-colors">Kebijakan & Privasi</a></li>
-                    <li><a href="#" class="text-sm font-medium text-gray-500 hover:text-red-600 transition-colors">Syarat dan Ketentuan</a></li>
+                    <li><a href="{{ route('public.page', 'about') }}" class="text-sm font-medium text-gray-500 hover:text-red-600 transition-colors">Tentang</a></li>
+                    <li><a href="{{ route('public.page', 'privacy-policy') }}" class="text-sm font-medium text-gray-500 hover:text-red-600 transition-colors">Kebijakan & Privasi</a></li>
+                    <li><a href="{{ route('public.page', 'terms-conditions') }}" class="text-sm font-medium text-gray-500 hover:text-red-600 transition-colors">Syarat dan Ketentuan</a></li>
                 </ul>
             </div>
 
@@ -60,7 +60,7 @@
             <div class="space-y-4">
                 <h3 class="text-sm font-black text-gray-900 uppercase tracking-widest">Hubungi Kami</h3>
                 <ul class="space-y-3">
-                    <li><a href="#" class="text-sm font-medium text-gray-500 hover:text-red-600 transition-colors">Kontak</a></li>
+                    <li><a href="{{ route('public.page', 'contact') }}" class="text-sm font-medium text-gray-500 hover:text-red-600 transition-colors">Kontak</a></li>
                 </ul>
             </div>
         </div>

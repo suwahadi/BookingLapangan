@@ -142,57 +142,102 @@
                 <div class="space-y-4">
                     <label class="text-[10px] font-black text-muted-light uppercase tracking-widest px-1">Pilih Metode Pembayaran</label>
                     
-                    <div class="space-y-3">
-                        <!-- Virtual Account -->
-                        <div class="overflow-hidden rounded-2xl border-2 {{ $paymentType === 'bank_transfer' ? 'border-primary bg-primary/5' : 'border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800' }}"
-                             wire:key="pm-bank">
-                            <label class="flex items-center gap-4 p-5 cursor-pointer">
-                                <input type="radio" wire:model.live="paymentType" name="payment_method" value="bank_transfer" class="sr-only">
-                                <div class="w-10 h-10 bg-gray-100 dark:bg-gray-700 rounded-xl flex items-center justify-center text-muted-light shrink-0">
-                                    <span class="material-symbols-outlined">account_balance</span>
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 overflow-hidden divide-y divide-gray-50 dark:divide-gray-700/50 shadow-sm">
+                        
+                        <!-- Virtual Account Section -->
+                        <div x-data="{ open: true }" class="bg-white dark:bg-gray-800">
+                            <button type="button" @click="open = !open" class="w-full flex items-center justify-between p-4 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 bg-indigo-50 dark:bg-indigo-900/20 rounded-xl flex items-center justify-center text-indigo-600 shrink-0">
+                                        <span class="material-symbols-outlined text-xl">account_balance</span>
+                                    </div>
+                                    <div class="text-left">
+                                        <h4 class="font-bold text-sm text-gray-900 dark:text-gray-100">Transfer Virtual Account</h4>
+                                        <div class="flex gap-1.5 mt-1 overflow-x-auto no-scrollbar">
+                                            <img src="https://asset.ayo.co.id/assets/img/bca.png" class="h-3 w-auto opacity-50 grayscale" alt="BCA">
+                                            <img src="https://asset.ayo.co.id/assets/img/bni.png" class="h-3 w-auto opacity-50 grayscale" alt="BNI">
+                                            <img src="https://asset.ayo.co.id/assets/img/bri.png" class="h-3 w-auto opacity-50 grayscale" alt="BRI">
+                                            <img src="https://asset.ayo.co.id/assets/img/mandiri.png" class="h-3 w-auto opacity-50 grayscale" alt="Mandiri">
+                                            <img src="https://asset.ayo.co.id/assets/img/permata_only.png" class="h-3 w-auto opacity-50 grayscale" alt="Permata">
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="flex-1">
-                                    <h4 class="font-black text-sm uppercase tracking-tight">Virtual Account</h4>
-                                    <p class="text-[10px] font-bold text-muted-light">Verifikasi Otomatis</p>
-                                </div>
-                                <div class="w-5 h-5 rounded-full border-2 {{ $paymentType === 'bank_transfer' ? 'border-primary bg-primary' : 'border-gray-300' }} flex items-center justify-center">
-                                    @if($paymentType === 'bank_transfer') <div class="w-2 h-2 bg-white rounded-full"></div> @endif
-                                </div>
-                            </label>
+                                <span class="material-symbols-outlined text-gray-400 transition-transform duration-200" :class="{ 'rotate-180': open }">expand_more</span>
+                            </button>
+                            
+                            <div x-show="open" 
+                                 x-transition:enter="transition ease-out duration-200"
+                                 x-transition:enter-start="opacity-0 -translate-y-2"
+                                 x-transition:enter-end="opacity-100 translate-y-0"
+                                 class="px-4 pb-4 space-y-3">
+                                
+                                @foreach([
+                                    'bca' => ['label' => 'BCA', 'logo' => 'https://asset.ayo.co.id/assets/img/bca.png'],
+                                    'bni' => ['label' => 'BNI', 'logo' => 'https://asset.ayo.co.id/assets/img/bni.png'],
+                                    'bri' => ['label' => 'BRI', 'logo' => 'https://asset.ayo.co.id/assets/img/bri.png'],
+                                    'permata' => ['label' => 'Permata Bank', 'logo' => 'https://asset.ayo.co.id/assets/img/permata_only.png'],
+                                    'mandiri' => ['label' => 'Mandiri', 'logo' => 'https://asset.ayo.co.id/assets/img/mandiri.png']
+                                ] as $code => $bankData)
+                                <label class="flex items-center justify-between p-3 rounded-xl border cursor-pointer transition-all group
+                                    {{ ($paymentType === 'bank_transfer' && $bank === $code) 
+                                        ? 'border-indigo-600 bg-indigo-50/50 dark:bg-indigo-900/10 ring-1 ring-indigo-600' 
+                                        : 'border-transparent hover:bg-gray-50 dark:hover:bg-gray-700/50' }}">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-12 h-8 bg-white dark:bg-gray-700 rounded border border-gray-100 dark:border-gray-600 flex items-center justify-center p-1.5">
+                                            <img src="{{ $bankData['logo'] }}" alt="{{ $bankData['label'] }}" class="h-full w-auto object-contain">
+                                        </div>
+                                        <div>
+                                            <div class="font-bold text-xs text-gray-900 dark:text-gray-100">{{ $bankData['label'] }}</div>
+                                            <div class="text-[10px] text-gray-500">Virtual Account</div>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-3">
+                                        <div class="text-[10px] font-bold text-gray-400 line-through">Rp 2.500</div>
+                                        <div class="text-[10px] font-black text-emerald-600 uppercase">Gratis</div>
+                                        
+                                        <div class="relative w-5 h-5 rounded-full border flex items-center justify-center transition-all
+                                            {{ ($paymentType === 'bank_transfer' && $bank === $code) 
+                                                ? 'border-indigo-600' 
+                                                : 'border-gray-300 dark:border-gray-600 group-hover:border-gray-400' }}">
+                                            @if($paymentType === 'bank_transfer' && $bank === $code) 
+                                                <div class="w-2.5 h-2.5 bg-indigo-600 rounded-full"></div> 
+                                            @endif
+                                        </div>
+                                    </div>
+                                    <input type="radio" wire:model.live="bank" value="{{ $code }}" class="sr-only" wire:click="$set('paymentType', 'bank_transfer')">
+                                </label>
+                                @endforeach
+                            </div>
+                        </div>
 
-                            @if($paymentType === 'bank_transfer')
-                            <div class="px-5 pb-5 pt-0 pl-[4rem]">
-                                <div class="flex flex-wrap gap-2 mt-2">
-                                    @foreach(['bca' => 'BCA', 'bni' => 'BNI', 'bri' => 'BRI', 'permata' => 'PERMATA'] as $code => $label)
-                                    <button type="button" 
-                                            wire:click="$set('bank', '{{ $code }}')"
-                                            class="py-2 px-3 rounded-lg border text-[10px] font-black uppercase tracking-widest transition-all
-                                            {{ $bank === $code ? 'border-primary bg-primary text-white shadow-lg shadow-primary/20' : 'border-gray-200 dark:border-gray-600 text-muted-light hover:border-primary/50 bg-white' }}">
-                                        {{ $label }}
-                                    </button>
-                                    @endforeach
+                        <!-- QRIS Section -->
+                        <label class="w-full flex items-center justify-between p-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors group
+                            {{ $paymentType === 'gopay' ? 'bg-indigo-50/30' : '' }}">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 bg-white dark:bg-gray-700 rounded-xl border border-gray-100 dark:border-gray-600 flex items-center justify-center p-1.5 shadow-sm">
+                                    <img src="https://upload.wikimedia.org/wikipedia/commons/a/a2/Logo_QRIS.svg" alt="QRIS" class="h-full w-auto object-contain">
+                                </div>
+                                <div class="text-left">
+                                    <h4 class="font-bold text-sm text-gray-900 dark:text-gray-100">QRIS / E-Wallet</h4>
+                                    <div class="text-[10px] text-gray-500">Scan QR (GoPay, OVO, ShopeePay)</div>
                                 </div>
                             </div>
-                            @endif
-                        </div>
+                            <div class="flex items-center gap-3">
+                                <div class="text-[10px] font-bold text-gray-400 line-through">Rp 1.000</div>
+                                <div class="text-[10px] font-black text-emerald-600 uppercase">Gratis</div>
+                                
+                                <div class="relative w-5 h-5 rounded-full border flex items-center justify-center transition-all
+                                    {{ $paymentType === 'gopay' 
+                                        ? 'border-indigo-600' 
+                                        : 'border-gray-300 dark:border-gray-600 group-hover:border-gray-400' }}">
+                                    @if($paymentType === 'gopay') 
+                                        <div class="w-2.5 h-2.5 bg-indigo-600 rounded-full"></div> 
+                                    @endif
+                                </div>
+                            </div>
+                            <input type="radio" wire:model.live="paymentType" name="payment_method" value="gopay" class="sr-only">
+                        </label>
 
-                        <!-- E-Wallet -->
-                        <div class="overflow-hidden rounded-2xl border-2 {{ $paymentType === 'gopay' ? 'border-primary bg-primary/5' : 'border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800' }}"
-                             wire:key="pm-gopay">
-                            <label class="flex items-center gap-4 p-5 cursor-pointer">
-                                <input type="radio" wire:model.live="paymentType" name="payment_method" value="gopay" class="sr-only">
-                                <div class="w-10 h-10 bg-sky-100 dark:bg-sky-900/30 rounded-xl flex items-center justify-center text-sky-600 shrink-0">
-                                    <span class="material-symbols-outlined">qr_code_scanner</span>
-                                </div>
-                                <div class="flex-1">
-                                    <h4 class="font-black text-sm uppercase tracking-tight">QRIS / E-Wallet</h4>
-                                    <p class="text-[10px] font-bold text-muted-light">Scan QR (GoPay, OVO, dll)</p>
-                                </div>
-                                <div class="w-5 h-5 rounded-full border-2 {{ $paymentType === 'gopay' ? 'border-primary bg-primary' : 'border-gray-300' }} flex items-center justify-center">
-                                    @if($paymentType === 'gopay') <div class="w-2 h-2 bg-white rounded-full"></div> @endif
-                                </div>
-                            </label>
-                        </div>
                     </div>
                 </div>
 
@@ -229,10 +274,6 @@
                              x-transition:leave-start="opacity-100 scale-100"
                              x-transition:leave-end="opacity-0 scale-90">
                             
-                            <div class="w-16 h-16 rounded-full bg-primary/10 mx-auto flex items-center justify-center">
-                                <span class="material-symbols-outlined text-primary text-3xl">fact_check</span>
-                            </div>
-                            
                             <div>
                                 <h3 class="text-xl font-black text-gray-900 dark:text-white uppercase italic tracking-tight mb-2">Konfirmasi Data</h3>
                                 <p class="text-sm text-gray-500 font-medium">
@@ -247,7 +288,7 @@
                                 </button>
                                 <button x-on:click="showConfirm = false; $wire.createPayment()" 
                                         class="flex-1 py-3.5 bg-primary hover:bg-primary-dark rounded-xl text-xs font-black uppercase tracking-wider text-white shadow-lg shadow-primary/30 transition-all transform active:scale-95">
-                                    Ya, Lanjut Bayar
+                                    Lanjut Bayar
                                 </button>
                             </div>
                         </div>

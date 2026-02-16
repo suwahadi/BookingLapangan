@@ -331,10 +331,10 @@
                 </div>
 
                 <!-- Reviews -->
-                <div class="pt-10 border-t border-gray-100 dark:border-gray-800">
-                     <div class="flex items-center gap-2 mb-6">
-                             <span class="material-symbols-outlined text-primary text-2xl animate-pulse">star</span>
-                             <h2 class="text-2xl font-black text-text-light dark:text-text-dark uppercase italic">Ulasan</h2>
+                <div class="bg-surface-light dark:bg-surface-dark rounded-[2.5rem] p-8 md:p-10 border border-gray-100 dark:border-gray-700 shadow-card">
+                     <div class="flex items-center gap-2 mb-8">
+                             <span class="material-symbols-outlined text-primary text-3xl animate-pulse">star</span>
+                             <h2 class="text-3xl font-black text-text-light dark:text-text-dark uppercase italic flex-1">Ulasan</h2>
                      </div>
                      
                      <livewire:venue.reviews-section :venue-id="$venue->id" />
