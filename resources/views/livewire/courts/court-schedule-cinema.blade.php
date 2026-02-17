@@ -126,41 +126,43 @@
                             $originalAmount = $amount > 0 ? $amount + 10000 : 0;
                         @endphp
 
-                        @if($slot['is_available'] && $amount > 0)
-                            <button type="button"
-                                    wire:click="toggleSelect({{ $i }})"
-                                    wire:loading.attr="disabled"
-                                    class="relative p-4 rounded-2xl border-2 transition-all duration-200 text-center group
-                                    {{ $isSelected 
-                                        ? 'bg-[#981028] border-[#981028] ring-2 ring-[#981028]/20' 
-                                        : 'bg-white dark:bg-gray-800 hover:border-red-200 border-gray-100 dark:border-gray-700' 
-                                    }}">
-                                
-                                <div class="text-[10px] tracking-wider mb-1.5 {{ $isSelected ? 'text-white/50' : 'text-gray-400' }}">60 Menit</div>
-                                @if($isSelected)
-                                    <div class="absolute top-2.5 right-2.5">
-                                        <span class="material-symbols-outlined text-white text-base" style="font-variation-settings: 'FILL' 1;">check_circle</span>
-                                    </div>
-                                @endif
+                        @if($amount > 0)
+                            @if($slot['is_available'])
+                                <button type="button"
+                                        wire:click="toggleSelect({{ $i }})"
+                                        wire:loading.attr="disabled"
+                                        class="relative p-4 rounded-2xl border-2 transition-all duration-200 text-center group
+                                        {{ $isSelected 
+                                            ? 'bg-[#981028] border-[#981028] ring-2 ring-[#981028]/20' 
+                                            : 'bg-white dark:bg-gray-800 hover:border-red-200 border-gray-100 dark:border-gray-700' 
+                                        }}">
+                                    
+                                    <div class="text-[10px] tracking-wider mb-1.5 {{ $isSelected ? 'text-white/50' : 'text-gray-400' }}">60 Menit</div>
+                                    @if($isSelected)
+                                        <div class="absolute top-2.5 right-2.5">
+                                            <span class="material-symbols-outlined text-white text-base" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                                        </div>
+                                    @endif
 
-                                <div class="text-sm font-bold mb-2 {{ $isSelected ? 'text-white' : 'text-gray-900 dark:text-white' }}">
-                                    {{ $slot['start'] }} - {{ $slot['end'] }}
+                                    <div class="text-sm font-bold mb-2 {{ $isSelected ? 'text-white' : 'text-gray-900 dark:text-white' }}">
+                                        {{ $slot['start'] }} - {{ $slot['end'] }}
+                                    </div>
+                                    
+                                    <div class="text-xs font-medium {{ $isSelected ? 'text-white/80' : 'text-gray-500' }}">
+                                        Rp{{ number_format($amount, 0, ',', '.') }}
+                                    </div>
+                                </button>
+                            @else
+                                <div class="relative p-4 rounded-2xl border-2 border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/40 text-center cursor-not-allowed">
+                                    <div class="text-[10px] tracking-wider mb-1.5 text-gray-300 dark:text-gray-600">60 Menit</div>
+                                    <div class="text-sm font-bold mb-2 text-gray-400 dark:text-gray-500 decoration-2 decoration-gray-300 line-through">
+                                        {{ $slot['start'] }} - {{ $slot['end'] }}
+                                    </div>
+                                    <div class="inline-flex items-center gap-1 text-[10px] text-gray-400 uppercase px-2 py-1 rounded">
+                                        BOOKED
+                                    </div>
                                 </div>
-                                
-                                <div class="text-xs font-medium {{ $isSelected ? 'text-white/80' : 'text-gray-500' }}">
-                                    Rp{{ number_format($amount, 0, ',', '.') }}
-                                </div>
-                            </button>
-                        @else
-                             <div class="p-4 rounded-2xl border-2 border-gray-100 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/50 text-center cursor-not-allowed">
-                                <div class="text-[10px] tracking-wider mb-1.5 text-gray-300">60 Menit</div>
-                                <div class="text-sm font-bold mb-2 text-gray-400">
-                                    {{ $slot['start'] }} - {{ $slot['end'] }}
-                                </div>
-                                <div class="text-xs font-medium text-gray-300">
-                                    {{ ($slot['status'] ?? '') === 'booked' ? 'Booked' : 'Tidak Tersedia' }}
-                                </div>
-                            </div>
+                            @endif
                         @endif
                     @endforeach
                 </div>

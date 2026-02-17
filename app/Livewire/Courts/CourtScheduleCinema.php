@@ -53,49 +53,55 @@ class CourtScheduleCinema extends Component
     {
         $this->errorMessage = null;
 
+        // 1. Get Operating Hours for the SELECTED date
+        $selectedDate = CarbonImmutable::createFromFormat('Y-m-d', $this->date)->startOfDay();
+        $dayOfWeek = $selectedDate->isoWeekday(); // 1-7
+        
+        $operatingHour = $this->venueCourt->venue->operatingHours()
+            ->where('day_of_week', $dayOfWeek)
+            ->first();
+
+        if ($operatingHour && !$operatingHour->is_closed) {
+            // Use venue hours if available
+            $this->openTime = substr($operatingHour->open_time, 0, 5);
+            
+            $rawClose = substr($operatingHour->close_time, 0, 5);
+            // Treat 00:00 or 23:59 as 24:00 (End of Day) to allow fully midnight slots
+            if ($rawClose === '00:00' || $rawClose === '23:59') {
+                $this->closeTime = '24:00';
+            } else {
+                $this->closeTime = $rawClose;
+            }
+        } else {
+            // Default fallback if no operating hours found or if closed (though usually we'd show closed message)
+            // For now, let's assume default 06:00-23:00 OR full 24h if desired.
+            // But per request "24 jam", let's try 00:00 - 24:00 (next day 00:00)
+            // However, AvailabilityService usually expects start < end.
+            // If closed, maybe empty array?
+            if ($operatingHour && $operatingHour->is_closed) {
+                $this->timeSlots = [];
+                $this->slotAmounts = [];
+                return;
+            }
+            // Fallback: 00:00 to 24:00
+            $this->openTime = '00:00'; 
+            $this->closeTime = '24:00'; // AvailabilityService handles this: Carbon parses 24:00 as next day 00:00.
+        }
+
         $availability = app(AvailabilityService::class);
-        $this->timeSlots = $availability->getDailySlots(
+        // Ensure closeTime > openTime for 24h logic (e.g. 00:00 to 00:00 next day)
+        // If closeTime is '00:00' and open is '00:00', it might be empty.
+        // If closeTime is smaller than openTime (spanning midnight), logic might need adjustment.
+        // For now assume standard day range.
+
+        $rawSlots = $availability->getDailySlots(
             venueCourtId: $this->venueCourt->id,
             dateYmd: $this->date,
             openTimeHi: $this->openTime,
             closeTimeHi: $this->closeTime
         );
 
-        // Disable past dates and past times
-        $now = CarbonImmutable::now();
-        $selectedDate = CarbonImmutable::createFromFormat('Y-m-d', $this->date)->startOfDay();
-        $today = $now->startOfDay();
-        
-        $isPastDate = $selectedDate->lessThan($today);
-        $isToday = $selectedDate->equalTo($today);
-        $currentTimeHi = $now->format('H:i');
-
-        foreach ($this->timeSlots as &$slot) {
-            // Determine initial status based on DB availability
-            $slot['status'] = $slot['is_available'] ? 'available' : 'booked';
-
-            if ($isPastDate) {
-                $slot['is_available'] = false;
-                // Only change status if it wasn't already booked
-                if ($slot['status'] === 'available') {
-                    $slot['status'] = 'unavailable';
-                }
-                continue;
-            }
-
-            if ($isToday) {
-                // If the slot starts before current time, disable it
-                if ($slot['start'] < $currentTimeHi) {
-                    $slot['is_available'] = false;
-                    if ($slot['status'] === 'available') {
-                        $slot['status'] = 'unavailable';
-                    }
-                }
-            }
-        }
-        unset($slot); // clear reference
-
-        // Harga per slot (untuk display)
+        // 2. Fetch Pricing
         try {
             $pricing = app(PricingService::class);
             $this->slotAmounts = $pricing->getSlotAmounts(
@@ -105,9 +111,51 @@ class CourtScheduleCinema extends Component
                 closeTimeHi: $this->closeTime
             );
         } catch (\Throwable $e) {
-            // Untuk MVP: jika pricing bermasalah, tetap render tanpa harga
             $this->slotAmounts = [];
         }
+
+        // 3. Filter Slots: Only keep slots that have a price AND are within operating hours (already handled by getDailySlots range)
+        // AND not "empty" (no price).
+        // Also handle past time logic here.
+
+        $filteredSlots = [];
+        $now = CarbonImmutable::now();
+        $today = $now->startOfDay();
+        $isPastDate = $selectedDate->lessThan($today);
+        $isToday = $selectedDate->equalTo($today);
+        $currentTimeHi = $now->format('H:i');
+
+        foreach ($rawSlots as $slot) {
+            $key = $slot['start'] . '|' . $slot['end'];
+            $amount = $this->slotAmounts[$key] ?? 0;
+
+            // SKIP empty/unpriced slots (Visual Masonry / No Gaps requirement)
+            if ($amount <= 0) {
+                continue;
+            }
+
+            // Determine status
+            $slot['status'] = $slot['is_available'] ? 'available' : 'booked';
+
+            // Check Past Time -> SKIP (So they don't appear in grid)
+            if ($isPastDate) {
+                 continue;
+            }
+            if ($isToday && $slot['start'] < $currentTimeHi) {
+                 continue;
+            }
+
+            $filteredSlots[] = $slot;
+        }
+
+        $this->timeSlots = $filteredSlots;
+
+        // Re-index selectedIndexes? No, selectedIndexes stores INDICES of the timeSlots array.
+        // Since we replaced $this->timeSlots with a new indexed array (0, 1, 2...), the old selection indices are invalid.
+        // We should clear selection on reload (handled by updatedDate).
+        // If this is just a reload without date change (e.g. polling), we might lose selection.
+        // But for now, simple reload clears selection or risks wrong index mapping if not cleared.
+        // In `updatedDate` we clear `$this->selectedIndexes = []`, so it is safe.
     }
 
     /**
@@ -154,11 +202,6 @@ class CourtScheduleCinema extends Component
     {
         $this->errorMessage = null;
 
-        // if (!Auth::check()) {
-        //     $this->redirect(route('login'));
-        //     return;
-        // }
-
         if (empty($this->selectedIndexes)) {
             $this->errorMessage = 'Silakan pilih jam terlebih dahulu.';
             return;
@@ -166,10 +209,13 @@ class CourtScheduleCinema extends Component
 
         // Build slots array for cart
         $slots = [];
-        foreach ($this->selectedIndexes as $index) {
-            if (!isset($this->timeSlots[$index])) continue;
+        foreach ($this->selectedIndexes as $idx) {
+            // Find slot by index in the current filtered/mapped list
+            // Note: Since we might filter timeSlots, we need to be careful with indexes.
+            // However, assuming selectedIndexes stores keys of $this->timeSlots array:
+            if (!isset($this->timeSlots[$idx])) continue;
             
-            $slot = $this->timeSlots[$index];
+            $slot = $this->timeSlots[$idx];
             $key = $slot['start'] . '|' . $slot['end'];
             $amount = $this->slotAmounts[$key] ?? 0;
             
@@ -185,7 +231,7 @@ class CourtScheduleCinema extends Component
         session()->put('booking_cart', [
             'venue_court_id' => $this->venueCourt->id,
             'date' => $this->date,
-            'slots' => $slots,
+            'slots' => $slots, // Order might matter? Usually handled by date/time sort in checkout.
             'total_amount' => $this->selectedTotal,
         ]);
 

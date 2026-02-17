@@ -130,7 +130,7 @@
                                         <span class="material-symbols-outlined text-emerald-600">confirmation_number</span>
                                     </span>
                                     <div>
-                                        <p class="text-xs font-black text-emerald-700 uppercase tracking-widest">{{ $appliedVoucherCode }}</p>
+                                        <p class="text-xs font-black text-emerald-700 uppercase tracking-widest">Voucher</p>
                                         <p class="text-[11px] font-bold text-emerald-600 mt-0.5">Hemat Rp{{ number_format($discountAmount, 0, ',', '.') }}</p>
                                     </div>
                                 </div>

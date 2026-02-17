@@ -24,7 +24,6 @@
                         <th class="px-6 py-4">Judul</th>
                         <th class="px-6 py-4">Slug</th>
                         <th class="px-6 py-4">Status</th>
-                        <th class="px-6 py-4">Terakhir Update</th>
                         <th class="px-6 py-4 text-right">Aksi</th>
                     </tr>
                 </thead>
@@ -46,9 +45,6 @@
                                 <span class="ml-2 text-xs font-medium {{ $page->is_active ? 'text-emerald-600' : 'text-gray-500' }}">
                                     {{ $page->is_active ? 'Aktif' : 'Non-aktif' }}
                                 </span>
-                            </td>
-                            <td class="px-6 py-4 text-slate-500 text-xs">
-                                {{ $page->updated_at->format('d M Y H:i') }}
                             </td>
                             <td class="px-6 py-4 text-right space-x-2">
                                 <a href="{{ route('public.page', $page->slug) }}" target="_blank" class="inline-flex items-center text-xs font-bold text-gray-400 hover:text-emerald-600 px-2 py-1.5 transition-colors" title="Lihat">

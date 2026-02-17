@@ -82,8 +82,28 @@ class PricingService
 
         $match = $pricings->first(function (VenuePricing $p) use ($slotStartTime, $slotEndTime) {
             // rule mencakup penuh slot
-            // pastikan juga string comparison safe (atau convert ke timestamp jika perlu, tapi H:i:s usually safe)
-            return $p->start_time <= $slotStartTime && $p->end_time >= $slotEndTime;
+            // Normalisasi end time rule jika 00:00:00 -> dianggap 24:00:00 (lebih besar dari jam berapapun)
+            // Normalisasi slot end time jika 00:00:00 -> dianggap 24:00:00
+            
+            $pEnd = $p->end_time;
+            $sEnd = $slotEndTime;
+
+            // Jika DB record end_time = 00:00:00, anggap sebagai End Of Day (Max) (kecuali jika start=00:00 juga, tp asumsi pricing invalid kl durasi 0)
+            // String compare '00:00:00' < '23:00:00', jadi logic native PHP salah jika tidak di-handle
+            $ruleEndValid = ($pEnd === '00:00:00') ? true : ($pEnd >= $sEnd);
+            
+            // Check start time standard
+            $ruleStartValid = $p->start_time <= $slotStartTime;
+
+            // Double check: kalau slotEndTime '00:00:00', perbandingan string pEnd >= '00:00:00' selalu True.
+            // Tapi yang kita mau: Jika SlotEnd=00:00 (Next Day), RuleEnd harus juga 00:00 (Next Day) atau >.
+            // Jika RuleEnd=23:00, SlotEnd=00:00. '23:00' >= '00:00' (True secara string). INI SALAH.
+            // Maka kita harus fix logic comparison string ini.
+
+            $valPEnd = ($pEnd === '00:00:00') ? '24:00:00' : $pEnd;
+            $valSEnd = ($sEnd === '00:00:00') ? '24:00:00' : $sEnd;
+
+            return ($p->start_time <= $slotStartTime) && ($valPEnd >= $valSEnd);
         });
 
         if (!$match) {

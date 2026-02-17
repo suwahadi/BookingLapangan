@@ -15,32 +15,32 @@
             <p class="text-gray-500 mt-1 tracking-tight">Kustomisasi tarif per jam berdasarkan waktu</p>
         </div>
         
-        <div class="flex items-center gap-3">
-             <div x-data="{ open: false, selectedDays: [] }" class="relative">
-                <button @click="open = !open" class="bg-white border-2 border-gray-900 px-6 py-3 rounded-2xl font-black text-xs tracking-widest hover:bg-gray-100 transition-all flex items-center gap-2">
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full md:w-auto">
+             <div x-data="{ open: false, selectedDays: [] }" class="relative w-full sm:w-auto">
+                <button @click="open = !open" class="w-full sm:w-auto bg-white border-2 border-gray-900 px-6 py-3 rounded-2xl font-black text-xs tracking-widest hover:bg-gray-100 transition-all flex items-center justify-center gap-2">
                     SALIN KE HARI LAIN
                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" /></svg>
                 </button>
                 
-                <div x-show="open" @click.away="open = false" x-cloak class="absolute right-0 mt-4 w-64 bg-white rounded-[2rem] shadow-3xl border border-gray-50 p-6 z-50">
+                <div x-show="open" @click.away="open = false" x-cloak class="absolute left-0 right-0 sm:left-auto sm:right-0 mt-4 w-full sm:w-64 bg-white rounded-[2rem] shadow-3xl border border-gray-50 p-6 z-50">
                     <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-4">Pilih Hari Tujuan:</p>
-                    <div class="space-y-2 mb-6">
+                    <div class="grid grid-cols-2 sm:grid-cols-1 gap-3 sm:gap-2 mb-6">
                         @foreach($days as $id => $label)
                             @if($id !== $dayOfWeek)
-                            <label class="flex items-center gap-3 cursor-pointer group">
+                            <label class="flex items-center gap-3 cursor-pointer group p-2 sm:p-0 rounded-lg hover:bg-gray-50 sm:hover:bg-transparent transition-colors">
                                 <input type="checkbox" value="{{ $id }}" x-model="selectedDays" class="w-5 h-5 rounded-lg border-2 border-gray-200 text-indigo-600 focus:ring-indigo-500">
                                 <span class="text-xs font-bold text-gray-600 group-hover:text-indigo-600 transition-colors">{{ $label }}</span>
                             </label>
                             @endif
                         @endforeach
                     </div>
-                    <button @click="$wire.copyToDays(selectedDays); open = false" class="w-full bg-indigo-600 text-white py-3 rounded-xl font-black text-[10px] tracking-widest hover:bg-indigo-700 transition-all">
+                    <button @click="$wire.copyToDays(selectedDays); open = false" class="w-full bg-indigo-600 text-white py-3 rounded-xl font-black text-[10px] tracking-widest hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-100">
                         TERAPKAN SEKARANG
                     </button>
                 </div>
             </div>
 
-            <button wire:click="save" class="bg-gray-900 text-white px-8 py-4 rounded-[1.5rem] font-black text-sm tracking-widest hover:bg-black transition-all transform active:scale-95 shadow-2xl shadow-indigo-100 flex items-center gap-2">
+            <button wire:click="save" class="w-full sm:w-auto bg-gray-900 text-white px-8 py-4 rounded-[1.5rem] font-black text-sm tracking-widest hover:bg-black transition-all transform active:scale-95 shadow-2xl shadow-indigo-100 flex items-center justify-center gap-2">
                 <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" /></svg>
                 SIMPAN HARGA
             </button>
