@@ -28,8 +28,15 @@ class WalletWithdraw extends Component
 
     public function confirmWithdraw()
     {
+        // Calculate actual withdrawable balance (Total - Pending/Approved but not yet processed)
+        $pendingAmount = WithdrawRequest::where('user_id', auth()->id())
+            ->whereIn('status', [WithdrawStatus::PENDING, WithdrawStatus::APPROVED])
+            ->sum('amount');
+            
+        $maxWithdrawable = max(0, $this->availableBalance - $pendingAmount);
+
         $this->validate([
-            'amount' => "required|integer|min:10000|max:{$this->availableBalance}",
+            'amount' => "required|integer|min:10000|max:{$maxWithdrawable}",
             'bankName' => 'required|string|max:100',
             'bankAccountNumber' => 'required|string|max:50',
             'bankAccountName' => 'required|string|max:100',

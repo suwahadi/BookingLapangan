@@ -23,7 +23,7 @@
                     <div class="text-[10px] font-black text-muted-light uppercase tracking-widest mb-1">Booking Detail</div>
                     <div class="font-bold text-lg text-gray-900 dark:text-gray-100">{{ $booking->venue->name }}</div>
                     <div class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 font-medium">
-                        <span class="material-symbols-outlined text-lg">{{ \App\Models\Venue::sportIcon($booking->court->sport ?? $booking->venue->sport_type) }}</span>
+                        {!! \App\Models\Venue::getSportSvg($booking->court->sport ?? $booking->venue->sport_type, 'w-5 h-5') !!}
                         {{ $booking->court->name }}
                     </div>
                     <div class="flex items-center gap-2 text-xs text-muted-light mt-1">

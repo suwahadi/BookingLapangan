@@ -308,7 +308,7 @@
                                         </div>
                                         
                                         <div class="flex flex-wrap gap-2 text-[10px] font-bold text-muted-light uppercase tracking-wide">
-                                            <span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm">{{ \App\Models\Venue::sportIcon($court->sport) }}</span> {{ $court->sport }}</span>
+                                            <span class="flex items-center gap-1">{!! \App\Models\Venue::getSportSvg($court->sport, 'w-4 h-4') !!} {{ $court->sport }}</span>
                                             <span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm">roofing</span> Indoor</span>
                                             <span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm">texture</span> {{ $court->floor_type ?? 'Karpet' }}</span>
                                         </div>

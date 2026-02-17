@@ -86,8 +86,10 @@
                     <!-- Selected Slots -->
                     <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
                         <h3 class="text-lg font-black text-gray-900">{{ $venueCourt->name ?? 'Lapangan' }}</h3>
-                        <span class="material-symbols-outlined text-sm mb-6">{{ \App\Models\Venue::sportIcon($venueCourt->sport ?? '') }}</span>
-                            <span class="text-sm">{{ $venueCourt->sport }}</span>
+                        <div class="flex items-center gap-2 mb-6">
+                            {!! \App\Models\Venue::getSportSvg($venueCourt->sport ?? '', 'w-4 h-4') !!}
+                            <span class="text-sm font-semibold">{{ $venueCourt->sport }}</span>
+                        </div>
                         
                         <div class="space-y-4">
                             @foreach($selectedSlots as $index => $slot)

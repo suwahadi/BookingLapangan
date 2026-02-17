@@ -173,7 +173,7 @@
                                            }}">
                                 <div class="w-10 h-10 rounded-xl flex items-center justify-center transition-colors
                                             {{ $isActive ? 'bg-white/20 text-white' : $colorClasses }}">
-                                    <span class="material-symbols-outlined">{{ $cat['icon'] }}</span>
+                                    {!! \App\Models\Venue::getSportSvg($cat['key'], 'w-6 h-6') !!}
                                 </div>
                                 <span class="font-bold text-sm">{{ $cat['name'] }}</span>
                                 @if($isActive)
@@ -255,8 +255,8 @@
                                      src="{{ $cov ? Storage::url($cov->file_path) : 'https://placehold.co/600x400?text=No+Image' }}" />
                                 
                                 <!-- Sport Badge -->
-                                <div class="absolute top-3 left-3 bg-[#8B1538] text-white px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider">
-                                    {{ $venue->sport_type ?? 'Multi' }}
+                                <div class="absolute top-3 left-3 bg-[#8B1538] text-white px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider flex items-center gap-1.5 shadow-sm">
+                                    <span>{{ $venue->sport_type ?? 'Multi' }}</span>
                                 </div>
 
                                 <!-- Favorite -->

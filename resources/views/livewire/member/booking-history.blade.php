@@ -67,7 +67,7 @@
                             <div>
                                 <p class="text-sm font-bold text-text-light dark:text-text-dark">{{ $booking->venue->name ?? '-' }}</p>
                                 <div class="flex items-center gap-1 text-xs text-muted-light mt-0.5">
-                                    <span class="material-symbols-outlined text-[14px]">{{ \App\Models\Venue::sportIcon($booking->court->sport ?? '') }}</span>
+                                    {!! \App\Models\Venue::getSportSvg($booking->court->sport ?? '', 'w-3 h-3') !!}
                                     {{ $booking->court->name ?? '-' }}
                                 </div>
                                 <div class="flex flex-wrap items-center gap-1 mt-1">

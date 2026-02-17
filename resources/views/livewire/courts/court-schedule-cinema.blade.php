@@ -89,7 +89,7 @@
 
                      <div class="flex flex-wrap gap-4 text-xs font-bold text-gray-500">
                         <div class="flex items-center gap-1.5">
-                            <span class="material-symbols-outlined text-sm">{{ \App\Models\Venue::sportIcon($venueCourt->sport ?? '') }}</span>
+                            {!! \App\Models\Venue::getSportSvg($venueCourt->sport ?? '', 'w-4 h-4') !!}
                             {{ $venueCourt->sport }}
                         </div>
                          <div class="flex items-center gap-1.5">

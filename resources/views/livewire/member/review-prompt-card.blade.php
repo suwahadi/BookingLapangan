@@ -6,9 +6,7 @@
             <div class="flex items-start gap-4 mb-4 pb-4 border-b border-slate-50 dark:border-gray-700">
                 {{-- Venue/Sport Icon --}}
                 <div class="w-12 h-12 rounded-lg bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 flex items-center justify-center shrink-0">
-                     <span class="material-symbols-outlined text-red-600 dark:text-red-400 text-2xl">
-                        {{ \App\Models\Venue::sportIcon($booking->court->sport ?? $booking->venue->sport_type) }}
-                     </span>
+                     {!! \App\Models\Venue::getSportSvg($booking->court->sport ?? $booking->venue->sport_type, 'w-6 h-6') !!}
                 </div>
                 <div>
                     <h4 class="font-bold text-slate-900 dark:text-white">{{ $booking->venue->name ?? 'Venue' }}</h4>

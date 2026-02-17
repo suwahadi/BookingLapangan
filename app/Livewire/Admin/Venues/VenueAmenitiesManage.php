@@ -41,8 +41,7 @@ class VenueAmenitiesManage extends Component
         $amenities = Amenity::where('is_active', true)
             ->orderBy('category')
             ->orderBy('name')
-            ->get()
-            ->groupBy('category');
+            ->get();
 
         return view('livewire.admin.venues.venue-amenities-manage', [
             'amenities' => $amenities,

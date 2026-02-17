@@ -58,7 +58,7 @@
                         <div class="space-y-2">
                             <p class="text-[10px] font-bold text-muted-light uppercase tracking-widest">Arena</p>
                             <div class="flex items-center gap-3">
-                                <span class="material-symbols-outlined text-primary text-xl">{{ \App\Models\Venue::sportIcon($booking->court->sport ?? $booking->venue->sport_type) }}</span>
+                                {!! \App\Models\Venue::getSportSvg($booking->court->sport ?? $booking->venue->sport_type, 'w-5 h-5 text-primary') !!}
                                 <p class="text-base font-bold text-primary">{{ $booking->court->name }}</p>
                             </div>
                         </div>
