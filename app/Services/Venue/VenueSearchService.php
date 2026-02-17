@@ -44,6 +44,9 @@ class VenueSearchService
                         ->scopeAvailableForRange($courts, $date, $start, $end);
                 }
             })
+            ->with(['media' => function ($q) {
+                $q->orderBy('order_column');
+            }])
             ->withCount(['courts as active_courts_count' => fn ($q) => $q->where('is_active', true)])
             ->withMin('pricings', 'price_per_hour')
             ->orderBy('name');

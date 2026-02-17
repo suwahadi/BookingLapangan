@@ -3,11 +3,14 @@
 namespace App\Livewire\Public;
 
 use App\Services\Venue\VenueSearchService;
+use Illuminate\Support\Facades\Cache;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\Lazy;
 use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
 
+#[Lazy]
 #[Layout('layouts.app')]
 class VenueSearch extends Component
 {
@@ -38,11 +41,29 @@ class VenueSearch extends Component
             'end_time' => $this->end_time,
         ];
 
-        $venues = $service->search($filters, 12);
+        // Cache logic: Only cache if no filters are applied and on page 1
+        $page = $this->paginators['page'] ?? 1;
+        $isCleanSearch = empty(array_filter($filters)) && $page === 1;
+        $cacheKey = 'venues_homepage_list';
+        $cacheDuration = 600; // 10 minutes
 
+        if ($isCleanSearch) {
+            $venues = Cache::remember($cacheKey, $cacheDuration, function () use ($service, $filters) {
+                return $service->search($filters, 12);
+            });
+        } else {
+            $venues = $service->search($filters, 12);
+        }
+
+        // Return view
         return view('livewire.public.venue-search', [
             'venues' => $venues
         ]);
+    }
+    
+    public function placeholder()
+    {
+        return view('livewire.public.venue-search-placeholder');
     }
 
     public function updated($property)

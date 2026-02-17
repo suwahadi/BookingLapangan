@@ -18,6 +18,9 @@
         <div class="absolute inset-0 z-0">
             <img src="https://yomabar.web.id/storage/hero/hero_slide_001.webp" 
                  alt="Hero Slide" 
+                 fetchpriority="high"
+                 loading="eager"
+                 decoding="async"
                  class="w-full h-full object-cover">
             <div class="absolute inset-0 bg-black/60"></div>
         </div>
@@ -84,9 +87,10 @@
                             <span class="material-symbols-outlined text-white">location_on</span>
                         </div>
                         <div class="flex-1 min-w-0">
-                            <div class="text-white/60 text-[10px] font-bold uppercase tracking-wider">Lokasi</div>
+                            <label for="search-city" class="text-white/60 text-[10px] font-bold uppercase tracking-wider block">Lokasi</label>
                             <input wire:model.live.debounce.300ms="keyword" 
                                    type="text" 
+                                   id="search-city"
                                    placeholder="Pilih Kota" 
                                    class="bg-transparent border-none text-white placeholder-white/80 focus:ring-0 w-full font-bold text-sm p-0">
                         </div>
@@ -98,8 +102,10 @@
                             <span class="material-symbols-outlined text-white">groups</span>
                         </div>
                         <div class="flex-1 min-w-0">
-                            <div class="text-white/60 text-[10px] font-bold uppercase tracking-wider">Cabang Olahraga</div>
+                            <label for="sport-type-select" class="text-white/60 text-[10px] font-bold uppercase tracking-wider block">Cabang Olahraga</label>
                             <select wire:model.live="sport_type" 
+                                    id="sport-type-select"
+                                    aria-label="Pilih Cabang Olahraga"
                                     class="bg-transparent border-none text-white focus:ring-0 w-full font-bold text-sm p-0 cursor-pointer [&>option]:text-gray-900">
                                 <option value="">Pilih Cabang Olahraga</option>
                                 @foreach($sportCategories as $cat)
@@ -237,7 +243,7 @@
                                 Semua Venue
                             @endif
                         </h2>
-                        <p class="text-sm text-gray-400 mt-0.5">{{ $venues->total() }} venue ditemukan</p>
+                        <p class="text-sm text-gray-500 mt-0.5">{{ $venues->total() }} venue ditemukan</p>
                     </div>
                 </div>
 
@@ -246,12 +252,15 @@
                     @forelse($venues as $venue)
                         <div wire:key="venue-{{ $venue->id }}" class="contents">
                         <a href="{{ route('public.venues.show', $venue->slug) }}" 
+                           aria-label="Lihat detail venue {{ $venue->name }}"
                            class="group bg-white rounded-2xl shadow-sm overflow-hidden border border-gray-100 hover:shadow-xl hover:border-[#8B1538]/20 transition-all duration-300">
                             <!-- Image -->
                             <div class="relative h-48 bg-gray-100 overflow-hidden">
-                                @php $cov = $venue->media()->where('is_cover', true)->first(); @endphp
-                                <img alt="{{ $venue->name }}"
-                                     class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                @php 
+                                    $cov = $venue->media->firstWhere('is_cover', true) ?? $venue->media->first(); 
+                                    $lazy = $loop->index > 2;
+                                @endphp
+                                <img alt="{{ $venue->name }}" title="{{ $venue->name }}" loading="{{ $lazy ? 'lazy' : 'eager' }}" decoding="async" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                                      src="{{ $cov ? Storage::url($cov->file_path) : 'https://placehold.co/600x400?text=No+Image' }}" />
                                 
                                 <!-- Sport Badge -->
@@ -281,10 +290,10 @@
 
                                 <div class="pt-4 border-t border-gray-100 flex justify-between items-center">
                                     <div>
-                                        <span class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Mulai dari</span>
+                                        <span class="text-[10px] text-gray-500 font-bold uppercase tracking-wider">Mulai dari</span>
                                         <div class="text-[#8B1538] text-xl font-black">
                                             Rp {{ number_format($venue->pricings_min_price_per_hour ?? 50000, 0, ',', '.') }}
-                                            <span class="text-xs text-gray-400 font-medium">/jam</span>
+                                            <span class="text-xs text-gray-500 font-medium">/jam</span>
                                         </div>
                                     </div>
                                     <div class="bg-[#8B1538] text-white px-4 py-2 rounded-xl text-xs font-bold group-hover:bg-[#6B1028] transition-colors">

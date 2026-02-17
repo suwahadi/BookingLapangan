@@ -4,67 +4,50 @@
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="description" content="Platform booking lapangan olahraga online termudah dan terlengkap. Cari futsal, badminton, basket, dan lainnya di sekitarmu.">
+    <meta name="keywords" content="booking lapangan, sewa lapangan, futsal, badminton, basket, olahraga, venue">
+    <meta name="theme-color" content="#A90A2E">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:title" content="{{ $title ?? 'Yomabar - Sport Booking Platform' }}">
+    <meta property="og:description" content="Platform booking lapangan olahraga online termudah dan terlengkap.">
+    <meta property="og:image" content="{{ asset('og-image.jpg') }}">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="{{ url()->current() }}">
+    <meta property="twitter:title" content="{{ $title ?? 'Yomabar - Sport Booking Platform' }}">
+    <meta property="twitter:description" content="Platform booking lapangan olahraga online termudah dan terlengkap.">
+    <meta property="twitter:image" content="{{ asset('og-image.jpg') }}">
+
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+    
+    <!-- Preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
     <title>{{ $title ?? 'Yomabar' }}</title>
     
-    <!-- Alpine.js -->
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&amp;display=swap"
-        rel="stylesheet" />
-    <link
-        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
-        rel="stylesheet" />
     <script>
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        primary: "#A90A2E",
-                        "primary-dark": "#8B001F",
-                        "background-light": "#F3F4F6",
-                        "background-dark": "#111827",
-                        "surface-light": "#FFFFFF",
-                        "surface-dark": "#1F2937",
-                        "text-light": "#1F2937",
-                        "text-dark": "#F3F4F6",
-                        "muted-light": "#6B7280",
-                        "muted-dark": "#9CA3AF",
-                    },
-                    fontFamily: {
-                        display: ["Poppins", "sans-serif"],
-                        sans: ["Poppins", "sans-serif"],
-                    },
-                    borderRadius: {
-                        DEFAULT: "0.5rem",
-                        xl: "1rem",
-                        "2xl": "1.5rem",
-                    },
-                    boxShadow: {
-                        'card': '0 2px 8px rgba(0, 0, 0, 0.05)',
-                    }
-                },
-            },
-        };
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark')
+        } else {
+            document.documentElement.classList.remove('dark')
+        }
     </script>
-    <style type="text/tailwindcss">
-        .custom-pattern {
-            background-color: #A90A2E;
-            background-image: url(https://lh3.googleusercontent.com/aida-public/AB6AXuDqmsPzRzmtF21fkQGx5MwimKSl-cUJ-lC8PTV4LLNz2C8Po99Avw_7uEAABwkQOscd0NxH5_yeSmRzP1bSAGz4S4YY-hdkbRfx_QXCpR7o9VCc-IMVdUMvKlLUsL9rPKdj5dz4koepgix7CrwHzBqsCARhs9YUqlehctQJyPUn62EjxUWfNTR01WJZiGE_tBvroACeSO68g57r3TisTaaABlutPZ03ZPQbq9BxqAiTGuJwg5LDzkrjYWb75-oNFK8TPCwuZ8Ltiq5z);
-            background-size: cover;
-            background-position: center;
-        }
-        .no-scrollbar::-webkit-scrollbar {
-            display: none;
-        }
-        .no-scrollbar {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
-        body {
-            min-height: 100dvh;
-        }
-        #filter-drawer:checked ~ #filter-content {
+
+    <!-- Alpine.js -->
+    <!-- Tailwind CSS (Vite Build) -->
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet" />
+    <style>
+         #filter-drawer:checked ~ #filter-content {
             display: block;
         }
         #filter-drawer:checked ~ #overlay {
@@ -87,6 +70,30 @@
                 <a href="/" wire:navigate class="font-black italic text-2xl tracking-tighter text-white">YOMABAR</a>
             </div>
             <div class="flex items-center gap-2 sm:gap-4">
+                
+                <!-- Dark Mode Toggle -->
+                <button
+                    x-data="{
+                        darkMode: localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches),
+                        toggle() {
+                            this.darkMode = !this.darkMode;
+                            if (this.darkMode) {
+                                localStorage.theme = 'dark';
+                                document.documentElement.classList.add('dark');
+                            } else {
+                                localStorage.theme = 'light';
+                                document.documentElement.classList.remove('dark');
+                            }
+                        }
+                    }"
+                    @click="toggle()"
+                    class="relative inline-flex items-center justify-center w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400 transition-all shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary/50"
+                    aria-label="Toggle Dark Mode"
+                >
+                    <span x-show="!darkMode" class="material-symbols-outlined text-xl text-yellow-500">light_mode</span>
+                    <span x-show="darkMode" class="material-symbols-outlined text-xl text-blue-300" style="display: none;">dark_mode</span>
+                </button>
+
                 @auth
                     <!-- Notification Bell -->
                     <livewire:member.notification-bell />

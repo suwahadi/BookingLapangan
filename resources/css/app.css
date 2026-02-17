@@ -1,5 +1,7 @@
 @import 'tailwindcss';
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
 @source "../**/*.blade.php";
@@ -7,6 +9,38 @@
 @source "../**/*.vue";
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-sans: 'Poppins', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-display: 'Poppins', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+
+    --color-primary: #A90A2E;
+    --color-primary-dark: #8B001F;
+    --color-background-light: #F3F4F6;
+    --color-background-dark: #111827;
+    --color-surface-light: #FFFFFF;
+    --color-surface-dark: #1F2937;
+    --color-text-light: #1F2937;
+    --color-text-dark: #F3F4F6;
+    --color-muted-light: #6B7280;
+    --color-muted-dark: #9CA3AF;
+
+    --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.05);
+
+    --radius-xl: 1rem;
+    --radius-2xl: 1.5rem;
+}
+
+@layer utilities {
+    .custom-pattern {
+        background-color: #A90A2E;
+        background-image: url(https://lh3.googleusercontent.com/aida-public/AB6AXuDqmsPzRzmtF21fkQGx5MwimKSl-cUJ-lC8PTV4LLNz2C8Po99Avw_7uEAABwkQOscd0NxH5_yeSmRzP1bSAGz4S4YY-hdkbRfx_QXCpR7o9VCc-IMVdUMvKlLUsL9rPKdj5dz4koepgix7CrwHzBqsCARhs9YUqlehctQJyPUn62EjxUWfNTR01WJZiGE_tBvroACeSO68g57r3TisTaaABlutPZ03ZPQbq9BxqAiTGuJwg5LDzkrjYWb75-oNFK8TPCwuZ8Ltiq5z);
+        background-size: cover;
+        background-position: center;
+    }
+    .no-scrollbar::-webkit-scrollbar {
+        display: none;
+    }
+    .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
 }

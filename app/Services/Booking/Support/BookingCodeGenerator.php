@@ -2,19 +2,23 @@
 
 namespace App\Services\Booking\Support;
 
+use App\Models\Booking;
 use Illuminate\Support\Str;
 
 class BookingCodeGenerator
 {
     /**
      * Generate unique booking code
-     * Format: BK-YYYYMMDD-XXXXX
+     * Format: XXXXXXXX
      */
     public function generate(): string
     {
-        $date = now()->format('Ymd');
-        $random = strtoupper(Str::random(5));
-        
-        return "BK-{$date}-{$random}";
+        $random = strtoupper(Str::random(8));
+
+        // Ensure uniqueness
+            while (Booking::where('booking_code', $random)->exists()) {
+            $random = strtoupper(Str::random(8));
+        }
+        return "{$random}";
     }
 }
